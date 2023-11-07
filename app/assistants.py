@@ -16,7 +16,7 @@ def create_assistant():
         name="Math Tutor",
         instructions="You are a personal math tutor. Write and run code to answer math questions.",
         tools=[{"type": "code_interpreter"}],
-        model="gpt-4-1106-preview"
+        model="gpt-3.5-turbo-1106"
     )
     return response
 
@@ -45,7 +45,7 @@ def get_assistant_response(thread_id, run_id):
         thread_id=thread_id,
         run_id=run_id
     )
-    if run_status['status'] == 'completed':
+    if run_status.status == 'completed':
         messages = client.beta.threads.messages.list(thread_id=thread_id)
         return messages
     else:

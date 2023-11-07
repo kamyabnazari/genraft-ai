@@ -53,7 +53,7 @@ pip install -r requirements.txt
 To run the application, run the following command:
 
 ```
-python3 app/main.py
+python3 -m app.main
 ```
 
 #### Testing
