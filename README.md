@@ -44,10 +44,16 @@ OPENAI_API_KEY={your openai api key}
 
 ##### Running the framework
 
-To install the required packages for this plugin and run the service locally, run the following commands:
+To install the required packages for this plugin and run the service locally, run the following command:
 
 ```
 pip install -r requirements.txt
+```
+
+To run the application, run the following command:
+
+```
+python3 app/main.py
 ```
 
 #### Testing

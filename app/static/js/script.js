@@ -2,7 +2,7 @@ document.getElementById('talkForm').onsubmit = function(event) {
     event.preventDefault();
     const userInput = document.getElementById('userInput').value;
     
-    fetch('/api/ask', {
+    fetch('/ask', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
