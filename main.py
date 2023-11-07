@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import openai
 from dotenv import load_dotenv
 import os
@@ -15,6 +15,10 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Ensure the OpenAI API key is available
 if not openai.api_key:
     raise ValueError("No OPENAI_API_KEY set for Flask application")
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/api/ask', methods=['POST'])
 def ask():
