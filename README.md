@@ -32,17 +32,23 @@ The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend 
 https://github.com/kamyabnazari/genraft-ai.git
 ```
 
-#### Usage
-[Provide instructions on how to integrate the toolkit into web development projects]
+#### Setup
 
-[Include code examples for backend setup and frontend integration]
+##### Environment variables
 
-[Discuss customization options for conversational agents and user interfaces]
+Create a `.env` file in the root of the genraft-ai directory with the following variables or export in the terminal:
 
-#### Configuration
-[Detail any configuration files for the OpenAI API integration]
+```
+OPENAI_API_KEY={your openai api key}
+```
 
-[Offer guidance on how to tailor the AI models to specific domains or tasks]
+##### Running the framework
+
+To install the required packages for this plugin and run the service locally, run the following commands:
+
+```
+pip install -r requirements.txt
+```
 
 #### Testing
 [Outline the testing framework for both backend and frontend components]
