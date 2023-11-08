@@ -1,6 +1,6 @@
 # Genraft AI
 
-⚠️ This is a university project and is work in progress, it will reach a 0.1.0 version at the end of November 2023, any help is appreciated.
+⚠️ This project is work in progress, it will reach a 0.1.0 version at the end of November 2023, any help is appreciated.
 
 If it becomes popular, further work will be made on this project, it depends on the support made by you guys.
 
@@ -27,6 +27,11 @@ The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend 
 - Python (version 3.7 or later)
 - Access to OpenAI API (API keys)
 - Basic knowledge of web development frameworks (e.g., Flask, Django, React, Vue.js)
+
+### Libraries and Services used
+
+- Bootstrap
+- Bootstrap Icons
 
 ### Installation
 
