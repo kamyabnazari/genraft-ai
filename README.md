@@ -1,5 +1,9 @@
 # Genraft AI
 
+⚠️ This is a university project and is work in progress, it will reach a 0.1.0 version at the end of November 2023, any help is appreciated.
+
+If it becomes popular, further work will be made on this project, it depends on the support made by you guys.
+
 <div style="text-align: center;">
   <img src="misc/genraft_ai_icon.png" alt="Genraft AI Framework Logo" style="max-width: 30%; height: auto; display: block; margin: 0 auto;">
 </div>
@@ -7,8 +11,6 @@
 ## Introduction
 
 The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend and frontend web solutions, utilizing the power of Python and the official OpenAI API to develop conversational agents. This toolkit harnesses the capabilities of generative AI to facilitate the development of responsive and intelligent agent interactions.
-
-**Important** this is a university project and is work in progress, it will reach a 0.1.0 version at the end of November 2023 , any help is appreciated.
 
 ## Features
 
