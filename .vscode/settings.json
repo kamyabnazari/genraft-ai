@@ -3,6 +3,7 @@
         "dotenv",
         "Genraft",
         "jsonify",
+        "multisize",
         "OPENAI"
     ],
     "explorer.excludeGitIgnore": true

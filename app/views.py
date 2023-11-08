@@ -1,4 +1,3 @@
-# views.py
 from flask import Blueprint, request, jsonify, render_template
 from .assistants import create_assistant, create_thread, add_message_to_thread, run_assistant, get_assistant_response
 
