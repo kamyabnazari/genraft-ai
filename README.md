@@ -8,6 +8,8 @@
 
 The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend and frontend web solutions, utilizing the power of Python and the official OpenAI API to develop conversational agents. This toolkit harnesses the capabilities of generative AI to facilitate the development of responsive and intelligent agent interactions.
 
+**Important** this is a university project and is work in progess, it will reach a 0.1.0 version at the end of November 2023 , any help is appreciated.
+
 ## Features
 
 - Direct integration with the official OpenAI API to enable advanced conversational capabilities.
