@@ -14,10 +14,28 @@ RUNNING_TESTS=false // if you want to run tests set to true
 
 ### Running the backend
 
-To install the required packages for this plugin and run the service locally, run the following commands:
+To install the required packages for this service, run the following commands:
 
 ```
 pip install -r requirements.txt
+```
 
-uvicorn main:app --reload --host 0.0.0.0 --port 5003
+To run this service, run the following commands:
+
+```
+uvicorn app.main:app --reload --host 0.0.0.0 --port 5003
+```
+
+### Testing the backend
+
+To test this service, run the following commands:
+
+```
+pytest
+```
+
+To test this service without warnings, run the following commands:
+
+```
+pytest -p no:warnings
 ```
