@@ -1,0 +1,21 @@
+# Ignore .dockerignore and Dockerfile
+.dockerignore
+Dockerfile
+.env
+.git
+
+# Ignore Python build / cache files
+*.pyc
+*.pyo
+*.pyd
+*.cache
+__pycache__/
+*.py[co]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Ignore virtual environment directories
+venv/
+*.venv/

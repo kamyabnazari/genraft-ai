@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: genraft-ai-frontend-config
+data:
+  PUBLIC_BACKEND_URL: "http://genraft-ai-backend:5003"
+  PUBLIC_SECURE: "false"
+  PUBLIC_HTTPONLY: "false"
+  PUBLIC_SAMESITE: "None"
+  BODY_SIZE_LIMIT: "0"

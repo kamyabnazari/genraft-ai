@@ -1,0 +1,51 @@
+version: "3.8"
+name: genraft-ai-application
+services:
+
+# Backend service
+
+  genraft-ai-backend:
+    image: genraft-ai-backend
+    container_name: genraft-ai-backend
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5003"
+    healthcheck:
+      test: wget --no-verbose --tries=1 http://genraft-ai-backend:5003/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - genraft-ai-network
+    env_file:
+      - backend/.env
+
+# Frontend service
+
+  genraft-ai-frontend:
+    image: genraft-ai-frontend
+    container_name: genraft-ai-frontend
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - genraft-ai-backend
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://genraft-ai-frontend:3000/ || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - genraft-ai-network
+    env_file:
+      - frontend/.env
+
+networks:
+  genraft-ai-network:
+    driver: bridge

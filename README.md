@@ -1,6 +1,6 @@
 # Genraft AI
 
-⚠️ This project is work in progress, it will reach a 0.1.0 version at the end of November 2023, any help is appreciated.
+⚠️ This project is work in progress, reaching 0.1.0 version end of November 2023!
 
 If it becomes popular, further work will be made on this project, it depends on the support made by you guys.
 
@@ -33,6 +33,8 @@ The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend 
 - Bootstrap
 - Bootstrap Icons
 
+---
+
 ### Installation
 
 #### Clone
@@ -43,35 +45,28 @@ https://github.com/kamyabnazari/genraft-ai.git
 
 #### Setup
 
-##### Environment variables
+Please create the services after another in order and follow the instructions in the README.md files.
 
-Create a `.env` file in the root of the genraft-ai directory with the following variables or export in the terminal:
+When you run them individually you have to use localhost to access and connect them to each other.
 
-```
-OPENAI_API_KEY={your openai api key}
-```
+Or Use Docker Compose to create all of it and connect them together.
 
-##### Running the framework
-
-To install the required packages for this plugin and run the service locally, run the following command:
-
-```
-pip install -r requirements.txt
+```bash
+docker-compose up --build
 ```
 
-To run the application, run the following command:
+Please setup in the following order:
 
-```
-python3 -m app.main
-```
+##### 1. Setup [Backend](backend/README.md)
 
-#### Testing
-[Outline the testing framework for both backend and frontend components]
+##### 2. Setup [Frontend](frontend/README.md)
 
-[Include sample test cases and instructions for continuous integration practices]
+---
 
 ### License
 This project is licensed under the [Apache-2.0 license] License - see the LICENSE file for details.
+
+---
 
 ### Acknowledgments
 

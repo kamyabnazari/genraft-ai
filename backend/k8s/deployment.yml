@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genraft-ai-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genraft-ai-backend
+  template:
+    metadata:
+      labels:
+        app: genraft-ai-backend
+    spec:
+      containers:
+        - name: genraft-ai-backend
+          image: registry/app:tag
+          ports:
+            - containerPort: 5003
+          envFrom:
+            - configMapRef:
+                name: genraft-ai-backend-config
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: genraft-ai-backend-secrets
+                  key: OPENAI_API_KEY
+          resources:
+            limits:
+              cpu: 300m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5003
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5003
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 3
