@@ -4,4 +4,3 @@ metadata:
   name: genraft-ai-backend-config
 data:
   PUBLIC_FRONTEND_URL: "http://genraft-ai-frontend:3000"
-  RUNNING_TESTS: "false"

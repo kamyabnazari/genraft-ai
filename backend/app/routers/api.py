@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from app.models.pydantic_models import GenerateMessageRequest
 from openai import OpenAI
-from app.dependencies import get_openai_client
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -10,16 +10,14 @@ async def read_api_root():
     return {"message": "Welcome to the Genraft AI API!"}
 
 @router.post("/generate_message")
-async def generate_message(request_body: GenerateMessageRequest, openai_client: OpenAI = Depends(get_openai_client)):
-    if openai_client is None:
-        raise HTTPException(status_code=503, detail="OpenAI client not available")
-    
+async def generate_message(request_body: GenerateMessageRequest):
+    client = OpenAI(api_key=settings.openai_api_key)
     try:
-        response = openai_client.Completion.create(
-            model="text-davinci-003",
-            prompt=request_body.prompt,
-            max_tokens=50
+        chat_completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": request_body.prompt}]
         )
-        return response.choices[0].text.strip()
+        return {"message": chat_completion.choices[0].message.content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+

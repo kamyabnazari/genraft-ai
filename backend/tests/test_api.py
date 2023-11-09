@@ -1,21 +1,29 @@
-from unittest.mock import patch, Mock
+import unittest
+from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
 
-@patch("openai.Completion.create")
-def test_generate_message(mock_completion_create):
-    # Setup the mock return value for the `Completion.create` method
-    mock_completion_create.return_value = Mock(choices=[Mock(text="Bonjour, comment ça va?")])
-    
-    # Define a sample prompt to send in the request
-    sample_prompt = {
-        "prompt": "Translate the following English text to French: 'Hello, how are you?'"
-    }
-    
-    # Make a POST request to the /generate_message endpoint with the prompt
-    response = client.post("/api/generate_message", json=sample_prompt)
-    
-    # Check that the response status code is 200 (OK)
-    assert response.status_code == 200, response.text
+class TestGenerateMessage(unittest.TestCase):
+
+    @patch('openai.OpenAI.chat.completions')
+    def test_generate_message(self, mock_chat_completion_create):
+        # Setup the mock return value
+        mocked_content = "Generated message from OpenAI."
+        mock_chat_completion_create.return_value = MagicMock(
+            choices=[MagicMock(message=MagicMock(content=mocked_content))]
+        )
+
+        sample_prompt = {
+            "prompt": "Translate the following English text to French: 'Hello, how are you?'"
+        }
+
+        response = client.post("/api/generate_message", json=sample_prompt)
+
+        # Assert the response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": mocked_content})
+
+if __name__ == '__main__':
+    unittest.main()
