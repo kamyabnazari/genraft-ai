@@ -1,7 +1,6 @@
-fastapi
-uvicorn
-pytest
-retry
-python-dotenv
-openai
-tiktoken
+python-dotenv==1.0.0
+fastapi==0.104.1
+uvicorn==0.24.0
+pytest==7.4.3
+openai==1.2.1
+tiktoken==0.5.1

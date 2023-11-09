@@ -10,14 +10,8 @@ from openai import OpenAI
 
 # Other imports
 from dotenv import load_dotenv
-from retry import retry
 
 load_dotenv()
-
-# Define the maximum number of retries and the delay between retries
-max_retries = 5
-retry_delay = 5
-initial_delay = 5
 
 frontend_public_url = os.getenv("PUBLIC_FRONTEND_URL", "http://default-frontend-url")
 openai_api_key = os.getenv("OPENAI_API_KEY", 'default-openai-api-key')
