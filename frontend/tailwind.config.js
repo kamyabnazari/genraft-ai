@@ -8,11 +8,11 @@ export default {
 	daisyui: {
 		themes: [
 			{
-				lofi: {
-					...require('daisyui/src/theming/themes')['[data-theme=lofi]'],
-					'--rounded-box': '0.25rem',
-					'--rounded-btn': '0.25rem',
-					'--rounded-badge': '0.15rem',
+				light: {
+					...require('daisyui/src/theming/themes')['[data-theme=light]'],
+					'--rounded-box': '0.30rem',
+					'--rounded-btn': '0.30rem',
+					'--rounded-badge': '0.20rem',
 					'--animation-btn': '0.25s',
 					'--animation-input': '0.25s',
 					'--btn-text-case': 'uppercase',
@@ -21,11 +21,11 @@ export default {
 					'--tab-border': '1px',
 					'--tab-radius': '0.5rem'
 				},
-				business: {
-					...require('daisyui/src/theming/themes')['[data-theme=business]'],
-					'--rounded-box': '0.25rem',
-					'--rounded-btn': '0.25rem',
-					'--rounded-badge': '0.15rem',
+				dark: {
+					...require('daisyui/src/theming/themes')['[data-theme=dark]'],
+					'--rounded-box': '0.30rem',
+					'--rounded-btn': '0.30rem',
+					'--rounded-badge': '0.20rem',
 					'--animation-btn': '0.25s',
 					'--animation-input': '0.25s',
 					'--btn-text-case': 'uppercase',
@@ -42,6 +42,6 @@ export default {
 		logs: false,
 		rtl: false,
 		prefix: '',
-		darkTheme: 'business'
+		darkTheme: 'dark'
 	}
 };
