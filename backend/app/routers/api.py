@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException
-from app.models.pydantic_models import GenerateMessageRequest, GenerateAssistantRequest
-from app.models.database import messages
+from app.models.pydantic_models import StepIdeaSubmitRequest, GenerateAssistantRequest
+from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI, OpenAIError
+import json
 import time
 
 router = APIRouter()
@@ -13,17 +14,22 @@ client = OpenAI(api_key=settings.openai_api_key)
 async def read_api_root():
     return {"message": "Welcome to the Genraft AI API!"}
 
-@router.post("/generate_message")
-async def generate_message(request_body: GenerateMessageRequest):
+@router.post("/step_idea_submit")
+async def generate_message(request_body: StepIdeaSubmitRequest):
     try:
         chat_completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": request_body.prompt}]
+            messages=[{"role": "user", "content": request_body.idea}]
         )
         generated_message = chat_completion.choices[0].message.content
 
-        # Insert the generated message into the database
-        query = messages.insert().values(message=generated_message)
+        # Database action
+        query = projects.insert().values(
+            name="Example Project Name",
+            idea_initial=request_body.idea,
+            idea_final=generated_message,
+            chat_history_idea="History in JSON"
+        )
         await get_database().execute(query)
 
         return {"message": generated_message}

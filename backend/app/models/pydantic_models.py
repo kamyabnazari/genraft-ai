@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-class GenerateMessageRequest(BaseModel):
-    prompt: str
+class StepIdeaSubmitRequest(BaseModel):
+    idea: str
 
 class GenerateAssistantRequest(BaseModel):
     name: str

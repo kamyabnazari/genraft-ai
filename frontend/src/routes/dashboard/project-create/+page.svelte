@@ -37,8 +37,7 @@
 		responseMessage = '';
 
 		const payload = {
-			idea: idea,
-			messages: messagesArrayString
+			idea: idea
 		};
 		try {
 			const response = await fetch('/api/project/step-idea-submit', {
@@ -116,7 +115,8 @@
 				</div>
 				<div class="mx-4 flex flex-row justify-center">
 					<div class="flex-auto">
-						<a href="/dashboard"><button class="btn btn-ghost">Cancel</button></a>
+						<a href="/dashboard"><button class="btn btn-ghost" disabled={loading}>Cancel</button></a
+						>
 					</div>
 					<button class="btn btn-primary" type="button" on:click={handleSubmit} disabled={loading}
 						>Start</button
