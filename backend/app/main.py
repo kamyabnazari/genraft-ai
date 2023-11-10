@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from app.core.config import settings
 from app.routers import root, api
-from app.dependencies import configure_cors
+from app.dependencies import configure_cors, lifespan
 
-app = FastAPI(title="Genraft AI Project Backend")
+app = FastAPI(title="Genraft AI Project Backend", lifespan=lifespan)
 
 # Configure CORS
 configure_cors(app)

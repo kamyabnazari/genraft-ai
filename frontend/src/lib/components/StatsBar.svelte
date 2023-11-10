@@ -21,27 +21,27 @@
 			<IconFile style="font-size: x-large;" class="text-primary" />
 		</div>
 		<div class="stat-title">Created projects</div>
-		<div class="stat-value">{formatNumber(20 ?? 0)}</div>
+		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure text-secondary">
 			<IconNewFile style="font-size: x-large;" class="text-primary" />
 		</div>
 		<div class="stat-title">Created files</div>
-		<div class="stat-value">{formatNumber(25 ?? 0)}</div>
+		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure text-secondary">
 			<IconPage style="font-size: x-large;" class="text-primary" />
 		</div>
 		<div class="stat-title">Total assets</div>
-		<div class="stat-value">{formatNumber(30 ?? 0)}</div>
+		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure text-secondary">
 			<IconWord style="font-size: x-large;" class="text-primary" />
 		</div>
 		<div class="stat-title">Total lines of code</div>
-		<div class="stat-value">{formatNumber(35 ?? 0)}</div>
+		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 </div>

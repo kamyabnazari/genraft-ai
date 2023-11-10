@@ -7,6 +7,9 @@
 				Unleash the Power of Generative AI: Creating Beautiful, Structured Applications Has Never
 				Been Easier!
 			</p>
+			<div class="py-8">
+				<a href="/dashboard/project-create"><button class="btn btn-primary">Create now</button></a>
+			</div>
 		</div>
 	</div>
 </div>
