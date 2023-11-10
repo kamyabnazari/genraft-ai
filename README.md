@@ -22,16 +22,37 @@ The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend 
 
 ## Getting Started
 
+### Tech-Stack
+
+#### General
+
+- [Git](https://git-scm.com) [Version Control]
+- [Docker](https://www.docker.com/get-started) [Containerization]
+- [GitHub](https://github.com/) [Code Hosting]
+- [GitHub Actions](https://github.com/features/actions) [CI/CD]
+
+#### Frontend
+
+- [Typescript](https://www.typescriptlang.org/) [Programming Language]
+- [NodeJs](https://nodejs.org) [Javascript runtime]
+- [SvelteKit](https://kit.svelte.dev/) [Full-Stack Framework]
+- [Svelte](https://svelte.dev/) [Frontend Framework]
+- [TailwindCSS](https://tailwindcss.com/) [CSS Framework]
+- [DaisyUI](https://daisyui.com/) [Tailwind Component Library]
+
+#### Backend
+
+- [Python](https://www.python.org/downloads/) [Programming Language]
+- [FastApi](https://fastapi.tiangolo.com/) [Backend Framework]
+- [OpenAI GPT](https://openai.com/) [Language Processing]
+
 ### Prerequisites
 
-- Python (version 3.7 or later)
-- Access to OpenAI API (API keys)
-- Basic knowledge of web development frameworks (e.g., Flask, Django, React, Vue.js)
-
-### Libraries and Services used
-
-- Bootstrap
-- Bootstrap Icons
+- [Git](https://git-scm.com/downloads)
+- [Docker](https://www.docker.com/get-started)
+- [NPM](https://www.npmjs.com/)
+- [Nodejs](https://nodejs.org)
+- [Python](https://www.python.org/downloads/)
 
 ---
 
