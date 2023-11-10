@@ -8,10 +8,14 @@
 	import { writable } from 'svelte/store';
 	import { tick } from 'svelte';
 
+	let idea: string = '';
+	let messagingNeeded: boolean = false;
 	let messages = writable([]);
 	let message: string;
 	let loading: boolean;
 	let chatContainer: HTMLDivElement;
+
+	let responseMessage = '';
 
 	async function scrollToBottom() {
 		await tick();
@@ -26,6 +30,39 @@
 		messagesArray = value;
 		messagesArrayString = JSON.stringify(value);
 	});
+
+	// Function to handle the form submission
+	async function handleSubmit() {
+		loading = true;
+		responseMessage = '';
+
+		const payload = {
+			idea: idea,
+			messages: messagesArrayString
+		};
+		try {
+			const response = await fetch('/api/project/step-idea-submit', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(payload)
+			});
+			if (!response.ok) {
+				throw new Error('Server responded with an error!');
+			}
+
+			const result = await response.json();
+			responseMessage = result.message;
+
+			// Handle success here, like redirecting to another page or showing a success message
+		} catch (error) {
+			console.error('Submission failed:', error);
+			// Handle error here
+		} finally {
+			loading = false;
+		}
+	}
 </script>
 
 <div class="mx-auto flex min-h-full max-w-7xl flex-col gap-8">
@@ -38,8 +75,8 @@
 	</div>
 	<div class="flex flex-col justify-center gap-8 lg:flex-row">
 		<div class="flex flex-row justify-center">
-			<div class="flex-grow">
-				<ul class="steps steps-horizontal lg:steps-vertical w-full">
+			<div class="overflow-x-auto">
+				<ul class="steps steps-horizontal lg:steps-vertical">
 					<li data-content="?" class="step step-primary">Idea</li>
 					<li class="step">Project Preview</li>
 					<li class="step">Company Creation</li>
@@ -71,6 +108,8 @@
 								placeholder="I want a personal protfolio website..."
 								id="idea"
 								name="idea"
+								disabled={loading}
+								bind:value={idea}
 							/>
 						</div>
 					</div>
@@ -79,7 +118,9 @@
 					<div class="flex-auto">
 						<a href="/dashboard"><button class="btn btn-ghost">Cancel</button></a>
 					</div>
-					<button class="btn btn-primary" type="submit">Next</button>
+					<button class="btn btn-primary" type="button" on:click={handleSubmit} disabled={loading}
+						>Start</button
+					>
 				</div>
 			</div>
 		</div>
@@ -122,27 +163,27 @@
 						</div>
 					{/each}
 				</div>
-				<div class="flex flex-row gap-2">
-					<div class="form-control w-full">
-						<input
-							type="text"
-							class="input border-primary h-12 w-full rounded-md border-2"
-							placeholder="What do you want to change..."
-							id="message"
-							name="message"
-							bind:value={message}
-							disabled={loading}
-						/>
+				{#if messagingNeeded}
+					<div class="flex flex-row gap-2">
+						<div class="form-control w-full">
+							<input
+								type="text"
+								class="input border-primary h-12 w-full rounded-md border-2"
+								placeholder="What do you want to change..."
+								id="message"
+								name="message"
+								bind:value={message}
+								disabled={loading}
+							/>
+						</div>
+						<button
+							class="btn btn-primary btn-square btn-ghost"
+							class:loading
+							type="submit"
+							disabled={loading}><IconSend style="font-size: xx-large;" /></button
+						>
 					</div>
-					<!-- Hidden input field for messagesArray -->
-					<input type="hidden" name="messagesArray" bind:value={messagesArrayString} />
-					<button
-						class="btn btn-primary btn-square btn-ghost"
-						class:loading
-						type="submit"
-						disabled={loading}><IconSend style="font-size: xx-large;" /></button
-					>
-				</div>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -151,7 +192,7 @@
 <style>
 	.chat-container {
 		height: calc(
-			70vh - 20rem
+			75vh - 20rem
 		); /* Adjust the subtraction value according to your header and footer size */
 	}
 </style>

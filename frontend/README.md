@@ -7,7 +7,7 @@
 Create a `.env` file in the root of the frontend directory with the following variables:
 
 ```
-PUBLIC_BACKEND_URL=http://genraft-ai-backend:5003
+PRIVATE_BACKEND_URL=http://genraft-ai-backend:5003
 PUBLIC_SECURE=true // if testing on safari or firefox, set to false
 PUBLIC_HTTPONLY=false
 PUBLIC_SAMESITE=None

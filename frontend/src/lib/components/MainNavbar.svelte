@@ -54,12 +54,7 @@
 		</label>
 	</div>
 	<div class="flex-1">
-		<a class="btn-link hidden text-left text-xl font-bold normal-case md:block" href="/"
-			>Genraft AI</a
-		>
-		<a class="btn-link md:hidden" href="/">
-			<img class="h-10 rounded-lg" src="/favicon.png" alt="user avatar" />
-		</a>
+		<a class="btn-link text-left text-xl font-bold normal-case" href="/">Genraft AI</a>
 	</div>
 	<label class="swap swap-rotate px-4">
 		<input type="checkbox" bind:checked={isChecked} on:change={handleCheckboxChange} />
