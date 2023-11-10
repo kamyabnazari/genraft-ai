@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconDownload from '~icons/solar/download-square-outline';
 	import IconBin from '~icons/solar/trash-bin-trash-outline';
-	import IconRead from '~icons/solar/chat-unread-outline';
+	import IconHistory from '~icons/solar/history-2-outline';
 
 	interface Project {
 		id: string;
@@ -16,7 +16,6 @@
 	];
 
 	async function deleteProject(projectID: string) {
-		projectList.pop();
 		console.log('Delete Project!');
 	}
 
@@ -64,7 +63,7 @@
 						<div class="flex flex-row gap-4">
 							<a href={`/dashboard/project-history/${project.id}`}>
 								<button class="btn btn-square btn-primary">
-									<IconRead style="font-size: x-large;" />
+									<IconHistory style="font-size: x-large;" />
 								</button>
 							</a>
 							<button class="btn btn-square btn-info" on:click={() => downloadProject(project.id)}>
