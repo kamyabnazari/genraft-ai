@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Essential imports
 	import '../app.css';
 	import Navbar from '$lib/components/MainNavbar.svelte';
 	import Footer from '$lib/components/MainFooter.svelte';
@@ -21,13 +22,15 @@
 	<div class="drawer-side z-50">
 		<label for="application-drawer" class="drawer-overlay" />
 		<ul class="menu bg-base-200 text-base-content h-full w-80 gap-2 p-4">
-			<li><a href="/dashboard" class:active={$page.url.pathname === '/dashboard'}>Dashboard</a></li>
 			<li>
-				<a href="/documentation" class:active={$page.url.pathname === '/documentation'}
-					>Documentation</a
-				>
+				<a href="/dashboard" class:active={$page.url.pathname === '/dashboard'}> Dashboard </a>
 			</li>
-			<li><a href="/about-us" class:active={$page.url.pathname === '/about-us'}>About us</a></li>
+			<li>
+				<a href="/documentation" class:active={$page.url.pathname === '/documentation'}>
+					Documentation
+				</a>
+			</li>
+			<li><a href="/about-us" class:active={$page.url.pathname === '/about-us'}> About us </a></li>
 		</ul>
 	</div>
 </div>

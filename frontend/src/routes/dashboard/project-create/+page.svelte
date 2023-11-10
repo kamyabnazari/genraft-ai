@@ -1,14 +1,13 @@
 <script lang="ts">
+	// Icons imports
 	import IconClose from '~icons/solar/alt-arrow-left-bold';
+	import IconArrow from '~icons/solar/alt-arrow-right-bold';
 
+	// Essential imports
 	import { writable } from 'svelte/store';
 	import { tick } from 'svelte';
 
-	import { base } from '$app/paths';
-
 	let messages = writable([]);
-	let message: string = '';
-	let loading = false;
 	let chatContainer: HTMLDivElement;
 
 	async function scrollToBottom() {
@@ -27,7 +26,7 @@
 </script>
 
 <div class="mx-auto flex min-h-full max-w-7xl flex-col gap-8">
-	<a href="{base}/dashboard">
+	<a href="/dashboard">
 		<button class="btn btn-link text-primary"><IconClose style="font-size: x-large;" />close</button
 		>
 	</a>
@@ -78,6 +77,9 @@
 				</div>
 			</div>
 		</div>
+		<div class="divider divider-horizontal">
+			<IconArrow style="font-size: xx-large;" />
+		</div>
 		<div class="bg-base-200 flex-1 rounded-md p-8 shadow-lg">
 			<div class="flex h-full flex-col justify-between gap-8">
 				<div
@@ -97,7 +99,7 @@
 											id="avatar-preview-navbar"
 										/>
 									{:else}
-										<img src="{base}/favicon.png" alt="ee avatar" />
+										<img src="/favicon.png" alt="ee avatar" />
 									{/if}
 								</div>
 							</div>

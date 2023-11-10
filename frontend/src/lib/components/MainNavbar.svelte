@@ -1,21 +1,17 @@
 <script lang="ts">
+	// Icons imports
 	import IconMenu from '~icons/solar/hamburger-menu-outline';
 	import IconMoon from '~icons/solar/moon-outline';
 	import IconSun from '~icons/solar/sun-2-outline';
+
+	// Essential imports
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	// Variables
 	const theme = writable('light');
 
-	const toggleTheme = () => {
-		theme.update((currentTheme) => {
-			const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-			document.documentElement.setAttribute('data-theme', newTheme);
-			localStorage.setItem('theme', newTheme);
-			return newTheme;
-		});
-	};
-
+	// OnMount function
 	onMount(() => {
 		const savedTheme = localStorage.getItem('theme');
 		if (savedTheme) {
@@ -40,6 +36,15 @@
 		isChecked;
 		toggleTheme();
 	}
+
+	const toggleTheme = () => {
+		theme.update((currentTheme) => {
+			const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+			document.documentElement.setAttribute('data-theme', newTheme);
+			localStorage.setItem('theme', newTheme);
+			return newTheme;
+		});
+	};
 </script>
 
 <div class="navbar text-base-content bg-base-200 sticky left-0 top-0 z-10 px-6 py-4 shadow-sm">

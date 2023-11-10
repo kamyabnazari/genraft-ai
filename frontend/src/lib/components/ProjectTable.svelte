@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Icons imports
 	import IconDownload from '~icons/solar/download-square-outline';
 	import IconBin from '~icons/solar/trash-bin-trash-outline';
 	import IconHistory from '~icons/solar/history-2-outline';
@@ -40,7 +41,7 @@
 		<tbody class="bg-base-100">
 			{#if projectList.length === 0}
 				<tr>
-					<td colspan="5" class="text-center">No files found! Upload some to get started.</td>
+					<td colspan="5" class="text-center">No projects found! Create a new project.</td>
 				</tr>
 			{/if}
 			{#each projectList as project, index}
@@ -69,7 +70,7 @@
 							<button class="btn btn-square btn-info" on:click={() => downloadProject(project.id)}>
 								<IconDownload style="font-size: x-large;" />
 							</button>
-							<button class="btn btn-square btn-warning" on:click={() => deleteProject(project.id)}>
+							<button class="btn btn-square btn-error" on:click={() => deleteProject(project.id)}>
 								<IconBin style="font-size: x-large;" />
 							</button>
 						</div>

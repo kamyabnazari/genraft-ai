@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Icons imports
 	import IconFile from '~icons/solar/file-text-outline';
 	import IconNewFile from '~icons/solar/pen-new-square-outline';
 	import IconWord from '~icons/solar/chat-square-outline';

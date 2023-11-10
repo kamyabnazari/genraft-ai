@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Icons imports
 	import IconCreate from '~icons/solar/clipboard-add-outline';
 </script>
 
@@ -12,8 +13,8 @@
 					<button class="btn btn-primary gap-4">
 						<IconCreate style="font-size: x-large" class="text-primary-content" />
 						<span class="hidden sm:inline">Create</span>
-					</button></a
-				>
+					</button>
+				</a>
 			</div>
 		</div>
 	</div>

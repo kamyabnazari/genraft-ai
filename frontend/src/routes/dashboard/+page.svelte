@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Essential imports
 	import ActionCards from '$lib/components/ActionCards.svelte';
 	import ProjectTable from '$lib/components/ProjectTable.svelte';
 	import StatsBar from '$lib/components/StatsBar.svelte';
