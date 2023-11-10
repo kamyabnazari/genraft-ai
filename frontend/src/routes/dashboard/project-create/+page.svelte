@@ -2,12 +2,15 @@
 	// Icons imports
 	import IconClose from '~icons/solar/alt-arrow-left-bold';
 	import IconArrow from '~icons/solar/alt-arrow-right-bold';
+	import IconSend from '~icons/solar/square-arrow-up-bold';
 
 	// Essential imports
 	import { writable } from 'svelte/store';
 	import { tick } from 'svelte';
 
 	let messages = writable([]);
+	let message: string;
+	let loading: boolean;
 	let chatContainer: HTMLDivElement;
 
 	async function scrollToBottom() {
@@ -33,10 +36,10 @@
 	<div class="self-center">
 		<h1 class="mb-8 text-2xl font-bold md:text-3xl">Project Creation</h1>
 	</div>
-	<div class="flex flex-col-reverse justify-center gap-8 md:flex-row">
+	<div class="flex flex-col justify-center gap-8 lg:flex-row">
 		<div class="flex flex-row justify-center">
 			<div class="flex-grow">
-				<ul class="steps steps-vertical w-full">
+				<ul class="steps steps-horizontal lg:steps-vertical w-full">
 					<li data-content="?" class="step step-primary">Idea</li>
 					<li class="step">Project Preview</li>
 					<li class="step">Company Creation</li>
@@ -49,19 +52,22 @@
 				</ul>
 			</div>
 		</div>
-		<div class="bg-base-200 mb-4 flex-1 rounded-lg p-8 shadow-lg md:mb-0">
+		<div class="divider divider-vertical lg:divider-horizontal">
+			<IconArrow style="font-size: xx-large;" />
+		</div>
+		<div class="bg-base-200 flex-1 rounded-lg p-8 shadow-lg">
 			<div class="flex flex-col gap-8">
 				<div class="flex flex-row justify-center">
 					<h1 class="text-l font-bold md:text-xl">What is your idea?</h1>
 				</div>
-				<div class="flex flex-row justify-center">
-					<div class="flex justify-center">
-						<div class="form-control w-full md:w-96">
+				<div class="flex w-full flex-row justify-center">
+					<div class="flex w-full justify-center">
+						<div class="form-control w-full">
 							<label for="" class="label">
-								<span class="label-text">What do you want to generate?</span>
+								<span class="label-text">What project do you want to generate?</span>
 							</label>
 							<textarea
-								class="textarea border-primary h-48 w-full rounded-md border-2"
+								class="textarea border-primary h-96 w-full rounded-md border-2"
 								placeholder="I want a personal protfolio website..."
 								id="idea"
 								name="idea"
@@ -69,7 +75,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="mx-8 flex flex-row justify-center">
+				<div class="mx-4 flex flex-row justify-center">
 					<div class="flex-auto">
 						<a href="/dashboard"><button class="btn btn-ghost">Cancel</button></a>
 					</div>
@@ -77,7 +83,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="divider divider-horizontal">
+		<div class="divider divider-vertical lg:divider-horizontal">
 			<IconArrow style="font-size: xx-large;" />
 		</div>
 		<div class="bg-base-200 flex-1 rounded-md p-8 shadow-lg">
@@ -116,6 +122,27 @@
 						</div>
 					{/each}
 				</div>
+				<div class="flex flex-row gap-2">
+					<div class="form-control w-full">
+						<input
+							type="text"
+							class="input border-primary h-12 w-full rounded-md border-2"
+							placeholder="What do you want to change..."
+							id="message"
+							name="message"
+							bind:value={message}
+							disabled={loading}
+						/>
+					</div>
+					<!-- Hidden input field for messagesArray -->
+					<input type="hidden" name="messagesArray" bind:value={messagesArrayString} />
+					<button
+						class="btn btn-primary btn-square btn-ghost"
+						class:loading
+						type="submit"
+						disabled={loading}><IconSend style="font-size: xx-large;" /></button
+					>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -124,7 +151,7 @@
 <style>
 	.chat-container {
 		height: calc(
-			80vh - 20rem
+			70vh - 20rem
 		); /* Adjust the subtraction value according to your header and footer size */
 	}
 </style>

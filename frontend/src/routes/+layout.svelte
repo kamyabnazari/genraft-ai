@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 </script>
 
-<div class="drawer xl:drawer-open">
+<div class="drawer 2xl:drawer-open">
 	<input id="application-drawer" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content flex min-h-screen flex-col overflow-x-auto">
 		<div class="flex-none">

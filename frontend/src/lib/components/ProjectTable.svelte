@@ -31,10 +31,10 @@
 		<thead>
 			<tr>
 				<th class="w-0/12" />
-				<th class="w-3/12">Name</th>
+				<th class="w-4/12">Name</th>
 				<th class="w-2/12">Type</th>
-				<th class="w-3/12">Create Date</th>
-				<th class="w-1/12">Actions</th>
+				<th class="w-4/12">Create Date</th>
+				<th class="w-2/12">Actions</th>
 			</tr>
 		</thead>
 		<!-- Table Body -->

@@ -49,7 +49,7 @@
 
 <div class="navbar text-base-content bg-base-200 sticky left-0 top-0 z-10 px-6 py-4 shadow-sm">
 	<div class="me-4 flex-none">
-		<label for="application-drawer" class="btn btn-square btn-ghost drawer-button xl:hidden">
+		<label for="application-drawer" class="btn btn-square btn-ghost drawer-button 2xl:hidden">
 			<IconMenu style="font-size: x-large" class="text-primary" />
 		</label>
 	</div>
