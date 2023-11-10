@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ActionCards from '$lib/components/ActionCards.svelte';
+	import ProjectTable from '$lib/components/ProjectTable.svelte';
 	import StatsBar from '$lib/components/StatsBar.svelte';
 </script>
 
@@ -13,6 +14,9 @@
 		</div>
 		<div class="flex">
 			<ActionCards />
+		</div>
+		<div class="flex">
+			<ProjectTable />
 		</div>
 	</div>
 </div>
