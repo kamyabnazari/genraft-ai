@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.models.pydantic_models import GenerateMessageRequest, GenerateAssistantRequest
-from openai import OpenAI, OpenAIError
+from app.models.database import messages
+from app.dependencies import get_database
 from app.core.config import settings
+from openai import OpenAI, OpenAIError
 import time
 
 router = APIRouter()
@@ -18,7 +20,13 @@ async def generate_message(request_body: GenerateMessageRequest):
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": request_body.prompt}]
         )
-        return {"message": chat_completion.choices[0].message.content}
+        generated_message = chat_completion.choices[0].message.content
+
+        # Insert the generated message into the database
+        query = messages.insert().values(message=generated_message)
+        await get_database().execute(query)
+
+        return {"message": generated_message}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
