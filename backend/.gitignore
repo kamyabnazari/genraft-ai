@@ -1,6 +1,6 @@
 # Backend Python gitignore file
 
-generated-projects/
+genraft_ai_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -19,3 +19,6 @@ build/
 # Ignore virtual environment directories
 venv/
 *.venv/
+
+# Project specific
+genraft_ai_data/
