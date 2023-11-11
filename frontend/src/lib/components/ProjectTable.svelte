@@ -48,15 +48,32 @@
 		}
 	}
 
-	async function openProjectHistory(projectID: string) {
-		goto(`/dashboard/project-create/${projectID}`);
+	async function openProjectHistory(projectId: string) {
+		goto(`/dashboard/project-create/${projectId}`);
 	}
 
-	async function deleteProject(projectID: string) {
-		console.log('Delete Project!');
+	async function deleteProject(projectId: string) {
+		try {
+			const response = await fetch(`/api/project/${projectId}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error('Server responded with an error!');
+			}
+
+			projectList = projectList.filter((project) => project.id !== projectId);
+		} catch (error) {
+			console.error('Error fetching projects:', error);
+		} finally {
+			loading = false;
+		}
 	}
 
-	async function downloadProject(projectID: string) {
+	async function downloadProject(projectId: string) {
 		console.log('Download Project!');
 	}
 </script>

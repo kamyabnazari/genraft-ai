@@ -49,6 +49,24 @@ async def get_project_idea_by_id(id: int = Path(..., description="The ID of the 
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.delete("/project/{id}")
+async def delete_project_by_id(id: int = Path(..., description="The ID of the project to delete")):
+    try:
+        # Start by checking if the project exists
+        select_query = projects.select().where(projects.c.id == id)
+        existing_project = await database.fetch_one(select_query)
+
+        if existing_project is None:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        # If the project exists, proceed to delete it
+        delete_query = projects.delete().where(projects.c.id == id)
+        await database.execute(delete_query)
+        return {"message": "Project successfully deleted"}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/projects")
 async def get_all_projects():
     try:
