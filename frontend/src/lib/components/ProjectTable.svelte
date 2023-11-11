@@ -6,16 +6,11 @@
 
 	// Essential imports
 	import { onMount } from 'svelte';
-	import type { ProjectApiResponse } from '$lib/models';
+	import { goto } from '$app/navigation';
+	import type { Project } from '$lib/models';
 
 	let loading: boolean;
 
-	interface Project {
-		id: string;
-		name: string;
-		type: string;
-		created: string;
-	}
 	let projectList: Project[] = [];
 
 	onMount(async () => {
@@ -38,19 +33,23 @@
 				throw new Error('Server responded with an error!');
 			}
 
-			const results: ProjectApiResponse[] = await response.json();
+			const results: Project[] = await response.json();
 			projectList = results.map((element) => ({
-				id: element.id.toString(),
+				id: element.id,
 				name: element.name,
-				type: element.idea_initial,
-				created: element.idea_final
+				idea_initial: element.idea_initial,
+				idea_final: element.idea_final,
+				created_at: element.created_at
 			}));
-			console.log(projectList);
 		} catch (error) {
 			console.error('Error fetching projects:', error);
 		} finally {
 			loading = false;
 		}
+	}
+
+	async function openProjectHistory(projectID: string) {
+		goto(`/dashboard/project-create/${projectID}`);
 	}
 
 	async function deleteProject(projectID: string) {
@@ -68,9 +67,9 @@
 		<thead>
 			<tr>
 				<th class="w-0/12" />
-				<th class="w-4/12">Name</th>
-				<th class="w-2/12">Type</th>
-				<th class="w-4/12">Create Date</th>
+				<th class="w-3/12">Name</th>
+				<th class="w-4/12">Idea</th>
+				<th class="w-3/12">Creation Date</th>
 				<th class="w-2/12">Actions</th>
 			</tr>
 		</thead>
@@ -94,16 +93,19 @@
 						</div>
 					</td>
 					<td>
-						<span class="badge badge-ghost badge-sm">{project.type}</span>
+						{project.idea_initial.length > 40
+							? `${project.idea_initial.slice(0, 40)}...`
+							: project.idea_initial}
 					</td>
-					<td>{project.created.slice(0, 19)}</td>
+					<td>{project.created_at.replace('T', ' at ')}</td>
 					<th>
 						<div class="flex flex-row gap-4">
-							<a href={`/dashboard/project-history/${project.id}`}>
-								<button class="btn btn-square btn-primary">
-									<IconHistory style="font-size: x-large;" />
-								</button>
-							</a>
+							<button
+								class="btn btn-square btn-primary"
+								on:click={() => openProjectHistory(project.id)}
+							>
+								<IconHistory style="font-size: x-large;" />
+							</button>
 							<button class="btn btn-square btn-info" on:click={() => downloadProject(project.id)}>
 								<IconDownload style="font-size: x-large;" />
 							</button>

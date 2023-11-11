@@ -60,7 +60,8 @@ async def get_all_projects():
             "id": result["id"],
             "name": result["name"],
             "idea_initial": result["idea_initial"],
-            "idea_final": result["idea_final"]
+            "idea_final": result["idea_final"],
+            "created_at": result["created_at"]
             } for result in results]
 
         return projects_list
