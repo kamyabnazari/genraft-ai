@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path
 from app.models.pydantic_models import StepIdeaSubmitRequest, GenerateAssistantRequest
 from app.models.database import projects
 from app.dependencies import get_database
@@ -29,6 +29,22 @@ async def step_idea_submit(request_body: StepIdeaSubmitRequest):
             new_project_id = result
 
         return {"id": new_project_id}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/project/{id}/idea")
+async def get_project_idea_by_id(id: int = Path(..., description="The ID of the project")):
+    try:
+        query = projects.select().where(projects.c.id == id)
+        result = await database.fetch_one(query)
+        
+        if result is None:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        project_idea = result['idea_initial']
+
+        return {"idea": project_idea}
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))

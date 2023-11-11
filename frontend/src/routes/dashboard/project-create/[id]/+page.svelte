@@ -7,7 +7,8 @@
 	// Essential imports
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import { page } from '$app/stores';
 
 	const phases = [
 		{ key: 'preparation', name: 'Preparation' },
@@ -31,6 +32,16 @@
 	let messagesArrayString: string;
 	let message: string;
 
+	// Reactive declaration for projectId
+	let projectId: string = '';
+	$: projectId = $page.params.id;
+
+	onMount(async () => {
+		if (projectId) {
+			await getProjectIdeaById();
+		}
+	});
+
 	async function scrollToBottom() {
 		await tick();
 		if (chatContainer) {
@@ -43,8 +54,31 @@
 		messagesArrayString = JSON.stringify(value);
 	});
 
+	async function getProjectIdeaById() {
+		loading = true;
+
+		try {
+			const response = await fetch(`/api/project/${projectId}/idea`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error('Server responded with an error!');
+			}
+
+			const result = await response.json();
+			idea = result.idea;
+		} catch (error) {
+			console.error('Error fetching project idea:', error);
+		} finally {
+			loading = false;
+		}
+	}
+
 	async function handleNext() {
-		// Increment the phase index after successful response
 		currentPhaseIndex.update((n) => n + 1);
 	}
 </script>
@@ -83,6 +117,9 @@
 				<!-- Content for Idea creation phase -->
 				<div class="flex flex-row justify-center">
 					<h1 class="text-l mb-8 font-bold md:text-xl">Idea Creation Phase</h1>
+				</div>
+				<div class="flex flex-row justify-center">
+					<h1 class="mb-8 text-base">Initial Idea: {idea}</h1>
 				</div>
 				<div class="mt-8 flex flex-row justify-center">
 					<div class="flex-auto">
