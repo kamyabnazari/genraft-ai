@@ -6,9 +6,11 @@
 
 	// Essential imports
 	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
 	import { tick } from 'svelte';
 
 	let idea: string = '';
+
 	let messagingNeeded: boolean = false;
 	let messages = writable([]);
 	let message: string;
@@ -65,10 +67,15 @@
 </script>
 
 <div class="mx-auto flex min-h-full max-w-7xl flex-col gap-8">
-	<a href="/dashboard">
-		<button class="btn btn-link text-primary"><IconClose style="font-size: x-large;" />close</button
+	<div class="flex items-start">
+		<button
+			class="btn btn-link text-primary"
+			on:click={() => goto('/dashboard')}
+			style="max-width: 150px;"
 		>
-	</a>
+			<IconClose style="font-size: x-large;" /> close
+		</button>
+	</div>
 	<div class="self-center">
 		<h1 class="mb-8 text-2xl font-bold md:text-3xl">Project Creation</h1>
 	</div>
@@ -113,13 +120,17 @@
 						</div>
 					</div>
 				</div>
-				<div class="mx-4 flex flex-row justify-center">
+				<div class="flex flex-row justify-center">
 					<div class="flex-auto">
-						<a href="/dashboard"><button class="btn btn-ghost" disabled={loading}>Cancel</button></a
-						>
+						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
+							Cancel
+						</button>
 					</div>
-					<button class="btn btn-primary" type="button" on:click={handleSubmit} disabled={loading}
-						>Start</button
+					<button
+						class="btn btn-primary"
+						type="button"
+						on:click={handleSubmit}
+						disabled={loading || idea === ''}>Start</button
 					>
 				</div>
 			</div>

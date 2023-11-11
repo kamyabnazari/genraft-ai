@@ -78,9 +78,14 @@ docker-compose up --build
 
 Please setup in the following order:
 
-##### 1. Setup [Backend](backend/README.md)
+1. Setup [Backend](backend/README.md)
 
-##### 2. Setup [Frontend](frontend/README.md)
+2. Setup [Frontend](frontend/README.md)
+
+---
+
+### Wiki
+How is the process and worklflow behind the generative software development? Read more on the [Wiki](WIKI.md) page.
 
 ---
 

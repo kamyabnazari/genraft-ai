@@ -1,0 +1,80 @@
+# WIKI
+
+Here's a more detailed breakdown of your generative AI application creation framework, including the phases, roles involved in each conversation, topics of discussion, inputs, outputs, and the goals of each phase:
+
+## Process and Workflow
+
+### 1. Idea Creation Phase
+**Goal**: To refine and detail the initial product idea.
+
+#### Chat 1: Stakeholder and Idea Consultant
+- **Topic**: Fleshing out the initial product idea.
+- **Input**: Short product idea.
+- **Output**: Detailed product idea.
+
+### 2. Company Creation Phase
+**Goal**: To establish a clear company direction and create detailed role descriptions for the project.
+
+#### Chat 1: Stakeholder and CEO
+- **Topic**: Setting company goals and aligning them with the product idea.
+- **Input**: Detailed product idea.
+- **Output**: Comprehensive company goals description.
+
+#### Chat 2: CEO and COO
+- **Topic**: Operational strategy, resource allocation, and creation of new job roles.
+- **Input**: Company goals and detailed product idea.
+- **Output**: Operational strategy and new job role descriptions.
+
+### 3. Designing Phase
+**Goal**: To develop product design specifications and technical requirements.
+
+#### Chat 1: CEO and CPO (Chief Product Officer)
+- **Topic**: Product design specifications and UX strategy.
+- **Input**: Company goals and detailed product idea.
+- **Output**: Product design specifications, UX strategy, and preliminary prototypes.
+
+#### Chat 2: CEO and CTO (Chief Technology Officer)
+- **Topic**: Technical challenges, architecture, and integration with existing technologies.
+- **Input**: Detailed product idea and company goals.
+- **Output**: Detailed technical specifications, architecture, and tech stack requirements.
+
+### 4. Coding Phase
+**Goal**: To translate the technical specifications into executable code and design assets.
+
+#### Chat 1: CTO and Programmer
+- **Topic**: Coding standards, version control, and implementation details.
+- **Input**: Technical specifications and tech stack information.
+- **Output**: Source code adhering to standards and specifications.
+
+#### Chat 2: Programmer and Designer
+- **Topic**: Creation of UI/UX assets and interactive elements.
+- **Input**: Product design specifications.
+- **Output**: Design assets like logos, UI elements, and style guides.
+
+### 5. Testing Phase
+**Goal**: To ensure the software is functional, optimized, and free of major bugs.
+
+#### Chat 1: Programmer and Reviewer
+- **Topic**: Code review and performance optimization.
+- **Input**: Source code.
+- **Output**: Feedback on code quality and optimization suggestions.
+
+#### Chat 2: Programmer and Tester
+- **Topic**: Functional and structural testing of the software.
+- **Input**: Source code and features.
+- **Output**: Test reports including unit, integration, and system testing results.
+
+### 6. Documenting Phase
+**Goal**: To create comprehensive documentation for both technical and end-user aspects.
+
+#### Chat 1: CTO and Programmer
+- **Topic**: Technical documentation creation.
+- **Input**: Source code and technical specifications.
+- **Output**: Technical documentation including code comments, API docs, and architecture diagrams.
+
+#### Chat 2: CEO and CPO
+- **Topic**: End-user documentation creation.
+- **Input**: Product specifications and user interface details.
+- **Output**: End-user documentation, including manuals, FAQs, and troubleshooting guides.
+
+This framework ensures a systematic approach to developing a generative AI application, with each phase building upon the previous one. The AI agents in different roles simulate relevant conversations to produce the necessary outputs for each phase, making the development process efficient and structured.
