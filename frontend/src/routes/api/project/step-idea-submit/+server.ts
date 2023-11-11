@@ -4,6 +4,7 @@ import { error, json } from '@sveltejs/kit';
 export async function POST({ request }) {
     const body = await request.json();
     const requestBody = {
+        name: body.name,
         idea: body.idea
     }
 
