@@ -9,6 +9,19 @@
 	import { goto } from '$app/navigation';
 	import { tick } from 'svelte';
 
+	const phases = [
+		{ key: 'idea', name: 'Idea' },
+		{ key: 'preparation', name: 'Preparation' },
+		{ key: 'ideaCreation', name: 'Idea Creation' },
+		{ key: 'companyCreation', name: 'Company Creation' },
+		{ key: 'designing', name: 'Designing' },
+		{ key: 'coding', name: 'Coding' },
+		{ key: 'testing', name: 'Testing' },
+		{ key: 'documenting', name: 'Documenting' },
+		{ key: 'done', name: 'Done' }
+	];
+	const currentPhaseIndex = writable(0);
+
 	let idea: string = '';
 	let responseMessage = '';
 	let loading: boolean;
@@ -32,6 +45,8 @@
 		messagesArrayString = JSON.stringify(value);
 	});
 
+	async function handleNext() {}
+
 	// Function to handle the form submission
 	async function handleSubmit() {
 		loading = true;
@@ -40,6 +55,7 @@
 		const payload = {
 			idea: idea
 		};
+
 		try {
 			const response = await fetch('/api/project/step-idea-submit', {
 				method: 'POST',
@@ -48,6 +64,7 @@
 				},
 				body: JSON.stringify(payload)
 			});
+
 			if (!response.ok) {
 				throw new Error('Server responded with an error!');
 			}
@@ -61,6 +78,8 @@
 			// Handle error here
 		} finally {
 			loading = false;
+			// Increment the phase index after successful response
+			currentPhaseIndex.update((n) => n + 1);
 		}
 	}
 </script>
@@ -82,15 +101,11 @@
 		<div class="flex flex-row justify-center">
 			<div class="overflow-x-auto">
 				<ul class="steps steps-horizontal lg:steps-vertical">
-					<li data-content="?" class="step step-primary">Your Idea</li>
-					<li class="step">Preparation</li>
-					<li class="step">Idea Creation</li>
-					<li class="step">Company Creation</li>
-					<li class="step">Designing</li>
-					<li class="step">Coding</li>
-					<li class="step">Testing</li>
-					<li class="step">Documentating</li>
-					<li class="step">Done</li>
+					{#each phases as phase, index (phase.key)}
+						<li class={index <= $currentPhaseIndex ? 'step step-primary' : 'step'}>
+							{phase.name}
+						</li>
+					{/each}
 				</ul>
 			</div>
 		</div>
@@ -98,43 +113,61 @@
 			<IconArrow style="font-size: xx-large;" />
 		</div>
 		<div class="bg-base-200 flex flex-1 flex-col justify-between rounded-lg p-8 shadow-lg">
-			<div class="flex flex-row justify-center">
-				<h1 class="text-l font-bold md:text-xl">Your new idea?</h1>
-			</div>
-			<div class="flex w-full flex-row justify-center">
-				<div class="flex w-full justify-center">
-					<div class="form-control w-full">
-						<label for="idea" class="label">
-							<span class="label-text">What project do you want to generate?</span>
-						</label>
-						<textarea
-							class="textarea border-primary h-96 w-full rounded-md border-2"
-							placeholder="I want a personal portfolio website..."
-							id="idea"
-							name="idea"
-							disabled={loading}
-							bind:value={idea}
-						/>
+			<!-- Content based on phase -->
+			{#if $currentPhaseIndex === 0}
+				<!-- Content for Idea submission phase -->
+				<div class="flex flex-row justify-center">
+					<h1 class="text-l font-bold md:text-xl">Your new idea?</h1>
+				</div>
+				<div class="flex w-full flex-row justify-center">
+					<div class="flex w-full justify-center">
+						<div class="form-control w-full">
+							<label for="idea" class="label">
+								<span class="label-text">What project do you want to generate?</span>
+							</label>
+							<textarea
+								class="textarea border-primary h-96 w-full rounded-md border-2"
+								placeholder="I want a personal portfolio website..."
+								id="idea"
+								name="idea"
+								disabled={loading}
+								bind:value={idea}
+							/>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="mt-4 flex flex-row justify-center">
-				<div class="flex-auto">
-					<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
-						Cancel
+				<div class="mt-4 flex flex-row justify-center">
+					<div class="flex-auto">
+						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
+							Cancel
+						</button>
+					</div>
+					<button
+						class="btn btn-primary"
+						type="button"
+						on:click={handleSubmit}
+						disabled={loading || idea === ''}
+					>
+						Start
 					</button>
 				</div>
-				<button
-					class="btn btn-primary"
-					type="button"
-					on:click={handleSubmit}
-					disabled={loading || idea === ''}
-				>
-					Start
-				</button>
-			</div>
+			{:else if $currentPhaseIndex === 1}
+				<!-- Content for preparation phase -->
+				<div class="flex flex-row justify-center">
+					<h1 class="text-l font-bold md:text-xl">Preparation Phase</h1>
+				</div>
+				<div class="mt-4 flex flex-row justify-center">
+					<div class="flex-auto">
+						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
+							Cancel
+						</button>
+					</div>
+					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
+						Next
+					</button>
+				</div>
+			{/if}
 		</div>
-
 		<div class="divider divider-vertical lg:divider-horizontal">
 			<IconArrow style="font-size: xx-large;" />
 		</div>
