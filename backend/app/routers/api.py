@@ -49,6 +49,25 @@ async def get_project_idea_by_id(id: int = Path(..., description="The ID of the 
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/projects")
+async def get_all_projects():
+    try:
+        query = projects.select()
+        results = await database.fetch_all(query)
+        
+        # Transform the database results into a list of dictionaries
+        projects_list = [{
+            "id": result["id"],
+            "name": result["name"],
+            "idea_initial": result["idea_initial"],
+            "idea_final": result["idea_final"]
+            } for result in results]
+
+        return projects_list
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/generate_assistant")
 async def generate_assistant(request_body: GenerateAssistantRequest):
     try:

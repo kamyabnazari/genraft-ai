@@ -4,17 +4,54 @@
 	import IconBin from '~icons/solar/trash-bin-trash-outline';
 	import IconHistory from '~icons/solar/history-2-outline';
 
+	// Essential imports
+	import { onMount } from 'svelte';
+	import type { ProjectApiResponse } from '$lib/models';
+
+	let loading: boolean;
+
 	interface Project {
 		id: string;
 		name: string;
 		type: string;
 		created: string;
 	}
+	let projectList: Project[] = [];
 
-	let projectList: Project[] = [
-		{ id: '1', name: 'Project Alpha', type: 'Type 1', created: '2023-01-01T12:00:00' },
-		{ id: '2', name: 'Project Beta', type: 'Type 2', created: '2023-01-02T13:00:00' }
-	];
+	onMount(async () => {
+		await getProjects();
+	});
+
+	async function getProjects() {
+		loading = true;
+		projectList = [];
+
+		try {
+			const response = await fetch(`/api/projects`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error('Server responded with an error!');
+			}
+
+			const results: ProjectApiResponse[] = await response.json();
+			projectList = results.map((element) => ({
+				id: element.id.toString(),
+				name: element.name,
+				type: element.idea_initial,
+				created: element.idea_final
+			}));
+			console.log(projectList);
+		} catch (error) {
+			console.error('Error fetching projects:', error);
+		} finally {
+			loading = false;
+		}
+	}
 
 	async function deleteProject(projectID: string) {
 		console.log('Delete Project!');
