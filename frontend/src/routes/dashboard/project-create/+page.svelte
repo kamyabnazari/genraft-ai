@@ -10,14 +10,15 @@
 	import { tick } from 'svelte';
 
 	let idea: string = '';
-
-	let messagingNeeded: boolean = false;
-	let messages = writable([]);
-	let message: string;
+	let responseMessage = '';
 	let loading: boolean;
 	let chatContainer: HTMLDivElement;
+	let messagingNeeded: boolean = false;
 
-	let responseMessage = '';
+	let messages = writable([]);
+	let messagesArray = [];
+	let messagesArrayString: string;
+	let message: string;
 
 	async function scrollToBottom() {
 		await tick();
@@ -26,8 +27,6 @@
 		}
 	}
 
-	let messagesArray = [];
-	let messagesArrayString: string;
 	messages.subscribe((value) => {
 		messagesArray = value;
 		messagesArrayString = JSON.stringify(value);
@@ -77,64 +76,65 @@
 		</button>
 	</div>
 	<div class="self-center">
-		<h1 class="mb-8 text-2xl font-bold md:text-3xl">Project Creation</h1>
+		<h1 class="mb-8 text-2xl font-bold md:text-3xl">Project Creation Assistant</h1>
 	</div>
 	<div class="flex flex-col justify-center gap-8 lg:flex-row">
 		<div class="flex flex-row justify-center">
 			<div class="overflow-x-auto">
 				<ul class="steps steps-horizontal lg:steps-vertical">
-					<li data-content="?" class="step step-primary">Idea</li>
-					<li class="step">Project Preview</li>
+					<li data-content="?" class="step step-primary">Your Idea</li>
+					<li class="step">Preparation</li>
+					<li class="step">Idea Creation</li>
 					<li class="step">Company Creation</li>
-					<li class="step">Assistants Creation</li>
 					<li class="step">Designing</li>
 					<li class="step">Coding</li>
 					<li class="step">Testing</li>
-					<li class="step">Documentation</li>
-					<li data-content="✓" class="step">Done</li>
+					<li class="step">Documentating</li>
+					<li class="step">Done</li>
 				</ul>
 			</div>
 		</div>
 		<div class="divider divider-vertical lg:divider-horizontal">
 			<IconArrow style="font-size: xx-large;" />
 		</div>
-		<div class="bg-base-200 flex-1 rounded-lg p-8 shadow-lg">
-			<div class="flex flex-col gap-8">
-				<div class="flex flex-row justify-center">
-					<h1 class="text-l font-bold md:text-xl">What is your idea?</h1>
-				</div>
-				<div class="flex w-full flex-row justify-center">
-					<div class="flex w-full justify-center">
-						<div class="form-control w-full">
-							<label for="" class="label">
-								<span class="label-text">What project do you want to generate?</span>
-							</label>
-							<textarea
-								class="textarea border-primary h-96 w-full rounded-md border-2"
-								placeholder="I want a personal protfolio website..."
-								id="idea"
-								name="idea"
-								disabled={loading}
-								bind:value={idea}
-							/>
-						</div>
+		<div class="bg-base-200 flex flex-1 flex-col justify-between rounded-lg p-8 shadow-lg">
+			<div class="flex flex-row justify-center">
+				<h1 class="text-l font-bold md:text-xl">Your new idea?</h1>
+			</div>
+			<div class="flex w-full flex-row justify-center">
+				<div class="flex w-full justify-center">
+					<div class="form-control w-full">
+						<label for="idea" class="label">
+							<span class="label-text">What project do you want to generate?</span>
+						</label>
+						<textarea
+							class="textarea border-primary h-96 w-full rounded-md border-2"
+							placeholder="I want a personal portfolio website..."
+							id="idea"
+							name="idea"
+							disabled={loading}
+							bind:value={idea}
+						/>
 					</div>
-				</div>
-				<div class="flex flex-row justify-center">
-					<div class="flex-auto">
-						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
-							Cancel
-						</button>
-					</div>
-					<button
-						class="btn btn-primary"
-						type="button"
-						on:click={handleSubmit}
-						disabled={loading || idea === ''}>Start</button
-					>
 				</div>
 			</div>
+			<div class="mt-4 flex flex-row justify-center">
+				<div class="flex-auto">
+					<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
+						Cancel
+					</button>
+				</div>
+				<button
+					class="btn btn-primary"
+					type="button"
+					on:click={handleSubmit}
+					disabled={loading || idea === ''}
+				>
+					Start
+				</button>
+			</div>
 		</div>
+
 		<div class="divider divider-vertical lg:divider-horizontal">
 			<IconArrow style="font-size: xx-large;" />
 		</div>

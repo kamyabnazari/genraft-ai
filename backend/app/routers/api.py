@@ -4,7 +4,6 @@ from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI, OpenAIError
-import json
 import time
 
 router = APIRouter()
