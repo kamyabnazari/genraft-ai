@@ -48,7 +48,7 @@
 		}
 	}
 
-	async function openProjectHistory(projectId: string) {
+	async function openProject(projectId: string) {
 		goto(`/dashboard/project-create/${projectId}`);
 	}
 
@@ -117,10 +117,7 @@
 					<td>{project.created_at.replace('T', ' at ')}</td>
 					<th>
 						<div class="flex flex-row gap-4">
-							<button
-								class="btn btn-square btn-primary"
-								on:click={() => openProjectHistory(project.id)}
-							>
+							<button class="btn btn-square btn-primary" on:click={() => openProject(project.id)}>
 								<IconHistory style="font-size: x-large;" />
 							</button>
 							<button class="btn btn-square btn-info" on:click={() => downloadProject(project.id)}>

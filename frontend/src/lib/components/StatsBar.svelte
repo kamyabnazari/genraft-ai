@@ -1,9 +1,8 @@
 <script lang="ts">
 	// Icons imports
+	import IconProject from '~icons/solar/clapperboard-text-outline';
 	import IconFile from '~icons/solar/file-text-outline';
-	import IconNewFile from '~icons/solar/pen-new-square-outline';
-	import IconWord from '~icons/solar/chat-square-outline';
-	import IconPage from '~icons/solar/documents-outline';
+	import IconAsset from '~icons/solar/file-smile-outline';
 
 	function formatNumber(num: number) {
 		if (num >= 1000000) {
@@ -19,30 +18,23 @@
 <div class="stats bg-base-200 flex-auto flex-nowrap shadow-lg">
 	<div class="stat">
 		<div class="stat-figure text-secondary">
-			<IconFile style="font-size: x-large;" class="text-primary" />
+			<IconProject style="font-size: x-large;" class="text-primary" />
 		</div>
 		<div class="stat-title">Created projects</div>
 		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure text-secondary">
-			<IconNewFile style="font-size: x-large;" class="text-primary" />
+			<IconFile style="font-size: x-large;" class="text-primary" />
 		</div>
 		<div class="stat-title">Created files</div>
 		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 	<div class="stat">
 		<div class="stat-figure text-secondary">
-			<IconPage style="font-size: x-large;" class="text-primary" />
+			<IconAsset style="font-size: x-large;" class="text-primary" />
 		</div>
-		<div class="stat-title">Total assets</div>
-		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
-	</div>
-	<div class="stat">
-		<div class="stat-figure text-secondary">
-			<IconWord style="font-size: x-large;" class="text-primary" />
-		</div>
-		<div class="stat-title">Total lines of code</div>
+		<div class="stat-title">Created assets</div>
 		<div class="stat-value">{formatNumber(0 ?? 0)}</div>
 	</div>
 </div>
