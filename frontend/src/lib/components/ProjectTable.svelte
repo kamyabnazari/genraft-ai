@@ -8,9 +8,9 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { Project } from '$lib/models';
+	import { refreshStatistics } from '$lib/stores';
 
 	let loading: boolean;
-
 	let projectList: Project[] = [];
 
 	onMount(async () => {
@@ -67,6 +67,7 @@
 			}
 
 			projectList = projectList.filter((project) => project.id !== id);
+			await refreshStatistics();
 		} catch (error) {
 			console.error('Error fetching projects:', error);
 		} finally {
