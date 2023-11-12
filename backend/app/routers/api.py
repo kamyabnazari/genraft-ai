@@ -4,7 +4,11 @@ from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI, OpenAIError
+import datetime
+import shutil
 import time
+import os
+
 
 router = APIRouter()
 client = OpenAI(api_key=settings.openai_api_key)
@@ -17,16 +21,31 @@ async def read_api_root():
 @router.post("/step_idea_submit")
 async def step_idea_submit(request_body: StepIdeaSubmitRequest):
     try:
+        # Generate the current timestamp without microseconds
+        timestamp = datetime.datetime.now()
+
+        # Modify timestamp and name string for filesystem-friendly folder naming
+        folder_timestamp = timestamp.strftime('%Y_%m_%d_at_%H_%M_%S')
+        folder_name = request_body.name.replace(' ', '_').lower()
+        project_folder = f"genraft_ai_data/projects/{folder_name}_{folder_timestamp}"
+        os.makedirs(project_folder, exist_ok=True)
+
+        # Write the initial idea into a text file
+        with open(f"{project_folder}/prompt.txt", 'w') as file:
+            file.write(request_body.idea)
+
+        # Insert the project with the folder path and datetime object
         query = projects.insert().values(
             name=request_body.name,
             idea_initial=request_body.idea,
-            idea_final=""
+            idea_final="",
+            folder_path=project_folder,
+            created_at=timestamp
         )
-        
+
         # Perform the database operation within a transaction
         async with database.transaction():
-            result = await database.execute(query)
-            new_project_id = result
+            new_project_id = await database.execute(query)
 
         return {"id": new_project_id}
     except Exception as e:
@@ -59,9 +78,17 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
         if existing_project is None:
             raise HTTPException(status_code=404, detail="Project not found")
 
+        # Get the folder path
+        folder_path = existing_project['folder_path']
+
         # If the project exists, proceed to delete it
         delete_query = projects.delete().where(projects.c.id == id)
         await database.execute(delete_query)
+
+        # Now, delete the associated folder
+        if os.path.exists(folder_path):
+            shutil.rmtree(folder_path)
+
         return {"message": "Project successfully deleted"}
     except Exception as e:
         print(f"An error occurred: {e}")

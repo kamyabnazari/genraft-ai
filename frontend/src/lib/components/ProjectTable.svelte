@@ -74,7 +74,22 @@
 	}
 
 	async function downloadProject(projectId: string) {
-		console.log('Download Project!');
+		try {
+			const response = await fetch(`/api/project/${projectId}/download`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error('Server responded with an error!');
+			}
+		} catch (error) {
+			console.error('Error fetching projects:', error);
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
@@ -114,7 +129,7 @@
 							? `${project.idea_initial.slice(0, 40)}...`
 							: project.idea_initial}
 					</td>
-					<td>{project.created_at.replace('T', ' at ')}</td>
+					<td>{project.created_at.split('.')[0].replace('T', ' at ')}</td>
 					<th>
 						<div class="flex flex-row gap-4">
 							<button class="btn btn-square btn-primary" on:click={() => openProject(project.id)}>

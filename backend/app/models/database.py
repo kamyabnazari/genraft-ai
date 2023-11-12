@@ -10,7 +10,8 @@ projects = Table(
     Column("name", String, nullable=False),
     Column("idea_initial", String, nullable=False),
     Column("idea_final", String, nullable=False),
-    Column("created_at", DateTime, default=func.now())
+    Column("folder_path", String, nullable=False),
+    Column("created_at", DateTime, nullable=False)
 )
 
 def create_tables(engine):
