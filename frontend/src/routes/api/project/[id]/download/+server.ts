@@ -12,12 +12,19 @@ export async function GET({ params }) {
 
         // Convert the response into a buffer
         const fileBuffer = await backendResponse.arrayBuffer();
+
+        // Create headers object with index signature
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/zip',
+        };
+        const contentDisposition = backendResponse.headers.get('Content-Disposition');
+        if (contentDisposition) {
+            headers['Content-Disposition'] = contentDisposition;
+        }
+
         const options = {
             status: 200,
-            headers: {
-                'Content-Type': 'application/zip',
-                'Content-Disposition': `attachment; filename=project_${id}.zip`
-            }
+            headers: headers
         };
 
         // Return the buffer in the response
@@ -27,3 +34,4 @@ export async function GET({ params }) {
         throw error(500, 'Internal Server Error');
     }
 }
+

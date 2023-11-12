@@ -11,7 +11,6 @@ import shutil
 import time
 import os
 
-
 router = APIRouter()
 client = OpenAI(api_key=settings.openai_api_key)
 database = get_database()
@@ -87,9 +86,14 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
         delete_query = projects.delete().where(projects.c.id == id)
         await database.execute(delete_query)
 
-        # Now, delete the associated folder
+        # Delete the associated folder
         if os.path.exists(folder_path):
             shutil.rmtree(folder_path)
+
+        # Also delete the associated ZIP file if it exists
+        zip_path = f"{folder_path}.zip"
+        if os.path.exists(zip_path):
+            os.remove(zip_path)
 
         return {"message": "Project successfully deleted"}
     except Exception as e:

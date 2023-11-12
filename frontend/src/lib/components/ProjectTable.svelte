@@ -86,11 +86,20 @@
 			// Handle the download
 			const blob = await response.blob();
 			const downloadUrl = window.URL.createObjectURL(blob);
+
+			// Extract filename from Content-Disposition header or use a default
+			const contentDisposition = response.headers.get('Content-Disposition');
+			const filenameMatch = contentDisposition?.match(/filename="?(.+)"/);
+			const filename = filenameMatch ? filenameMatch[1] : `project_${id}.zip`;
+
+			// Create an anchor element and download the file
 			const a = document.createElement('a');
 			a.href = downloadUrl;
-			a.download = `project_${id}.zip`; // you can customize the file name
+			a.download = filename;
 			document.body.appendChild(a);
 			a.click();
+
+			// Cleanup
 			window.URL.revokeObjectURL(downloadUrl);
 			a.remove();
 		} catch (error) {
