@@ -9,7 +9,7 @@ export async function POST({ request }) {
     }
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/step_idea_submit`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody)

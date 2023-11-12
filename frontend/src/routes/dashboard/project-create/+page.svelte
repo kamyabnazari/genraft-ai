@@ -19,7 +19,7 @@
 		};
 
 		try {
-			const response = await fetch('/api/project/step-idea-submit', {
+			const response = await fetch('/api/project', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

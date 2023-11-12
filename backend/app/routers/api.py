@@ -5,6 +5,7 @@ from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI, OpenAIError
+from sqlalchemy import desc
 import zipfile
 import datetime
 import shutil
@@ -19,8 +20,8 @@ database = get_database()
 async def read_api_root():
     return {"message": "Welcome to the Genraft AI API!"}
 
-@router.post("/step_idea_submit")
-async def step_idea_submit(request_body: StepIdeaSubmitRequest):
+@router.post("/project")
+async def initialize_project(request_body: StepIdeaSubmitRequest):
     try:
         # Generate the current timestamp without microseconds
         timestamp = datetime.datetime.now()
@@ -130,7 +131,7 @@ async def download_project_by_id(id: int = Path(..., description="The ID of the 
 @router.get("/projects")
 async def get_all_projects():
     try:
-        query = projects.select()
+        query = projects.select().order_by(desc(projects.c.created_at))
         results = await database.fetch_all(query)
         
         # Transform the database results into a list of dictionaries
@@ -139,6 +140,7 @@ async def get_all_projects():
             "name": result["name"],
             "idea_initial": result["idea_initial"],
             "idea_final": result["idea_final"],
+            "folder_path": result["folder_path"],
             "created_at": result["created_at"]
             } for result in results]
 
