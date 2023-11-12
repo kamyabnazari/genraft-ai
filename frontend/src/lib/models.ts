@@ -6,3 +6,9 @@ export interface Project {
   folder_path: string;
   created_at: string;
 }
+
+export interface ProjectStats {
+  total_projects: number;
+  total_files: number;
+  total_assets: number;
+}

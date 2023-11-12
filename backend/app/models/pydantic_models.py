@@ -8,3 +8,8 @@ class GenerateAssistantRequest(BaseModel):
     name: str
     instructions: str
     initial_message: str
+
+class ProjectStats(BaseModel):
+    total_projects: int
+    total_files: int
+    total_assets: int

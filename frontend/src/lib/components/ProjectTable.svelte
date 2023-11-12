@@ -39,6 +39,7 @@
 				name: element.name,
 				idea_initial: element.idea_initial,
 				idea_final: element.idea_final,
+				folder_path: element.folder_path,
 				created_at: element.created_at
 			}));
 		} catch (error) {
