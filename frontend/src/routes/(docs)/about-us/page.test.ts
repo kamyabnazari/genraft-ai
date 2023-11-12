@@ -7,8 +7,8 @@ describe('Page', () => {
 
 	test('renders the title', async () => {
 		const { getByText } = render(Page);
-		const element = getByText('About Us');
-		if (!element || element.textContent !== 'About Us') {
+		const element = getByText('Genraft AI');
+		if (!element || element.textContent !== 'Genraft AI') {
 			throw new Error('Expected text not found');
 		}
 	});

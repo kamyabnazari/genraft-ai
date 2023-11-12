@@ -20,6 +20,14 @@ The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend 
 - Highly extendable and customizable to cater to diverse web development needs.
 - Focuses on accelerating the development cycle of web-based platforms with AI-driven interactions.
 
+## Available Convenience
+
+- Dockerfile supported 
+- Docker Compose supported
+- kubernetes supported
+- MonoRepo Project supported
+- Separate Services for Frontend and Backend supported 
+
 ## Getting Started
 
 ### Tech-Stack
