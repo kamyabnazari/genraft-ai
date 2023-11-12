@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Path
+from fastapi.responses import FileResponse
 from app.models.pydantic_models import StepIdeaSubmitRequest, GenerateAssistantRequest
 from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI, OpenAIError
+import zipfile
 import datetime
 import shutil
 import time
@@ -90,6 +92,33 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
             shutil.rmtree(folder_path)
 
         return {"message": "Project successfully deleted"}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/project/{id}/download")
+async def download_project_by_id(id: int = Path(..., description="The ID of the project to download")):
+    try:
+        # Check if the project exists and get its folder path
+        select_query = projects.select().where(projects.c.id == id)
+        existing_project = await database.fetch_one(select_query)
+
+        if existing_project is None:
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        folder_path = existing_project['folder_path']
+
+        # Create a ZIP file from the folder
+        zip_path = f"{folder_path}.zip"
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, dirs, files in os.walk(folder_path):
+                for file in files:
+                    zipf.write(os.path.join(root, file), 
+                               os.path.relpath(os.path.join(root, file), 
+                               os.path.join(folder_path, '..')))
+
+        # Return the ZIP file as a response
+        return FileResponse(zip_path, media_type='application/octet-stream', filename=os.path.basename(zip_path))
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))

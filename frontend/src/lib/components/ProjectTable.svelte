@@ -48,13 +48,13 @@
 		}
 	}
 
-	async function openProject(projectId: string) {
-		goto(`/dashboard/project-create/${projectId}`);
+	async function openProject(id: string) {
+		goto(`/dashboard/project-create/${id}`);
 	}
 
-	async function deleteProject(projectId: string) {
+	async function deleteProject(id: string) {
 		try {
-			const response = await fetch(`/api/project/${projectId}`, {
+			const response = await fetch(`/api/project/${id}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json'
@@ -65,7 +65,7 @@
 				throw new Error('Server responded with an error!');
 			}
 
-			projectList = projectList.filter((project) => project.id !== projectId);
+			projectList = projectList.filter((project) => project.id !== id);
 		} catch (error) {
 			console.error('Error fetching projects:', error);
 		} finally {
@@ -73,20 +73,28 @@
 		}
 	}
 
-	async function downloadProject(projectId: string) {
+	async function downloadProject(id: string) {
 		try {
-			const response = await fetch(`/api/project/${projectId}/download`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
+			const response = await fetch(`/api/project/${id}/download`, {
+				method: 'GET'
 			});
 
 			if (!response.ok) {
 				throw new Error('Server responded with an error!');
 			}
+
+			// Handle the download
+			const blob = await response.blob();
+			const downloadUrl = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = downloadUrl;
+			a.download = `project_${id}.zip`; // you can customize the file name
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(downloadUrl);
+			a.remove();
 		} catch (error) {
-			console.error('Error fetching projects:', error);
+			console.error('Error downloading project:', error);
 		} finally {
 			loading = false;
 		}
