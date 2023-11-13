@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
-from app.models.pydantic_models import ProjectStats, StepIdeaSubmitRequest, GenerateAssistantRequest
+from app.models.pydantic_models import Project, ProjectStats, StepIdeaSubmitRequest, GenerateAssistantRequest
 from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI, OpenAIError
 from sqlalchemy import desc
+from typing import List
 import zipfile
 import datetime
 import shutil
@@ -54,18 +55,18 @@ async def initialize_project(request_body: StepIdeaSubmitRequest):
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/project/{id}/idea")
-async def get_project_idea_by_id(id: int = Path(..., description="The ID of the project")):
+@router.get("/project/{id}", response_model=Project)
+async def get_project_by_id(id: int = Path(..., description="The ID of the project to retrieve")):
     try:
-        query = projects.select().where(projects.c.id == id)
-        result = await database.fetch_one(query)
-        
-        if result is None:
+        # Start by checking if the project exists
+        select_query = projects.select().where(projects.c.id == id)
+        project = await database.fetch_one(select_query)
+
+        if project is None:
             raise HTTPException(status_code=404, detail="Project not found")
 
-        project_idea = result['idea_initial']
-
-        return {"idea": project_idea}
+        # Convert the database model to the Pydantic model
+        return Project(**project)
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -101,6 +102,21 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/projects", response_model=List[Project])
+async def get_all_projects():
+    try:
+        # Query to select all projects ordered by creation date in descending order
+        query = projects.select().order_by(desc(projects.c.created_at))
+        results = await database.fetch_all(query)
+        
+        # Transform the database results into a list of Project instances
+        projects_list = [Project(**result) for result in results]
+
+        return projects_list
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/project/{id}/download")
 async def download_project_by_id(id: int = Path(..., description="The ID of the project to download")):
     try:
@@ -124,27 +140,6 @@ async def download_project_by_id(id: int = Path(..., description="The ID of the 
 
         # Return the ZIP file as a response
         return FileResponse(zip_path, media_type='application/octet-stream', filename=os.path.basename(zip_path))
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/projects")
-async def get_all_projects():
-    try:
-        query = projects.select().order_by(desc(projects.c.created_at))
-        results = await database.fetch_all(query)
-        
-        # Transform the database results into a list of dictionaries
-        projects_list = [{
-            "id": result["id"],
-            "name": result["name"],
-            "idea_initial": result["idea_initial"],
-            "idea_final": result["idea_final"],
-            "folder_path": result["folder_path"],
-            "created_at": result["created_at"]
-            } for result in results]
-
-        return projects_list
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))

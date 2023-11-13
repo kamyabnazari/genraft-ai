@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
+	import type { Project } from '$lib/models';
 
 	const phases = [
 		{ key: 'preparation', name: 'Preparation' },
@@ -22,7 +23,15 @@
 	];
 	const currentPhaseIndex = writable(0);
 
-	let idea: string = '';
+	let project: Project = {
+		id: '',
+		name: '',
+		idea_initial: '',
+		idea_final: '',
+		folder_path: '',
+		created_at: ''
+	};
+
 	let loading: boolean;
 	let chatContainer: HTMLDivElement;
 	let messagingNeeded: boolean = false;
@@ -38,7 +47,7 @@
 
 	onMount(async () => {
 		if (projectId) {
-			await getProjectIdeaById();
+			await getProjectById();
 		}
 	});
 
@@ -54,11 +63,11 @@
 		messagesArrayString = JSON.stringify(value);
 	});
 
-	async function getProjectIdeaById() {
+	async function getProjectById() {
 		loading = true;
 
 		try {
-			const response = await fetch(`/api/project/${projectId}/idea`, {
+			const response = await fetch(`/api/project/${projectId}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json'
@@ -70,7 +79,7 @@
 			}
 
 			const result = await response.json();
-			idea = result.idea;
+			project = result;
 		} catch (error) {
 			console.error('Error fetching project idea:', error);
 		} finally {
@@ -119,7 +128,7 @@
 					<h1 class="text-l mb-8 font-bold md:text-xl">Idea Creation Phase</h1>
 				</div>
 				<div class="flex flex-row justify-center">
-					<h1 class="mb-8 text-base">Initial Idea: {idea}</h1>
+					<h1 class="mb-8 text-base">Initial Idea: {project.idea_initial}</h1>
 				</div>
 				<div class="mt-8 flex flex-row justify-center">
 					<div class="flex-auto">
@@ -128,7 +137,7 @@
 						</button>
 					</div>
 					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
-						Next
+						Start
 					</button>
 				</div>
 			{:else if $currentPhaseIndex === 1}
@@ -143,7 +152,7 @@
 						</button>
 					</div>
 					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
-						Next
+						Start
 					</button>
 				</div>
 			{/if}

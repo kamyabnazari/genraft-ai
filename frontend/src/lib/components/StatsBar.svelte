@@ -6,7 +6,6 @@
 
 	// Essential imports
 	import { onMount } from 'svelte';
-	import type { ProjectStats } from '$lib/models';
 	import { statistics, refreshStatistics } from '$lib/stores';
 
 	onMount(async () => {
