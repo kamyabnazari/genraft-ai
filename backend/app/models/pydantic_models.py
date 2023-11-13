@@ -14,7 +14,7 @@ class ProjectStats(BaseModel):
     total_files: int
     total_assets: int
 
-class StepIdeaSubmitRequest(BaseModel):
+class InitializeProjectRequest(BaseModel):
     name: str
     idea: str
 

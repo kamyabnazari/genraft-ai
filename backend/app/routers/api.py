@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
-from app.models.pydantic_models import Project, ProjectStats, StepIdeaSubmitRequest, GenerateAssistantRequest
+from app.models.pydantic_models import Project, ProjectStats, InitializeProjectRequest, GenerateAssistantRequest
 from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
@@ -22,7 +22,7 @@ async def read_api_root():
     return {"message": "Welcome to the Genraft AI API!"}
 
 @router.post("/project")
-async def initialize_project(request_body: StepIdeaSubmitRequest):
+async def initialize_project(request_body: InitializeProjectRequest):
     try:
         # Generate the current timestamp without microseconds
         timestamp = datetime.datetime.now()
