@@ -21,10 +21,7 @@
 		created_at: ''
 	};
 
-	let stageDone: boolean = false;
-	let loading: boolean = false;
 	let chatContainer: HTMLDivElement;
-
 	let messages = writable([]);
 	let messagesArray = [];
 	let messagesArrayString: string;
@@ -79,23 +76,19 @@
 
 	const currentPhaseIndex = writable(0);
 	const currentStageIndex = writable(0);
+	let phasesDone: boolean = false;
+	let stagesDone: boolean = false;
+	let loading: boolean = false;
 
 	async function callStageApi(stage: Stage) {
-		const response = await fetch(stage.endpoint, { method: 'POST' });
-		if (!response.ok) {
-			throw new Error(`API call for stage ${stage.name} failed`);
-		}
-		return response.json();
-	}
-
-	async function startPhase(phaseIndex: number) {
-		const phase = phases[phaseIndex];
-		for (let i = 0; i < phase.stages.length; i++) {
-			const stage = phase.stages[i];
-			currentStageIndex.set(i);
-			console.log(stage.endpoint);
-			await delay(1000);
-			// await callStageApi(stage);
+		try {
+			const response = await fetch(stage.endpoint, { method: 'POST' });
+			if (!response.ok) {
+				throw new Error(`API call for stage ${stage.name} failed`);
+			}
+			return response.json();
+		} catch (error) {
+			console.error('Error calling stage API:', error);
 		}
 	}
 
@@ -103,18 +96,47 @@
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
+	async function startPhase(phaseIndex: number) {
+		if (phaseIndex >= phases.length) {
+			console.warn('Phase index out of bounds');
+			return;
+		}
+
+		const phase = phases[phaseIndex];
+		for (let i = 0; i < phase.stages.length; i++) {
+			currentStageIndex.set(i);
+			const stage = phase.stages[i];
+			console.log('Calling API for stage:', stage.endpoint);
+			await delay(1000);
+			// await callStageApi(stage);
+		}
+		stagesDone = true;
+
+		if (phaseIndex === phases.length - 1) {
+			phasesDone = true;
+		}
+	}
+
 	async function handleStart() {
 		loading = true;
 		const phaseIndex = $currentPhaseIndex;
 		await startPhase(phaseIndex);
-		stageDone = true;
 		loading = false;
 	}
 
 	async function handleNext() {
+		if ($currentPhaseIndex + 1 >= phases.length) {
+			console.warn('No more phases available');
+			return;
+		}
 		currentPhaseIndex.update((n) => n + 1);
 		currentStageIndex.set(0);
-		stageDone = false;
+		stagesDone = false;
+		loading = false;
+	}
+
+	async function handleDone() {
+		goto('/dashboard');
 	}
 </script>
 
@@ -190,9 +212,9 @@
 				</div>
 			</div>
 			<div class="mt-8 flex flex-row justify-center">
-				{#if stageDone === false}
+				{#if stagesDone === false}
 					<button
-						class="btn btn-primary"
+						class="btn btn-warning"
 						type="button"
 						on:click={handleStart}
 						class:loading
@@ -200,7 +222,7 @@
 					>
 						Start
 					</button>
-				{:else}
+				{:else if phasesDone === false}
 					<button
 						class="btn btn-primary"
 						type="button"
@@ -209,6 +231,16 @@
 						disabled={loading}
 					>
 						Next
+					</button>
+				{:else}
+					<button
+						class="btn btn-success"
+						type="button"
+						on:click={handleDone}
+						class:loading
+						disabled={loading}
+					>
+						Done
 					</button>
 				{/if}
 			</div>
