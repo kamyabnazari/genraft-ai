@@ -10,18 +10,10 @@
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
 	import type { Project } from '$lib/models';
+	import { phases, preparationStages } from '$lib/utils';
 
-	const phases = [
-		{ key: 'preparation', name: 'Preparation' },
-		{ key: 'ideaCreation', name: 'Idea Creation' },
-		{ key: 'companyCreation', name: 'Company Creation' },
-		{ key: 'designing', name: 'Designing' },
-		{ key: 'coding', name: 'Coding' },
-		{ key: 'testing', name: 'Testing' },
-		{ key: 'documenting', name: 'Documenting' },
-		{ key: 'done', name: 'Done' }
-	];
 	const currentPhaseIndex = writable(0);
+	const currentPreparationStageIndex = writable(0);
 
 	let project: Project = {
 		id: '',
@@ -126,6 +118,15 @@
 				<!-- Content for Idea creation phase -->
 				<div class="flex flex-row justify-center">
 					<h1 class="text-l mb-8 font-bold md:text-xl">Idea Creation Phase</h1>
+				</div>
+				<div class="overflow-x-auto">
+					<ul class="steps steps-horizontal lg:steps-vertical">
+						{#each preparationStages as stage, index (stage.key)}
+							<li class={index <= $currentPhaseIndex ? 'step step-primary' : 'step'}>
+								{stage.name}
+							</li>
+						{/each}
+					</ul>
 				</div>
 				<div class="flex flex-row justify-center">
 					<h1 class="mb-8 text-base">Initial Idea: {project.idea_initial}</h1>

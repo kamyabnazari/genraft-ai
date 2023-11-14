@@ -56,8 +56,14 @@
 	<div class="flex-1">
 		<a class="btn-link text-left text-xl font-bold normal-case" href="/">Genraft AI</a>
 	</div>
-	<label class="swap swap-rotate px-4">
-		<input type="checkbox" bind:checked={isChecked} on:change={handleCheckboxChange} />
+	<label class="swap swap-rotate">
+		<input
+			type="checkbox"
+			class="theme-controller"
+			value="synthwave"
+			bind:checked={isChecked}
+			on:change={handleCheckboxChange}
+		/>
 		<IconSun class="swap-off text-primary fill-current" style="font-size: x-large" />
 		<IconMoon class="swap-on text-warning fill-current" style="font-size: x-large" />
 	</label>
