@@ -22,9 +22,9 @@
 	};
 
 	let chatContainer: HTMLDivElement;
-	let messages = writable([]);
-	let messagesArray = [];
-	let messagesArrayString: string;
+	let messages = writable<string[]>([]);
+	let messagesArray: string[] = [];
+	let messagesArrayString: string = '';
 
 	// Reactive declaration for projectId
 	let projectId: string = '';
@@ -36,6 +36,7 @@
 		}
 	});
 
+	// Function to fetch project details by ID
 	async function getProjectById() {
 		loading = true;
 
@@ -96,6 +97,7 @@
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
+	// Function to start a specific phase
 	async function startPhase(phaseIndex: number) {
 		if (phaseIndex >= phases.length) {
 			console.warn('Phase index out of bounds');
@@ -117,6 +119,7 @@
 		}
 	}
 
+	// Handle the start of a phase
 	async function handleStart() {
 		loading = true;
 		const phaseIndex = $currentPhaseIndex;
@@ -135,18 +138,33 @@
 		loading = false;
 	}
 
-	async function handleDone() {
+	async function handleDashboard() {
 		goto('/dashboard');
+	}
+
+	function getResultWithProjectData(stage: Stage) {
+		let resultWithProjectData = stage.result;
+
+		if (stage.result.includes('{project.idea_initial}')) {
+			resultWithProjectData = resultWithProjectData.replace(
+				'{project.idea_initial}',
+				project.idea_initial
+			);
+		}
+		if (stage.result.includes('{project.idea_final}')) {
+			resultWithProjectData = resultWithProjectData.replace(
+				'{project.idea_final}',
+				project.idea_final
+			);
+		}
+
+		return resultWithProjectData;
 	}
 </script>
 
 <div class="mx-auto flex min-h-full max-w-7xl flex-col gap-8">
 	<div class="flex items-start">
-		<button
-			class="btn btn-link text-primary"
-			on:click={() => goto('/dashboard')}
-			style="max-width: 150px;"
-		>
+		<button class="btn btn-link text-primary" on:click={handleDashboard} style="max-width: 150px;">
 			<IconClose style="font-size: x-large;" /> close
 		</button>
 	</div>
@@ -186,25 +204,19 @@
 										class={index <= $currentStageIndex ? 'text-primary' : ''}
 									/>
 								</div>
-								{#if stage.key !== 'done'}
-									<div class="timeline-end timeline-box">
-										{#if stage.key !== 'start'}
-											{#if index === $currentStageIndex}
-												{#if loading}
-													<span class="loading loading-spinner"></span>
-												{:else}
-													<p>Waiting</p>
-												{/if}
-											{:else if index < $currentStageIndex}
-												<p>{stage.result}</p>
-											{:else}
-												<p>Waiting</p>
-											{/if}
-										{:else}
-											<p>{stage.result}</p>
-										{/if}
-									</div>
-									<hr class={index <= $currentStageIndex ? 'bg-primary' : ''} />
+								<div class="timeline-end timeline-box">
+									{#if index === $currentStageIndex && loading}
+										<span class="loading loading-spinner"></span>
+									{:else if index <= $currentStageIndex}
+										<p>{getResultWithProjectData(stage)}</p>
+									{:else}
+										<p>Waiting</p>
+									{/if}
+								</div>
+								{#if index < $currentStageIndex}
+									<hr class="bg-primary" />
+								{:else}
+									<hr />
 								{/if}
 							</li>
 						{/each}
@@ -214,33 +226,42 @@
 			<div class="mt-8 flex flex-row justify-center">
 				{#if stagesDone === false}
 					<button
-						class="btn btn-warning"
+						class="btn btn-warning btn-wide"
 						type="button"
 						on:click={handleStart}
-						class:loading
 						disabled={loading}
 					>
-						Start
+						{#if loading}
+							<span class="loading loading-spinner"></span>
+						{:else}
+							Start
+						{/if}
 					</button>
 				{:else if phasesDone === false}
 					<button
-						class="btn btn-primary"
+						class="btn btn-neutral btn-wide"
 						type="button"
 						on:click={handleNext}
-						class:loading
 						disabled={loading}
 					>
-						Next
+						{#if loading}
+							<span class="loading loading-spinner"></span>
+						{:else}
+							Next
+						{/if}
 					</button>
 				{:else}
 					<button
-						class="btn btn-success"
+						class="btn btn-primary btn-wide"
 						type="button"
-						on:click={handleDone}
-						class:loading
+						on:click={handleDashboard}
 						disabled={loading}
 					>
-						Done
+						{#if loading}
+							<span class="loading loading-spinner"></span>
+						{:else}
+							Done
+						{/if}
 					</button>
 				{/if}
 			</div>
