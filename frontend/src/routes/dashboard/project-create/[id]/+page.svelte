@@ -3,6 +3,7 @@
 	import IconClose from '~icons/solar/alt-arrow-left-bold';
 	import IconArrow from '~icons/solar/alt-arrow-right-bold';
 	import IconChecked from '~icons/solar/check-circle-bold';
+	import IconClock from '~icons/solar/clock-square-outline';
 
 	// Essential imports
 	import { writable } from 'svelte/store';
@@ -192,7 +193,7 @@
 					{phases[$currentPhaseIndex].title}
 				</h1>
 			</div>
-			<div class="flex flex-row justify-center">
+			<div class="justify-left flex flex-row">
 				<div class="overflow-x-auto overflow-y-auto">
 					<ul class="timeline timeline-vertical timeline-compact">
 						{#each phases[$currentPhaseIndex].stages as stage, index (stage.key)}
@@ -207,15 +208,20 @@
 								<div class="timeline-end timeline-box">
 									{#if index === $currentStageIndex && loading}
 										<span class="loading loading-spinner"></span>
-									{:else if index <= $currentStageIndex}
+									{:else if index < $currentStageIndex}
+										<p>{getResultWithProjectData(stage)}</p>
+									{:else if index === $currentStageIndex && stage.key === 'done'}
 										<p>{getResultWithProjectData(stage)}</p>
 									{:else}
-										<p>Waiting</p>
+										<IconClock
+											style="font-size: large;"
+											class={index < $currentStageIndex ? 'text-primary' : ''}
+										/>
 									{/if}
 								</div>
 								{#if index < $currentStageIndex}
 									<hr class="bg-primary" />
-								{:else}
+								{:else if stage.key !== 'done'}
 									<hr />
 								{/if}
 							</li>
