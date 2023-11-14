@@ -2,7 +2,6 @@
 	// Icons imports
 	import IconClose from '~icons/solar/alt-arrow-left-bold';
 	import IconArrow from '~icons/solar/alt-arrow-right-bold';
-	import IconSend from '~icons/solar/square-arrow-up-bold';
 	import IconChecked from '~icons/solar/check-circle-bold';
 
 	// Essential imports
@@ -10,11 +9,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
-	import type { Project } from '$lib/models';
-	import { phases, preparationStages } from '$lib/utils';
-
-	const currentPhaseIndex = writable(0);
-	const currentPreparationStageIndex = writable(0);
+	import type { Project, Stage } from '$lib/models';
+	import { phases } from '$lib/utils';
 
 	let project: Project = {
 		id: '',
@@ -25,13 +21,13 @@
 		created_at: ''
 	};
 
-	let loading: boolean;
+	let stageDone: boolean = false;
+	let loading: boolean = false;
 	let chatContainer: HTMLDivElement;
 
 	let messages = writable([]);
 	let messagesArray = [];
 	let messagesArrayString: string;
-	let message: string;
 
 	// Reactive declaration for projectId
 	let projectId: string = '';
@@ -41,18 +37,6 @@
 		if (projectId) {
 			await getProjectById();
 		}
-	});
-
-	async function scrollToBottom() {
-		await tick();
-		if (chatContainer) {
-			chatContainer.scrollTop = chatContainer.scrollHeight;
-		}
-	}
-
-	messages.subscribe((value) => {
-		messagesArray = value;
-		messagesArrayString = JSON.stringify(value);
 	});
 
 	async function getProjectById() {
@@ -79,8 +63,58 @@
 		}
 	}
 
+	async function scrollToBottom() {
+		await tick();
+		if (chatContainer) {
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}
+	}
+
+	messages.subscribe((value) => {
+		messagesArray = value;
+		messagesArrayString = JSON.stringify(value);
+	});
+
+	// Stages and Phases
+
+	const currentPhaseIndex = writable(0);
+	const currentStageIndex = writable(0);
+
+	async function callStageApi(stage: Stage) {
+		const response = await fetch(stage.endpoint, { method: 'POST' });
+		if (!response.ok) {
+			throw new Error(`API call for stage ${stage.name} failed`);
+		}
+		return response.json();
+	}
+
+	async function startPhase(phaseIndex: number) {
+		const phase = phases[phaseIndex];
+		for (let i = 0; i < phase.stages.length; i++) {
+			const stage = phase.stages[i];
+			currentStageIndex.set(i);
+			console.log(stage.endpoint);
+			await delay(1000);
+			// await callStageApi(stage);
+		}
+	}
+
+	function delay(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+
+	async function handleStart() {
+		loading = true;
+		const phaseIndex = $currentPhaseIndex;
+		await startPhase(phaseIndex);
+		stageDone = true;
+		loading = false;
+	}
+
 	async function handleNext() {
 		currentPhaseIndex.update((n) => n + 1);
+		currentStageIndex.set(0);
+		stageDone = false;
 	}
 </script>
 
@@ -113,90 +147,71 @@
 			<IconArrow style="font-size: xx-large;" />
 		</div>
 		<div class="bg-base-200 flex flex-1 flex-col justify-between rounded-lg p-8 shadow-lg">
-			<!-- Content based on phase -->
-			{#if $currentPhaseIndex === 0}
-				<!-- Content for Idea creation phase -->
-				<div class="flex flex-row justify-center">
-					<h1 class="text-l mb-8 font-bold md:text-xl">Idea Creation Phase</h1>
-				</div>
-				<div class="flex flex-row justify-center">
-					<div class="overflow-x-auto overflow-y-auto">
-						<ul class="timeline timeline-vertical timeline-compact">
-							{#each preparationStages as stage, index (stage.key)}
-								<li>
-									<div class="timeline-start">{stage.name}</div>
-									<div class="timeline-middle">
-										<IconChecked
-											style="font-size: x-large;"
-											class={index <= $currentPhaseIndex ? 'text-primary' : 'text-neutral'}
-										/>
-									</div>
-									{#if stage.key !== 'done'}
-										<div class="timeline-end timeline-box">
-											{#if index === 0}
-												<p>Initial Idea: {project.idea_initial}</p>
-											{:else if index === 1}
-												<p>Assitant created!</p>
-											{:else if index === 2}
-												<p>Assitant created!</p>
-											{:else if index === 3}
-												<p>Chat Concluded!</p>
-												<p>Final Idea: {project.idea_final}</p>
-											{:else if index === 4}
-												<div class="flex flex-row gap-2">
-													<div class="form-control w-full">
-														<input
-															type="text"
-															class="input input-bordered w-full rounded-md border-2"
-															placeholder="Changes..."
-															id="message"
-															name="message"
-															bind:value={message}
-															disabled={loading}
-														/>
-													</div>
-													<button
-														class="btn btn-primary btn-square btn-ghost"
-														class:loading
-														type="submit"
-														disabled={loading}><IconSend style="font-size: xx-large;" /></button
-													>
-												</div>
+			<div class="flex flex-row justify-center">
+				<h1 class="text-l mb-8 font-bold md:text-xl">
+					{phases[$currentPhaseIndex].title}
+				</h1>
+			</div>
+			<div class="flex flex-row justify-center">
+				<div class="overflow-x-auto overflow-y-auto">
+					<ul class="timeline timeline-vertical timeline-compact">
+						{#each phases[$currentPhaseIndex].stages as stage, index (stage.key)}
+							<li>
+								<div class="timeline-start">{stage.name}</div>
+								<div class="timeline-middle">
+									<IconChecked
+										style="font-size: x-large;"
+										class={index <= $currentStageIndex ? 'text-primary' : ''}
+									/>
+								</div>
+								{#if stage.key !== 'done'}
+									<div class="timeline-end timeline-box">
+										{#if stage.key !== 'start'}
+											{#if index === $currentStageIndex}
+												{#if loading}
+													<span class="loading loading-spinner"></span>
+												{:else}
+													<p>Waiting</p>
+												{/if}
+											{:else if index < $currentStageIndex}
+												<p>{stage.result}</p>
+											{:else}
+												<p>Waiting</p>
 											{/if}
-										</div>
-										<hr class={index <= $currentPhaseIndex ? 'bg-primary' : 'bg-neutral'} />
-									{/if}
-								</li>
-							{/each}
-						</ul>
-					</div>
+										{:else}
+											<p>{stage.result}</p>
+										{/if}
+									</div>
+									<hr class={index <= $currentStageIndex ? 'bg-primary' : ''} />
+								{/if}
+							</li>
+						{/each}
+					</ul>
 				</div>
-				<div class="mt-8 flex flex-row justify-center">
-					<div class="flex-auto">
-						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
-							Back
-						</button>
-					</div>
-					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
+			</div>
+			<div class="mt-8 flex flex-row justify-center">
+				{#if stageDone === false}
+					<button
+						class="btn btn-primary"
+						type="button"
+						on:click={handleStart}
+						class:loading
+						disabled={loading}
+					>
 						Start
 					</button>
-				</div>
-			{:else if $currentPhaseIndex === 1}
-				<!-- Content for Idea Creation phase -->
-				<div class="flex flex-row justify-center">
-					<h1 class="text-l font-bold md:text-xl">Preparation Phase</h1>
-				</div>
-				<div class="mt-4 flex flex-row justify-center">
-					<div class="flex-auto">
-						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
-							Back
-						</button>
-					</div>
-					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
-						Start
+				{:else}
+					<button
+						class="btn btn-primary"
+						type="button"
+						on:click={handleNext}
+						class:loading
+						disabled={loading}
+					>
+						Next
 					</button>
-				</div>
-			{/if}
+				{/if}
+			</div>
 		</div>
 		<div class="divider divider-vertical lg:divider-horizontal">
 			<IconArrow style="font-size: xx-large;" />

@@ -12,3 +12,10 @@ export interface ProjectStats {
   total_files: number;
   total_assets: number;
 }
+
+export interface Stage {
+  key: string;
+  name: string;
+  result: string;
+  endpoint: string;
+}
