@@ -10,6 +10,10 @@ export const phases = [
 ];
 
 export const preparationStages = [
-    { key: 'startPreparation', name: 'Start Preparation' },
-    { key: 'stakeholderAssistant', name: 'Stakeholder Assistant' }
+    { key: 'start', name: 'Start' },
+    { key: 'stakeholderAssistant', name: 'Stakeholder Assistant' },
+    { key: 'ideaConsultantAssistant', name: 'Idea Consultant Assistant' },
+    { key: 'stakeholderAndIdeaConsultantChat', name: 'Chat Between James and Max' },
+    { key: 'finalChanges', name: 'Final Chnages' },
+    { key: 'done', name: 'Done' }
 ];

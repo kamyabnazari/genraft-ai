@@ -3,6 +3,7 @@
 	import IconClose from '~icons/solar/alt-arrow-left-bold';
 	import IconArrow from '~icons/solar/alt-arrow-right-bold';
 	import IconSend from '~icons/solar/square-arrow-up-bold';
+	import IconChecked from '~icons/solar/check-circle-bold';
 
 	// Essential imports
 	import { writable } from 'svelte/store';
@@ -26,7 +27,6 @@
 
 	let loading: boolean;
 	let chatContainer: HTMLDivElement;
-	let messagingNeeded: boolean = false;
 
 	let messages = writable([]);
 	let messagesArray = [];
@@ -119,22 +119,62 @@
 				<div class="flex flex-row justify-center">
 					<h1 class="text-l mb-8 font-bold md:text-xl">Idea Creation Phase</h1>
 				</div>
-				<div class="overflow-x-auto">
-					<ul class="steps steps-horizontal lg:steps-vertical">
-						{#each preparationStages as stage, index (stage.key)}
-							<li class={index <= $currentPhaseIndex ? 'step step-primary' : 'step'}>
-								{stage.name}
-							</li>
-						{/each}
-					</ul>
-				</div>
 				<div class="flex flex-row justify-center">
-					<h1 class="mb-8 text-base">Initial Idea: {project.idea_initial}</h1>
+					<div class="overflow-x-auto overflow-y-auto">
+						<ul class="timeline timeline-vertical timeline-compact">
+							{#each preparationStages as stage, index (stage.key)}
+								<li>
+									<div class="timeline-start">{stage.name}</div>
+									<div class="timeline-middle">
+										<IconChecked
+											style="font-size: x-large;"
+											class={index <= $currentPhaseIndex ? 'text-primary' : 'text-neutral'}
+										/>
+									</div>
+									{#if stage.key !== 'done'}
+										<div class="timeline-end timeline-box">
+											{#if index === 0}
+												<p>Initial Idea: {project.idea_initial}</p>
+											{:else if index === 1}
+												<p>Assitant created!</p>
+											{:else if index === 2}
+												<p>Assitant created!</p>
+											{:else if index === 3}
+												<p>Chat Concluded!</p>
+												<p>Final Idea: {project.idea_final}</p>
+											{:else if index === 4}
+												<div class="flex flex-row gap-2">
+													<div class="form-control w-full">
+														<input
+															type="text"
+															class="input input-bordered w-full rounded-md border-2"
+															placeholder="Changes..."
+															id="message"
+															name="message"
+															bind:value={message}
+															disabled={loading}
+														/>
+													</div>
+													<button
+														class="btn btn-primary btn-square btn-ghost"
+														class:loading
+														type="submit"
+														disabled={loading}><IconSend style="font-size: xx-large;" /></button
+													>
+												</div>
+											{/if}
+										</div>
+										<hr class={index <= $currentPhaseIndex ? 'bg-primary' : 'bg-neutral'} />
+									{/if}
+								</li>
+							{/each}
+						</ul>
+					</div>
 				</div>
 				<div class="mt-8 flex flex-row justify-center">
 					<div class="flex-auto">
 						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
-							Cancel
+							Back
 						</button>
 					</div>
 					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
@@ -149,7 +189,7 @@
 				<div class="mt-4 flex flex-row justify-center">
 					<div class="flex-auto">
 						<button class="btn btn-ghost" on:click={() => goto('/dashboard')} disabled={loading}>
-							Cancel
+							Back
 						</button>
 					</div>
 					<button class="btn btn-primary" type="button" on:click={handleNext} disabled={loading}>
@@ -197,27 +237,6 @@
 						</div>
 					{/each}
 				</div>
-				{#if messagingNeeded}
-					<div class="flex flex-row gap-2">
-						<div class="form-control w-full">
-							<input
-								type="text"
-								class="input border-primary h-12 w-full rounded-md border-2"
-								placeholder="What do you want to change..."
-								id="message"
-								name="message"
-								bind:value={message}
-								disabled={loading}
-							/>
-						</div>
-						<button
-							class="btn btn-primary btn-square btn-ghost"
-							class:loading
-							type="submit"
-							disabled={loading}><IconSend style="font-size: xx-large;" /></button
-						>
-					</div>
-				{/if}
 			</div>
 		</div>
 	</div>
