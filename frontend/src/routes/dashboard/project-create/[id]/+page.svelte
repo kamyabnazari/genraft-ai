@@ -126,8 +126,9 @@
 		for (let i = 0; i < phase.stages.length; i++) {
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
-			console.log('Calling API for stage:', stage.endpoint);
-			// await callStageApi(stage); // Uncomment to make actual API calls
+			if (phase.key === 'preparation') {
+				await callStageApi(stage);
+			}
 			await delay(1000);
 		}
 		stagesDone = true;

@@ -9,6 +9,18 @@ class Project(BaseModel):
     folder_path: str
     created_at: datetime
 
+class ChatMessage(BaseModel):
+    id: int
+    thread_id: str
+    content: str
+    role: str
+    created_at: datetime
+
+class ProjectChatAssociation(BaseModel):
+    project_id: int
+    chat_message_id: int
+    chat_type: str
+
 class ProjectStats(BaseModel):
     total_projects: int
     total_files: int
