@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
 from app.models.pydantic_models import Project, InitializeProjectRequest
-from app.models.database import projects
+from app.models.database import projects, project_assistant_association, assistants
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI
@@ -93,6 +93,13 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
 
         # Get the folder path
         folder_path = existing_project['folder_path']
+
+        # First, delete the associated assistants
+        association_query = project_assistant_association.select().where(project_assistant_association.c.project_id == id)
+        associations = await database.fetch_all(association_query)
+        for association in associations:
+            delete_assistant_query = assistants.delete().where(assistants.c.id == association.assistant_id)
+            await database.execute(delete_assistant_query)
 
         # If the project exists, proceed to delete it
         delete_query = projects.delete().where(projects.c.id == id)
