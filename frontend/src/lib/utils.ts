@@ -18,7 +18,7 @@ export const phases = [
         stages: [
             { key: 'start', name: "Start", result: "Start Idea Creation", endpoint: "/api/project/{id}/idea-creation/start", method: "POST" },
             { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}", endpoint: "/api/project/{id}/idea-creation/idea", method: "GET" },
-            { key: 'chat-stakeholder-and-consultant', name: "Chat Between Stakeholder and Consultant", result: "Chat Concluded!", endpoint: "/api/project/{id}/idea-creation/chat-stakeholder-consultant", method: "POST" },
+            { key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", result: "Chat Concluded!", endpoint: "/api/project/{id}/idea-creation/chat-stakeholder-consultant", method: "POST" },
             { key: 'result', name: "Result", result: "Final Idea: {project.idea_final}", endpoint: "/api/project/{id}/idea-creation/result", method: "GET" },
             { key: 'done', name: "Done", result: "Idea Creation Phase Done!", endpoint: "/api/project/{id}/idea-creation/done", method: "GET" }
         ]

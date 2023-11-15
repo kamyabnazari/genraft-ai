@@ -111,8 +111,8 @@
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
 			console.log('Calling API for stage:', stage.endpoint);
-			await delay(1000); // Simulate API call delay
 			// await callStageApi(stage); // Uncomment to make actual API calls
+			await delay(1000);
 		}
 		stagesDone = true;
 
@@ -187,6 +187,7 @@
 					{/each}
 				</ul>
 			</div>
+			<div class="divider divider-vertical lg:divider-vertical" />
 			<div>
 				<div class="form-control w-52">
 					<label class="label cursor-pointer">
@@ -211,7 +212,7 @@
 				</h1>
 			</div>
 			<div class="justify-left flex flex-row">
-				<div class="overflow-x-auto overflow-y-auto">
+				<div class="max-h-[400px] w-full overflow-auto">
 					<ul class="timeline timeline-vertical timeline-compact">
 						{#each phases[$currentPhaseIndex].stages as stage, index (stage.key)}
 							<li>
@@ -274,8 +275,6 @@
 						{/if}
 					</button>
 				{/if}
-
-				<!-- This one works! -->
 				{#if phasesDone}
 					<button
 						class="btn btn-primary btn-wide"
