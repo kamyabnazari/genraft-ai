@@ -10,7 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
-	import type { Project, Stage } from '$lib/models';
+	import type { Phase, Phases, Project, Stage } from '$lib/models';
 	import { phases } from '$lib/utils';
 
 	let project: Project = {
@@ -86,7 +86,7 @@
 	async function callStageApi(stage: Stage) {
 		try {
 			const response = await fetch(stage.endpoint, {
-				method: stage.method || 'GET' // Default to GET if method not specified
+				method: stage.method || 'GET'
 				// Include other necessary configurations like headers, body, etc.
 			});
 			if (!response.ok) {
@@ -102,11 +102,27 @@
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
+	// Function to replace ${id} in endpoint with actual project id
+	function updatePhaseEndpoints(phases: Phases, projectId: string) {
+		return phases.map((phase: Phase) => {
+			return {
+				...phase,
+				stages: phase.stages.map((stage: Stage) => {
+					return {
+						...stage,
+						endpoint: stage.endpoint.replace('{id}', projectId)
+					};
+				})
+			};
+		});
+	}
+
 	// Function to start a specific phase
 	async function startPhase(phaseIndex: number) {
 		loading = true; // Start loading when a phase starts
 
-		const phase = phases[phaseIndex];
+		const updatedPhases = updatePhaseEndpoints(phases, projectId);
+		const phase = updatedPhases[phaseIndex];
 		for (let i = 0; i < phase.stages.length; i++) {
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];

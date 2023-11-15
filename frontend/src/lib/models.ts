@@ -20,3 +20,12 @@ export interface Stage {
   endpoint: string;
   method: string;
 }
+
+export interface Phase {
+  key: string;
+  name: string;
+  title: string;
+  stages: Stage[];
+}
+
+export type Phases = Phase[];
