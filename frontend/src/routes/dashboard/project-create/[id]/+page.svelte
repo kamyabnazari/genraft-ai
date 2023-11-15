@@ -127,7 +127,8 @@
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
 			if (phase.key === 'preparation') {
-				await callStageApi(stage);
+				const result = await callStageApi(stage);
+				console.log(result);
 			}
 			await delay(1000);
 		}
