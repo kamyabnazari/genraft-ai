@@ -84,7 +84,10 @@
 
 	async function callStageApi(stage: Stage) {
 		try {
-			const response = await fetch(stage.endpoint, { method: 'POST' });
+			const response = await fetch(stage.endpoint, {
+				method: stage.method || 'GET' // Default to GET if method not specified
+				// Include other necessary configurations like headers, body, etc.
+			});
 			if (!response.ok) {
 				throw new Error(`API call for stage ${stage.name} failed`);
 			}

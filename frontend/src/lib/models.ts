@@ -18,4 +18,5 @@ export interface Stage {
   name: string;
   result: string;
   endpoint: string;
+  method: string;
 }

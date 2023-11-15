@@ -4,33 +4,51 @@
 
 In the generative AI application creation process, the following roles, envisioned as AI agents, are integral for ensuring a smooth flow from conception to documentation:
 
+### Preparation Phase
+- **Stakeholder Assistant**: Represents the stakeholder's perspective, helping to set the scope and expectations for the project.
+- **Consultant Assistant**: Assists in idea consultation and refinement, providing creative and technical guidance.
+
 ### Idea Creation Phase
-1. **Stakeholder**: Provides the initial product idea and has a vested interest in the project's success.
-2. **Idea Consultant**: Assists in refining and detailing the product idea.
+- **Stakeholder**: Provides the initial product idea and has a vested interest in the project's success.
+- **Idea Consultant**: Assists in refining and detailing the product idea.
 
 ### Company Creation Phase
-3. **CEO (Chief Executive Officer)**: Sets the strategic direction of the company and oversees the alignment of the product with company goals.
-4. **COO (Chief Operating Officer)**: Responsible for operational strategy, resource allocation, and defining new roles specific to the project.
+- **CEO (Chief Executive Officer)**: Sets the strategic direction of the company and oversees the alignment of the product with company goals.
+- **COO (Chief Operating Officer)**: Responsible for operational strategy, resource allocation, and defining new roles specific to the project.
 
 ### Designing Phase
-5. **CPO (Chief Product Officer)**: Focuses on product design specifications, user experience strategy, and preliminary prototypes.
-6. **CTO (Chief Technology Officer)**: Deals with technical aspects including architecture, technology stack, and integration requirements.
+- **CPO (Chief Product Officer)**: Focuses on product design specifications, user experience strategy, and preliminary prototypes.
+- **CTO (Chief Technology Officer)**: Deals with technical aspects including architecture, technology stack, and integration requirements.
 
 ### Coding Phase
-7. **Programmer**: Translates technical specifications into executable code and develops the core functionalities of the product.
-8. **Designer**: Responsible for creating the visual aspects of the product, including UI/UX design, logos, and other design assets.
+- **Programmer**: Translates technical specifications into executable code and develops the core functionalities of the product.
+- **Designer**: Responsible for creating the visual aspects of the product, including UI/UX design, logos, and other design assets.
 
 ### Testing Phase
-9. **Reviewer**: Conducts code reviews, offers performance optimization suggestions, and ensures coding standards are met.
-10. **Tester**: Performs various types of testing like functional, integration, and system testing to ensure the product is bug-free and meets quality standards.
+- **Reviewer**: Conducts code reviews, offers performance optimization suggestions, and ensures coding standards are met.
+- **Tester**: Performs various types of testing like functional, integration, and system testing to ensure the product is bug-free and meets quality standards.
 
 ### Documenting Phase
-11. **Technical Writer**: Specializes in creating technical documentation, including code documentation, API manuals, and system architecture diagrams.
-12. **User Documentation Specialist**: Focuses on creating end-user documentation, such as user manuals, FAQs, and troubleshooting guides.
+- **Technical Writer**: Specializes in creating technical documentation, including code documentation, API manuals, and system architecture diagrams.
+- **User Documentation Specialist**: Focuses on creating end-user documentation, such as user manuals, FAQs, and troubleshooting guides.
 
 Each role contributes its expertise to the collaborative development of the AI application, simulating relevant conversations and activities within each phase.
 
 ## Process and Workflow
+
+### 0. Preparation Phase
+**Goal**: To set up the foundational elements for the project by creating the necessary AI assistants.
+
+#### Steps:
+1. **Stakeholder Assistant Creation**
+   - **Objective**: To create an AI assistant representing the stakeholder's perspective.
+   - **Process**: Utilizes input about the project's scope and stakeholder expectations to generate an AI agent.
+   - **Output**: A fully configured stakeholder assistant ready to interact and provide insights.
+
+2. **Consultant Assistant Creation**
+   - **Objective**: To create an AI assistant that will assist in idea consultation and refinement.
+   - **Process**: Configures an AI agent with capabilities to analyze, refine, and expand on project ideas.
+   - **Output**: A consultant assistant capable of offering creative and technical guidance on the project idea.
 
 ### 1. Idea Creation Phase
 **Goal**: To refine and detail the initial product idea.
@@ -75,7 +93,9 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Output**: Source code adhering to standards and specifications.
 
 #### Chat 2: Programmer and Designer
-- **Topic**: Creation of UI/UX assets and interactive elements.
+- **Topic**: Creation of UI/UX assets and interactive
+
+ elements.
 - **Input**: Product design specifications.
 - **Output**: Design assets like logos, UI elements, and style guides.
 
@@ -96,9 +116,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 **Goal**: To create comprehensive documentation for both technical and end-user aspects.
 
 #### Chat 1: Technical Writer and CTO (Chief Technology Officer)
-- **Topic**: Creating comprehensive technical
-
- documentation.
+- **Topic**: Creating comprehensive technical documentation.
 - **Input**: Technical specifications, architecture details, and source code.
 - **Output**: Technical documentation such as API documentation, code documentation, system architecture diagrams, and development guides.
 
