@@ -1,5 +1,4 @@
 from sqlalchemy import MetaData, Table, Column, Integer, String, DateTime
-from sqlalchemy.sql import func
 from sqlalchemy import ForeignKey
 
 metadata = MetaData()

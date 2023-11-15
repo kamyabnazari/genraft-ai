@@ -5,7 +5,7 @@ export async function DELETE({ params }) {
     const { id } = params;
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project/${id}`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -21,7 +21,7 @@ export async function GET({ params }) {
     const { id } = params;
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project/${id}`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });

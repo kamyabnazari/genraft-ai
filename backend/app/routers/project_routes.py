@@ -1,27 +1,37 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
-from app.models.pydantic_models import Project, ProjectStats, InitializeProjectRequest, GenerateAssistantRequest
+from app.models.pydantic_models import Project, InitializeProjectRequest
 from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
-from openai import OpenAI, OpenAIError
+from openai import OpenAI
 from sqlalchemy import desc
 from typing import List
 import zipfile
 import datetime
 import shutil
-import time
 import os
 
 router = APIRouter()
 client = OpenAI(api_key=settings.openai_api_key)
 database = get_database()
 
-@router.get("/")
-async def read_api_root():
-    return {"message": "Welcome to the Genraft AI API!"}
+@router.get("/", response_model=List[Project])
+async def get_all_projects():
+    try:
+        # Query to select all projects ordered by creation date in descending order
+        query = projects.select().order_by(desc(projects.c.created_at))
+        results = await database.fetch_all(query)
+        
+        # Transform the database results into a list of Project instances
+        projects_list = [Project(**result) for result in results]
 
-@router.post("/project")
+        return projects_list
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/")
 async def initialize_project(request_body: InitializeProjectRequest):
     try:
         # Generate the current timestamp without microseconds
@@ -55,7 +65,7 @@ async def initialize_project(request_body: InitializeProjectRequest):
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/project/{id}", response_model=Project)
+@router.get("/{id}", response_model=Project)
 async def get_project_by_id(id: int = Path(..., description="The ID of the project to retrieve")):
     try:
         # Start by checking if the project exists
@@ -71,7 +81,7 @@ async def get_project_by_id(id: int = Path(..., description="The ID of the proje
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/project/{id}")
+@router.delete("/{id}")
 async def delete_project_by_id(id: int = Path(..., description="The ID of the project to delete")):
     try:
         # Start by checking if the project exists
@@ -102,22 +112,7 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/projects", response_model=List[Project])
-async def get_all_projects():
-    try:
-        # Query to select all projects ordered by creation date in descending order
-        query = projects.select().order_by(desc(projects.c.created_at))
-        results = await database.fetch_all(query)
-        
-        # Transform the database results into a list of Project instances
-        projects_list = [Project(**result) for result in results]
-
-        return projects_list
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/project/{id}/download")
+@router.get("/{id}/download")
 async def download_project_by_id(id: int = Path(..., description="The ID of the project to download")):
     try:
         # Check if the project exists and get its folder path
@@ -143,80 +138,3 @@ async def download_project_by_id(id: int = Path(..., description="The ID of the 
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/stats/projects", response_model=ProjectStats)
-async def get_project_statistics():
-    try:
-        # Get all projects
-        query = projects.select()
-        all_projects = await database.fetch_all(query)
-        total_projects = len(all_projects)
-
-        total_files = 0
-        total_assets = 0
-
-        # File extensions considered as assets
-        asset_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp']
-
-        # Count files and assets in each project folder
-        for project in all_projects:
-            folder_path = project['folder_path']
-            for root, dirs, files in os.walk(folder_path):
-                total_files += len(files)
-                total_assets += sum(1 for file in files if os.path.splitext(file)[1].lower() in asset_extensions)
-
-        # Combine the statistics into a single response object
-        statistics = {
-            "total_projects": total_projects,
-            "total_files": total_files,
-            "total_assets": total_assets
-        }
-
-        return statistics
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/generate_assistant")
-async def generate_assistant(request_body: GenerateAssistantRequest):
-    try:
-        assistant = client.beta.assistants.create(
-            name=request_body.name,
-            instructions=request_body.instructions,
-            tools=[{"type": "code_interpreter"}],
-            model="gpt-3.5-turbo"
-        )
-        thread = client.beta.threads.create()
-        message = client.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=request_body.initial_message
-        )
-        run = client.beta.threads.runs.create(
-            thread_id=thread.id,
-            assistant_id=assistant.id
-        )
-        if not await poll_for_completion(thread.id, run.id):
-            raise HTTPException(status_code=500, detail="Assistant run did not complete in time.")
-
-        messages_response = client.beta.threads.messages.list(thread_id=thread.id)
-        assistant_messages = [
-            cp.text.value for msg in messages_response.data if msg.role == "assistant"
-            for cp in msg.content if cp.type == 'text' and hasattr(cp, 'text')
-        ]
-        return {"messages": assistant_messages}
-    except OpenAIError as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
-
-async def poll_for_completion(thread_id, run_id, timeout=60):
-    start_time = time.time()
-    while time.time() - start_time < timeout:
-        run_status = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
-        if run_status.status == "completed":
-            return True
-        elif run_status.status in ["failed", "cancelled", "expired"]:
-            return False
-        time.sleep(1)
-    return False

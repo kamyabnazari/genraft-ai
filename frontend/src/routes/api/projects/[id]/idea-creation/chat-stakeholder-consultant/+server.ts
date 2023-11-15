@@ -1,12 +1,12 @@
 import { env } from '$env/dynamic/private';
 import { error, json } from '@sveltejs/kit';
 
-export async function GET({ params }) {
+export async function POST({ params }) {
     const { id } = params;
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project/${id}/idea-creation/done`, {
-            method: 'GET',
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/idea-creation/chat-stakeholder-consultant`, {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
 

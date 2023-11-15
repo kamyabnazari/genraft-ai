@@ -5,7 +5,7 @@ export async function GET({ params }) {
     const { id } = params;
 
     try {
-        const backendResponse = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project/${id}/download`);
+        const backendResponse = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/download`);
         if (!backendResponse.ok) {
             throw new Error(`Backend responded with status: ${backendResponse.status}`);
         }

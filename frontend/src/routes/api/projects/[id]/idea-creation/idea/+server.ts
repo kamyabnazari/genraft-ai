@@ -5,7 +5,7 @@ export async function GET({ params }) {
     const { id } = params;
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project/${id}/preparation/done`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/idea-creation/idea`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });

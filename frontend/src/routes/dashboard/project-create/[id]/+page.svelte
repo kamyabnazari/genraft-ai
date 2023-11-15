@@ -42,7 +42,7 @@
 		loading = true;
 
 		try {
-			const response = await fetch(`/api/project/${projectId}`, {
+			const response = await fetch(`/api/projects/${projectId}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json'

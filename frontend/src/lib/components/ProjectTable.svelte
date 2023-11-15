@@ -55,7 +55,7 @@
 
 	async function deleteProject(id: string) {
 		try {
-			const response = await fetch(`/api/project/${id}`, {
+			const response = await fetch(`/api/projects/${id}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json'
@@ -77,7 +77,7 @@
 
 	async function downloadProject(id: string) {
 		try {
-			const response = await fetch(`/api/project/${id}/download`, {
+			const response = await fetch(`/api/projects/${id}/download`, {
 				method: 'GET'
 			});
 

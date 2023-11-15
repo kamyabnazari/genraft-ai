@@ -5,7 +5,7 @@ export async function POST({ params }) {
     const { id } = params;
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/project/${id}/idea-creation/start`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/preparation/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
