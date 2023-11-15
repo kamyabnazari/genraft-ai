@@ -78,6 +78,7 @@
 
 	const currentPhaseIndex = writable(0);
 	const currentStageIndex = writable(0);
+	let automaticMode = writable(false);
 	let phasesDone: boolean = false;
 	let stagesDone: boolean = false;
 	let loading: boolean = false;
@@ -103,43 +104,43 @@
 
 	// Function to start a specific phase
 	async function startPhase(phaseIndex: number) {
-		if (phaseIndex >= phases.length) {
-			console.warn('Phase index out of bounds');
-			return;
-		}
+		loading = true; // Start loading when a phase starts
 
 		const phase = phases[phaseIndex];
 		for (let i = 0; i < phase.stages.length; i++) {
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
 			console.log('Calling API for stage:', stage.endpoint);
-			await delay(1000);
-			// await callStageApi(stage);
+			await delay(1000); // Simulate API call delay
+			// await callStageApi(stage); // Uncomment to make actual API calls
 		}
 		stagesDone = true;
 
+		// Check if all phases are completed
 		if (phaseIndex === phases.length - 1) {
 			phasesDone = true;
+			loading = false; // Stop loading only after all phases are done
+		} else if ($automaticMode) {
+			// If not the last phase and in automatic mode, proceed to next phase
+			currentPhaseIndex.update((n) => n + 1);
+			currentStageIndex.set(0);
+			stagesDone = false;
+			await startPhase(phaseIndex + 1);
+		} else {
+			loading = false; // If in manual mode, stop loading after each phase
 		}
 	}
 
 	// Handle the start of a phase
 	async function handleStart() {
-		loading = true;
-		const phaseIndex = $currentPhaseIndex;
-		await startPhase(phaseIndex);
-		loading = false;
+		await startPhase($currentPhaseIndex);
 	}
 
+	// Handle the start of a phase
 	async function handleNext() {
-		if ($currentPhaseIndex + 1 >= phases.length) {
-			console.warn('No more phases available');
-			return;
-		}
 		currentPhaseIndex.update((n) => n + 1);
 		currentStageIndex.set(0);
 		stagesDone = false;
-		loading = false;
 	}
 
 	async function handleDashboard() {
@@ -176,7 +177,7 @@
 		<h1 class="mb-8 text-2xl font-bold md:text-3xl">Project Creation Assistant</h1>
 	</div>
 	<div class="flex flex-col justify-center gap-8 lg:flex-row">
-		<div class="flex flex-row justify-center">
+		<div class="flex flex-col justify-center gap-8">
 			<div class="overflow-x-auto">
 				<ul class="steps steps-horizontal lg:steps-vertical">
 					{#each phases as phase, index (phase.key)}
@@ -185,6 +186,19 @@
 						</li>
 					{/each}
 				</ul>
+			</div>
+			<div>
+				<div class="form-control w-52">
+					<label class="label cursor-pointer">
+						<span class="label-text">AUTOMATIC</span>
+						<input
+							type="checkbox"
+							class="toggle toggle-accent"
+							bind:checked={$automaticMode}
+							disabled={loading || stagesDone || phasesDone}
+						/>
+					</label>
+				</div>
 			</div>
 		</div>
 		<div class="divider divider-vertical lg:divider-horizontal">
@@ -259,7 +273,10 @@
 							Next
 						{/if}
 					</button>
-				{:else}
+				{/if}
+
+				<!-- This one works! -->
+				{#if phasesDone}
 					<button
 						class="btn btn-primary btn-wide"
 						type="button"
