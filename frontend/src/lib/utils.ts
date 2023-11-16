@@ -4,10 +4,10 @@ export const phases = [
         name: "Preparation",
         title: "Preparation Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Preparation", endpoint: "/api/projects/{id}/preparation/start", method: "POST", "body": {} },
-            { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}", endpoint: "/api/projects/{id}/preparation/idea", method: "GET", "body": {} },
+            { key: 'start', name: "Start", result: "Start Preparation" },
+            { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}" },
             {
-                key: 'assistant-stakeholder', name: "Stakeholder Assistant", result: "Stakeholder Assistant \n Created Successfully!", endpoint: "/api/projects/{id}/preparation/assistant-stakeholder", method: "POST",
+                key: 'assistant-stakeholder', name: "Stakeholder Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/preparation/assistant-stakeholder", method: "POST",
                 "body": {
                     "assistant_name": "project-{id}-assistant-stakeholder",
                     "assistant_instructions": "You are a stakeholder for a software company that creates financial software.",
@@ -15,14 +15,14 @@ export const phases = [
                 }
             },
             {
-                key: 'assistant-consultant', name: "Consultant Assistant", result: "Consultant Assistant \n Created Successfully!", endpoint: "/api/projects/{id}/preparation/assistant-consultant", method: "POST",
+                key: 'assistant-consultant', name: "Consultant Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/preparation/assistant-consultant", method: "POST",
                 "body": {
                     "assistant_name": "project-{id}-assistant-consultant",
                     "assistant_instructions": "You are a idea consultant for a software company that help in the creation a detailed project from a short one.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
-            { key: 'done', name: "Done", result: "Preparation Phase Done!", endpoint: "/api/projects/{id}/preparation/done", method: "GET", "body": {} }
+            { key: 'done', name: "Done", result: "Preparation Phase Done!" }
         ]
     },
     {
@@ -30,11 +30,11 @@ export const phases = [
         name: "Idea Creation",
         title: "Idea Creation Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Idea Creation", endpoint: "/api/projects/{id}/idea-creation/start", method: "POST", "body": {} },
-            { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}", endpoint: "/api/projects/{id}/idea-creation/idea", method: "GET", "body": {} },
+            { key: 'start', name: "Start", result: "Start Idea Creation" },
+            { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}" },
             { key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", result: "Chat Concluded!", endpoint: "/api/projects/{id}/idea-creation/chat-stakeholder-consultant", method: "POST", "body": {} },
-            { key: 'result', name: "Result", result: "Final Idea: {project.idea_final}", endpoint: "/api/projects/{id}/idea-creation/result", method: "GET", "body": {} },
-            { key: 'done', name: "Done", result: "Idea Creation Phase Done!", endpoint: "/api/projects/{id}/idea-creation/done", method: "GET", "body": {} }
+            { key: 'result', name: "Result", result: "Final Idea: {project.idea_final}", endpoint: "/api/projects/{id}/idea-creation/result", method: "GET" },
+            { key: 'done', name: "Done", result: "Idea Creation Phase Done!" }
         ]
     },
     {

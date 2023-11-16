@@ -85,6 +85,12 @@
 
 	async function callStageApi(stage: Stage) {
 		try {
+			if (!stage.endpoint) {
+				// Handle stages without an endpoint
+				console.warn(`No endpoint specified for stage ${stage.name}`);
+				return;
+			}
+
 			const requestOptions: RequestInit = {
 				method: stage.method || 'GET',
 				headers: { 'Content-Type': 'application/json' }
@@ -111,22 +117,20 @@
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
-	// Function to replace {id} placeholders in endpoints and body with the actual project id
 	function updatePhaseEndpoints(phases: Phases, projectId: string) {
 		return phases.map((phase) => {
 			return {
 				...phase,
 				stages: phase.stages.map((stage) => {
-					const updatedStage = {
-						...stage,
-						endpoint: stage.endpoint.replace('{id}', projectId)
-					};
+					const updatedStage: Stage = { ...stage };
 
-					// If the stage has a body and it's an object, replace {id} in its values
+					if (stage.endpoint) {
+						updatedStage.endpoint = stage.endpoint.replace('{id}', projectId);
+					}
+
 					if (stage.body && typeof stage.body === 'object') {
 						updatedStage.body = Object.fromEntries(
 							Object.entries(stage.body).map(([key, value]) => {
-								// Assuming value is a string or can be safely converted to one
 								return [key, value.toString().replace('{id}', projectId)];
 							})
 						);
@@ -147,9 +151,12 @@
 		for (let i = 0; i < phase.stages.length; i++) {
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
-			if (phase.key === 'preparation') {
-				const result = await callStageApi(stage);
-				console.log(result);
+			// Only call the API if an endpoint is specified for the stage
+			if (stage.endpoint) {
+				if (phase.key === 'preparation') {
+					const result = await callStageApi(stage);
+					console.log(result);
+				}
 			}
 			await delay(1000);
 		}

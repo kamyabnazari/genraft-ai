@@ -17,9 +17,9 @@ export interface Stage {
   key: string;
   name: string;
   result: string;
-  endpoint: string;
-  method: string;
-  body: Body;
+  endpoint?: string;
+  method?: string;
+  body?: Body;
 }
 
 export interface Phase {
