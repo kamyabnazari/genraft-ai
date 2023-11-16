@@ -19,6 +19,7 @@ export interface Stage {
   result: string;
   endpoint: string;
   method: string;
+  body: Body;
 }
 
 export interface Phase {
@@ -26,6 +27,12 @@ export interface Phase {
   name: string;
   title: string;
   stages: Stage[];
+}
+
+export interface Body {
+  assistant_name?: string,
+  assistant_instructions?: string,
+  assistant_model?: string,
 }
 
 export type Phases = Phase[];

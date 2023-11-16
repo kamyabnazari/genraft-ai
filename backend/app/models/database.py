@@ -29,7 +29,10 @@ assistants = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("assistant_id", String, nullable=False),  # ID returned by OpenAI API
-    Column("type", String, nullable=False),  # Type of assistant, e.g., 'stakeholder', 'consultant'
+    Column("assistant_name", String, nullable=False),
+    Column("assistant_type", String, nullable=False),
+    Column("assistant_instructions", String, nullable=False),
+    Column("assistant_model", String, nullable=False),
     Column("created_at", DateTime, nullable=False)
 )
 

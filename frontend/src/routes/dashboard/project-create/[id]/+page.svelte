@@ -85,13 +85,22 @@
 
 	async function callStageApi(stage: Stage) {
 		try {
-			const response = await fetch(stage.endpoint, {
-				method: stage.method || 'GET'
-				// Include other necessary configurations like headers, body, etc.
-			});
+			const requestOptions: RequestInit = {
+				method: stage.method || 'GET',
+				headers: { 'Content-Type': 'application/json' }
+			};
+
+			// Add body to request if it exists in the stage object and method is not GET
+			if (stage.method !== 'GET' && stage.body) {
+				requestOptions.body = JSON.stringify(stage.body);
+			}
+
+			const response = await fetch(stage.endpoint, requestOptions);
+
 			if (!response.ok) {
 				throw new Error(`API call for stage ${stage.name} failed`);
 			}
+
 			return response.json();
 		} catch (error) {
 			console.error('Error calling stage API:', error);
@@ -102,16 +111,28 @@
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
-	// Function to replace ${id} in endpoint with actual project id
+	// Function to replace {id} placeholders in endpoints and body with the actual project id
 	function updatePhaseEndpoints(phases: Phases, projectId: string) {
-		return phases.map((phase: Phase) => {
+		return phases.map((phase) => {
 			return {
 				...phase,
-				stages: phase.stages.map((stage: Stage) => {
-					return {
+				stages: phase.stages.map((stage) => {
+					const updatedStage = {
 						...stage,
 						endpoint: stage.endpoint.replace('{id}', projectId)
 					};
+
+					// If the stage has a body and it's an object, replace {id} in its values
+					if (stage.body && typeof stage.body === 'object') {
+						updatedStage.body = Object.fromEntries(
+							Object.entries(stage.body).map(([key, value]) => {
+								// Assuming value is a string or can be safely converted to one
+								return [key, value.toString().replace('{id}', projectId)];
+							})
+						);
+					}
+
+					return updatedStage;
 				})
 			};
 		});

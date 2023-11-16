@@ -19,7 +19,10 @@ class ChatMessage(BaseModel):
 class Assistant(BaseModel):
     id: int
     assistant_id: str
-    type: str
+    assistant_name: str
+    assistant_type: str
+    assistant_instructions: str
+    assistant_model: str
     created_at: datetime
 
 class ProjectAssistantAssociation(BaseModel):
@@ -41,6 +44,6 @@ class InitializeProjectRequest(BaseModel):
     idea: str
 
 class CreateAssistantRequest(BaseModel):
-    assistant_type: str  # e.g., 'stakeholder', 'consultant'
-    name: str
-    instructions: str
+    assistant_name: str
+    assistant_instructions: str
+    assistant_model: str

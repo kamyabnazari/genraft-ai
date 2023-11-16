@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
+from app.utils.assistant_utils import delete_project_assistants
 from app.models.pydantic_models import Project, InitializeProjectRequest
-from app.models.database import projects, project_assistant_association, assistants
+from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
 from openai import OpenAI
@@ -16,7 +17,7 @@ router = APIRouter()
 client = OpenAI(api_key=settings.openai_api_key)
 database = get_database()
 
-@router.get("/", response_model=List[Project])
+@router.get("", response_model=List[Project])
 async def get_all_projects():
     try:
         # Query to select all projects ordered by creation date in descending order
@@ -31,7 +32,7 @@ async def get_all_projects():
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/")
+@router.post("")
 async def initialize_project(request_body: InitializeProjectRequest):
     try:
         # Generate the current timestamp without microseconds
@@ -94,16 +95,12 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
         # Get the folder path
         folder_path = existing_project['folder_path']
 
-        # First, delete the associated assistants
-        association_query = project_assistant_association.select().where(project_assistant_association.c.project_id == id)
-        associations = await database.fetch_all(association_query)
-        for association in associations:
-            delete_assistant_query = assistants.delete().where(assistants.c.id == association.assistant_id)
-            await database.execute(delete_assistant_query)
-
         # If the project exists, proceed to delete it
         delete_query = projects.delete().where(projects.c.id == id)
         await database.execute(delete_query)
+
+        # Delete all assistance from api and db entries associated with project id
+        await delete_project_assistants(project_id=id)
 
         # Delete the associated folder
         if os.path.exists(folder_path):
