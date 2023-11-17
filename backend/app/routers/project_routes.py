@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
-from app.utils.assistant_utils import delete_project_assistants
+from app.utils.assistant_utils import delete_project_assistants_util
 from app.models.pydantic_models import Project, InitializeProjectRequest
 from app.models.database import projects
 from app.dependencies import get_database
@@ -100,7 +100,7 @@ async def delete_project_by_id(id: int = Path(..., description="The ID of the pr
         await database.execute(delete_query)
 
         # Delete all assistance from api and db entries associated with project id
-        await delete_project_assistants(project_id=id)
+        await delete_project_assistants_util(project_id=id)
 
         # Delete the associated folder
         if os.path.exists(folder_path):

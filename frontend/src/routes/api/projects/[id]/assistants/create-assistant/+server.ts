@@ -6,12 +6,13 @@ export async function POST({ params, request }) {
     const body = await request.json();
     const requestBody = {
         assistant_name: body.assistant_name,
+        assistant_type: body.assistant_type,
         assistant_instructions: body.assistant_instructions,
         assistant_model: body.assistant_model
     }
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/preparation/assistant-stakeholder`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/assistants/create-assistant`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody)

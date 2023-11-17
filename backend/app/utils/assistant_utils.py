@@ -9,7 +9,7 @@ import datetime
 client = OpenAI(api_key=settings.openai_api_key)
 database = get_database()
 
-async def create_new_assistant(name, instructions, model):
+async def create_assistant_util(name, instructions, model):
     try:
         return client.beta.assistants.create(
             name=name,
@@ -26,7 +26,7 @@ async def create_thread():
     except OpenAIError as e:
         raise e
 
-async def send_initial_message(thread_id, assistant_id, initial_message):
+async def send_initial_message_util(thread_id, assistant_id, initial_message):
     try:
         client.beta.threads.messages.create(
             thread_id=thread_id,
@@ -40,7 +40,7 @@ async def send_initial_message(thread_id, assistant_id, initial_message):
     except OpenAIError as e:
         raise e
 
-async def poll_for_completion(thread_id, run_id, timeout=60):
+async def poll_for_completion_util(thread_id, run_id, timeout=60):
     start_time = time.time()
     while time.time() - start_time < timeout:
         run_status = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
@@ -51,7 +51,7 @@ async def poll_for_completion(thread_id, run_id, timeout=60):
         time.sleep(1)
     return False
 
-async def get_assistant_messages(thread_id):
+async def get_assistant_messages_util(thread_id):
     try:
         messages_response = client.beta.threads.messages.list(thread_id=thread_id)
         return [
@@ -61,10 +61,10 @@ async def get_assistant_messages(thread_id):
     except OpenAIError as e:
         raise e
 
-async def delete_project_assistants(project_id: int):
+async def delete_project_assistants_util(project_id: int):
     try:
         # Retrieve assistant IDs associated with the project
-        assistant_ids = await get_project_openai_assistant_ids(project_id)
+        assistant_ids = await get_project_openai_assistant_ids_util(project_id)
 
         # Delete each assistant from OpenAI
         for assistant_id in assistant_ids:
@@ -87,7 +87,7 @@ async def delete_project_assistants(project_id: int):
         raise e
 
 # Function to insert assistant data into the database
-async def insert_assistant_data(assistant_id, assistant_name, assistant_type, assistant_instructions, assistant_model):
+async def insert_assistant_data_util(assistant_id, assistant_name, assistant_type, assistant_instructions, assistant_model):
     assistant_query = assistants.insert().values(
         assistant_id=assistant_id,
         assistant_name=assistant_name,
@@ -100,21 +100,21 @@ async def insert_assistant_data(assistant_id, assistant_name, assistant_type, as
     return assistant_id
 
 # Function to associate assistant with a project
-async def associate_assistant_with_project(project_id, assistant_id):
+async def associate_assistant_with_project_util(project_id, assistant_id):
     association_query = project_assistant_association.insert().values(
         project_id=project_id,
         assistant_id=assistant_id
     )
     await database.execute(association_query)
 
-async def assistant_exists(name: str, assistant_type: str):
+async def assistant_exists_util(name: str, assistant_type: str):
     query = assistants.select().where(
         (assistants.c.assistant_name == name) & (assistants.c.assistant_type == assistant_type)
     )
     result = await database.fetch_one(query)
     return result is not None
 
-async def get_project_openai_assistant_ids(project_id: int):
+async def get_project_openai_assistant_ids_util(project_id: int):
     # Define a SQL query to join project_assistant_association with assistants
     # to fetch the OpenAI assistant IDs (assistant_id from assistants table)
     join_query = select([

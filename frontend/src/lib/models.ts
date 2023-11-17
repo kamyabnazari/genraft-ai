@@ -31,6 +31,7 @@ export interface Phase {
 
 export interface Body {
   assistant_name?: string,
+  assistant_type?: string,
   assistant_instructions?: string,
   assistant_model?: string,
 }

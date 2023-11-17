@@ -7,17 +7,19 @@ export const phases = [
             { key: 'start', name: "Start", result: "Start Preparation" },
             { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}" },
             {
-                key: 'assistant-stakeholder', name: "Stakeholder Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/preparation/assistant-stakeholder", method: "POST",
+                key: 'assistant-stakeholder', name: "Stakeholder Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
                 "body": {
                     "assistant_name": "project-{id}-assistant-stakeholder",
+                    "assistant_type": "stakeholder",
                     "assistant_instructions": "You are a stakeholder for a software company that creates financial software.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
             {
-                key: 'assistant-consultant', name: "Consultant Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/preparation/assistant-consultant", method: "POST",
+                key: 'assistant-consultant', name: "Consultant Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
                 "body": {
                     "assistant_name": "project-{id}-assistant-consultant",
+                    "assistant_type": "consultant",
                     "assistant_instructions": "You are a idea consultant for a software company that help in the creation a detailed project from a short one.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
