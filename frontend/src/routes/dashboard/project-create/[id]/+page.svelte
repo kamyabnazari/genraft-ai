@@ -10,7 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
-	import type { Phase, Phases, Project, Stage } from '$lib/models';
+	import type { Phases, Project, Stage } from '$lib/models';
 	import { phases } from '$lib/utils';
 
 	let project: Project = {
@@ -158,6 +158,12 @@
 					console.log(result);
 				}
 			}
+
+			// Check if this stage requires updating the project
+			if (stage.updatesProject) {
+				await getProjectById();
+			}
+
 			await delay(1000);
 		}
 		stagesDone = true;

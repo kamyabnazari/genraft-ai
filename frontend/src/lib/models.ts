@@ -17,6 +17,7 @@ export interface Stage {
   key: string;
   name: string;
   result: string;
+  updatesProject: boolean;
   endpoint?: string;
   method?: string;
   body?: Body;
