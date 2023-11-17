@@ -23,6 +23,7 @@
 	};
 
 	let chatContainer: HTMLDivElement;
+	let stagesContainer: HTMLDivElement;
 	let messages = writable<string[]>([]);
 	let messagesArray: string[] = [];
 	let messagesArrayString: string = '';
@@ -58,10 +59,26 @@
 		}
 	}
 
-	async function scrollToBottom() {
+	async function scrollToBottomChatContainer() {
 		await tick();
 		if (chatContainer) {
 			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}
+	}
+
+	async function scrollToBottomStagesContainer() {
+		await tick(); // Wait for DOM updates
+		if (stagesContainer) {
+			// Find the element representing the current stage
+			const currentStageElement = stagesContainer.querySelector(
+				`.stage-item-${$currentStageIndex}`
+			);
+
+			if (currentStageElement && currentStageElement instanceof HTMLElement) {
+				// Calculate the position to scroll to
+				const topPos = currentStageElement.offsetTop;
+				stagesContainer.scrollTop = topPos;
+			}
 		}
 	}
 
@@ -75,6 +92,7 @@
 	const currentPhaseIndex = writable(0);
 	const currentStageIndex = writable(0);
 	let automaticMode = writable(false);
+	let previousStageIndex = 0;
 	let phasesDone: boolean = false;
 	let stagesDone: boolean = false;
 	let loading: boolean = false;
@@ -157,6 +175,11 @@
 		for (let i = 0; i < phase.stages.length; i++) {
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
+
+			if (previousStageIndex !== $currentStageIndex) {
+				scrollToBottomStagesContainer();
+			}
+			previousStageIndex = $currentStageIndex;
 
 			if (stage.endpoint) {
 				const result = await callStageApi(stage, i);
@@ -269,10 +292,10 @@
 				</h1>
 			</div>
 			<div class="justify-left flex flex-row">
-				<div class="max-h-[400px] w-full overflow-auto">
+				<div class="max-h-[400px] w-full overflow-auto" bind:this={stagesContainer}>
 					<ul class="timeline timeline-vertical timeline-compact">
 						{#each phases[$currentPhaseIndex].stages as stage, index (stage.key)}
-							<li>
+							<li class="stage-item-{index}">
 								<div class="timeline-start">{stage.name}</div>
 								<div class="timeline-middle">
 									<IconChecked
