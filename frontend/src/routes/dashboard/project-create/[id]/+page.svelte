@@ -153,7 +153,7 @@
 			const stage = phase.stages[i];
 			// Only call the API if an endpoint is specified for the stage
 			if (stage.endpoint) {
-				if (phase.key === 'preparation') {
+				if (phase.key === 'idea-creation') {
 					const result = await callStageApi(stage);
 					console.log(result);
 				}

@@ -1,11 +1,11 @@
 export const phases = [
     {
-        key: 'preparation',
-        name: "Preparation",
-        title: "Preparation Phase",
+        key: 'idea-creation',
+        name: "Idea Creation",
+        title: "Idea Creation Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Preparation" },
-            { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}" },
+            { key: 'start', name: "Start", result: "Start Idea Creation" },
+            { key: 'idea-initial', name: "Initial Idea", result: "Initial Idea: {project.idea_initial}", endpoint: "/api/projects/{id}", method: "GET" },
             {
                 key: 'assistant-stakeholder', name: "Stakeholder Assistant", result: "Created Successfully!", endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
                 "body": {
@@ -24,18 +24,8 @@ export const phases = [
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
-            { key: 'done', name: "Done", result: "Preparation Phase Done!" }
-        ]
-    },
-    {
-        key: 'idea-creation',
-        name: "Idea Creation",
-        title: "Idea Creation Phase",
-        stages: [
-            { key: 'start', name: "Start", result: "Start Idea Creation" },
-            { key: 'idea', name: "Idea", result: "Initial Idea: {project.idea_initial}" },
             { key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", result: "Chat Concluded!", endpoint: "/api/projects/{id}/idea-creation/chat-stakeholder-consultant", method: "POST", "body": {} },
-            { key: 'result', name: "Result", result: "Final Idea: {project.idea_final}", endpoint: "/api/projects/{id}/idea-creation/result", method: "GET" },
+            { key: 'idea-final', name: "Final Idea", result: "Final Idea: {project.idea_final}", endpoint: "/api/projects/{id}", method: "GET" },
             { key: 'done', name: "Done", result: "Idea Creation Phase Done!" }
         ]
     },
