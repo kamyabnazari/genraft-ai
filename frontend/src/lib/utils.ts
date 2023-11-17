@@ -4,10 +4,17 @@ export const phases = [
         name: "Idea Creation",
         title: "Idea Creation Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Idea Creation", updatesProject: false },
-            { key: 'idea-initial', name: "Initial Idea", result: "Initial Idea: {project.idea_initial}", updatesProject: true },
             {
-                key: 'assistant-stakeholder', name: "Stakeholder Assistant", result: "Created Successfully!", updatesProject: false, endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
+                key: 'start', name: "Start", successResult: "Idea Creation Phase Started",
+                errorResult: "Error in Starting Idea Creation Phase", updatesProject: false
+            },
+            {
+                key: 'idea-initial', name: "Initial Idea", successResult: "Initial Idea Retrieved: {project.idea_initial}",
+                errorResult: "Error in Getting Initial Idea", updatesProject: true
+            },
+            {
+                key: 'assistant-stakeholder', name: "Stakeholder Assistant", successResult: "Stakeholder Assistant Created",
+                errorResult: "Error in Creating Stakeholder Assistant", updatesProject: false, endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
                 "body": {
                     "assistant_name": "project-{id}-assistant-stakeholder",
                     "assistant_type": "stakeholder",
@@ -16,16 +23,18 @@ export const phases = [
                 }
             },
             {
-                key: 'assistant-consultant', name: "Consultant Assistant", result: "Created Successfully!", updatesProject: false, endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
+                key: 'assistant-consultant', name: "Consultant Assistant", successResult: "Consultant Assistant Created",
+                errorResult: "Error in Creating Consultant Assistant", updatesProject: false, endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
                 "body": {
                     "assistant_name": "project-{id}-assistant-consultant",
                     "assistant_type": "consultant",
-                    "assistant_instructions": "You are a idea consultant for a software company that help in the creation a detailed project from a short one.",
+                    "assistant_instructions": "You are an idea consultant for a software company that helps in the creation of a detailed project from a short one.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
             {
-                key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", result: "Chat Concluded!", updatesProject: false, endpoint: "/api/projects/{id}/chats/chat-stakeholder-consultant", method: "POST",
+                key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", successResult: "Chat Started with Stakeholder and Consultant",
+                errorResult: "Error in Starting Chat with Stakeholder and Consultant", updatesProject: false, endpoint: "/api/projects/{id}/chats/chat-stakeholder-consultant", method: "POST",
                 "body": {
                     "chat_name": "project-{id}-chat-stakeholder-and-consultant",
                     "chat_assistant_primary": "project-{id}-assistant-stakeholder",
@@ -33,8 +42,14 @@ export const phases = [
                     "chat_goal": "The goal of this conversation is to use the initial project idea and create a detailed project idea out of it. When you have reached the final result, mark the final sentence with <END>"
                 }
             },
-            { key: 'idea-final', name: "Final Idea", result: "Final Idea: {project.idea_final}", updatesProject: true },
-            { key: 'done', name: "Done", result: "Idea Creation Phase Done!", updatesProject: false }
+            {
+                key: 'idea-final', name: "Final Idea", successResult: "Final Idea Created: {project.idea_final}",
+                errorResult: "Error in Creating Final Idea", updatesProject: true
+            },
+            {
+                key: 'done', name: "Done", successResult: "Idea Creation Phase Completed",
+                errorResult: "Error in Completing Idea Creation Phase", updatesProject: false
+            }
         ]
     },
     {
@@ -42,10 +57,22 @@ export const phases = [
         name: "Company Creation",
         title: "Company Creation Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Company Creation", updatesProject: false },
-            { key: 'goal-setting', name: "Goal Setting", result: "Company Goals Set", updatesProject: false, endpoint: "/api/projects/{id}/company-creation/goal-setting", method: "POST", "body": {} },
-            { key: 'role-definition', name: "Role Definition", result: "New Roles Defined", updatesProject: false, endpoint: "/api/projects/{id}/company-creation/role-definition", method: "POST", "body": {} },
-            { key: 'done', name: "Done", result: "Company Creation Phase Done!", updatesProject: false }
+            {
+                key: 'start', name: "Start", successResult: "Company Creation Phase Started",
+                errorResult: "Error in Starting Company Creation Phase", updatesProject: false
+            },
+            {
+                key: 'goal-setting', name: "Goal Setting", successResult: "Goal Setting Started",
+                errorResult: "Error in Starting Goal Setting", updatesProject: false, endpoint: "/api/projects/{id}/company-creation/goal-setting", method: "POST", "body": {}
+            },
+            {
+                key: 'role-definition', name: "Role Definition", successResult: "Role Definition Started",
+                errorResult: "Error in Starting Role Definition", updatesProject: false, endpoint: "/api/projects/{id}/company-creation/role-definition", method: "POST", "body": {}
+            },
+            {
+                key: 'done', name: "Done", successResult: "Company Creation Phase Completed",
+                errorResult: "Error in Completing Company Creation Phase", updatesProject: false
+            }
         ]
     },
     {
@@ -53,10 +80,22 @@ export const phases = [
         name: "Designing",
         title: "Designing Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Designing", updatesProject: false },
-            { key: 'product-specification', name: "Product Specification", result: "Product Specifications Defined", updatesProject: false, endpoint: "/api/projects/{id}/designing/product-specification", method: "POST", "body": {} },
-            { key: 'prototype-development', name: "Prototype Development", result: "Prototypes Developed", updatesProject: false, endpoint: "/api/projects/{id}/designing/prototype-development", method: "POST", "body": {} },
-            { key: 'done', name: "Done", result: "Designing Phase Done!", updatesProject: false }
+            {
+                key: 'start', name: "Start", successResult: "Designing Phase Started",
+                errorResult: "Error in Starting Designing Phase", updatesProject: false
+            },
+            {
+                key: 'product-specification', name: "Product Specification", successResult: "Product Specification Started",
+                errorResult: "Error in Starting Product Specification", updatesProject: false, endpoint: "/api/projects/{id}/designing/product-specification", method: "POST", "body": {}
+            },
+            {
+                key: 'prototype-development', name: "Prototype Development", successResult: "Prototype Development Started",
+                errorResult: "Error in Starting Prototype Development", updatesProject: false, endpoint: "/api/projects/{id}/designing/prototype-development", method: "POST", "body": {}
+            },
+            {
+                key: 'done', name: "Done", successResult: "Designing Phase Completed",
+                errorResult: "Error in Completing Designing Phase", updatesProject: false
+            }
         ]
     },
     {
@@ -64,10 +103,22 @@ export const phases = [
         name: "Coding",
         title: "Coding Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Coding", updatesProject: false },
-            { key: 'implementation', name: "Implementation", result: "Code Implemented", updatesProject: false, endpoint: "/api/projects/{id}/coding/implementation", method: "POST", "body": {} },
-            { key: 'ui-design', name: "UI Design", result: "UI Designed", updatesProject: false, endpoint: "/api/projects/{id}/coding/ui-design", method: "POST", "body": {} },
-            { key: 'done', name: "Done", result: "Coding Phase Done!", updatesProject: false }
+            {
+                key: 'start', name: "Start", successResult: "Coding Phase Started",
+                errorResult: "Error in Starting Coding Phase", updatesProject: false
+            },
+            {
+                key: 'implementation', name: "Implementation", successResult: "Implementation Started",
+                errorResult: "Error in Starting Implementation", updatesProject: false, endpoint: "/api/projects/{id}/coding/implementation", method: "POST", "body": {}
+            },
+            {
+                key: 'ui-design', name: "UI Design", successResult: "UI Design Started",
+                errorResult: "Error in Starting UI Design", updatesProject: false, endpoint: "/api/projects/{id}/coding/ui-design", method: "POST", "body": {}
+            },
+            {
+                key: 'done', name: "Done", successResult: "Coding Phase Completed",
+                errorResult: "Error in Completing Coding Phase", updatesProject: false
+            }
         ]
     },
     {
@@ -75,10 +126,22 @@ export const phases = [
         name: "Testing",
         title: "Testing Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Testing", updatesProject: false },
-            { key: 'code-review', name: "Code Review", result: "Code Reviewed", updatesProject: false, endpoint: "/api/projects/{id}/testing/code-review", method: "POST", "body": {} },
-            { key: 'quality-assurance', name: "Quality Assurance", result: "QA Tests Passed", updatesProject: false, endpoint: "/api/projects/{id}/testing/quality-assurance", method: "POST", "body": {} },
-            { key: 'done', name: "Done", result: "Testing Phase Done!", updatesProject: false }
+            {
+                key: 'start', name: "Start", successResult: "Testing Phase Started",
+                errorResult: "Error in Starting Testing Phase", updatesProject: false
+            },
+            {
+                key: 'code-review', name: "Code Review", successResult: "Code Review Started",
+                errorResult: "Error in Starting Code Review", updatesProject: false, endpoint: "/api/projects/{id}/testing/code-review", method: "POST", "body": {}
+            },
+            {
+                key: 'quality-assurance', name: "Quality Assurance", successResult: "Quality Assurance Started",
+                errorResult: "Error in Starting Quality Assurance", updatesProject: false, endpoint: "/api/projects/{id}/testing/quality-assurance", method: "POST", "body": {}
+            },
+            {
+                key: 'done', name: "Done", successResult: "Testing Phase Completed",
+                errorResult: "Error in Completing Testing Phase", updatesProject: false
+            }
         ]
     },
     {
@@ -86,10 +149,22 @@ export const phases = [
         name: "Documenting",
         title: "Documenting Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Documenting", updatesProject: false },
-            { key: 'technical-writing', name: "Technical Writing", result: "Technical Documentation Completed", updatesProject: false, endpoint: "/api/projects/{id}/documenting/technical-writing", method: "POST", "body": {} },
-            { key: 'user-guides', name: "User Guides", result: "User Guides Created", updatesProject: false, endpoint: "/api/projects/{id}/documenting/user-guides", method: "POST", "body": {} },
-            { key: 'done', name: "Done", result: "Documenting Phase Done!", updatesProject: false }
+            {
+                key: 'start', name: "Start", successResult: "Documenting Phase Started",
+                errorResult: "Error in Starting Documenting Phase", updatesProject: false
+            },
+            {
+                key: 'technical-writing', name: "Technical Writing", successResult: "Technical Writing Started",
+                errorResult: "Error in Starting Technical Writing", updatesProject: false, endpoint: "/api/projects/{id}/documenting/technical-writing", method: "POST", "body": {}
+            },
+            {
+                key: 'user-guides', name: "User Guides", successResult: "User Guides Started",
+                errorResult: "Error in Starting User Guides", updatesProject: false, endpoint: "/api/projects/{id}/documenting/user-guides", method: "POST", "body": {}
+            },
+            {
+                key: 'done', name: "Done", successResult: "Documenting Phase Completed",
+                errorResult: "Error in Completing Documenting Phase", updatesProject: false
+            }
         ]
     },
     {
@@ -97,10 +172,22 @@ export const phases = [
         name: "Project Completion",
         title: "Project Completion Phase",
         stages: [
-            { key: 'start', name: "Start", result: "Start Final Phase", updatesProject: false },
-            { key: 'final-review', name: "Final Review", result: "Final Review Completed", updatesProject: false, endpoint: "/api/projects/{id}/project-completion/final-review", method: "POST", "body": {} },
-            { key: 'project-download', name: "Project Download", result: "Project Ready for Download", updatesProject: false, endpoint: "/api/projects/{id}/project-completion/project-download", method: "POST", "body": {} },
-            { key: 'done', name: "Done", result: "Project Creation Done!", updatesProject: false }
+            {
+                key: 'start', name: "Start", successResult: "Project Completion Phase Started",
+                errorResult: "Error in Starting Project Completion Phase", updatesProject: false
+            },
+            {
+                key: 'final-review', name: "Final Review", successResult: "Final Review Started",
+                errorResult: "Error in Starting Final Review", updatesProject: false, endpoint: "/api/projects/{id}/project-completion/final-review", method: "POST", "body": {}
+            },
+            {
+                key: 'project-download', name: "Project Download", successResult: "Project Download Started",
+                errorResult: "Error in Starting Project Download", updatesProject: false, endpoint: "/api/projects/{id}/project-completion/project-download", method: "POST", "body": {}
+            },
+            {
+                key: 'done', name: "Done", successResult: "Project Completion Phase Completed",
+                errorResult: "Error in Completing Project Completion Phase", updatesProject: false
+            }
         ]
     },
 ];

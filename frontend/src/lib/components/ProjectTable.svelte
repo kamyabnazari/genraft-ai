@@ -160,22 +160,14 @@
 								on:click={() => openProject(project.id)}
 								disabled={loading}
 							>
-								{#if loading}
-									<span class="loading loading-spinner"></span>
-								{:else}
-									<IconHistory style="font-size: x-large;" />
-								{/if}
+								<IconHistory style="font-size: x-large;" />
 							</button>
 							<button
 								class="btn btn-square btn-info"
 								on:click={() => downloadProject(project.id)}
 								disabled={loading}
 							>
-								{#if loading}
-									<span class="loading loading-spinner"></span>
-								{:else}
-									<IconDownload style="font-size: x-large;" />
-								{/if}
+								<IconDownload style="font-size: x-large;" />
 							</button>
 							<button
 								class="btn btn-square btn-error"

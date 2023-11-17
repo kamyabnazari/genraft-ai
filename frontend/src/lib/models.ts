@@ -16,7 +16,8 @@ export interface ProjectStats {
 export interface Stage {
   key: string;
   name: string;
-  result: string;
+  successResult: string;
+  errorResult: string;
   updatesProject: boolean;
   endpoint?: string;
   method?: string;

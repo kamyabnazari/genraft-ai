@@ -78,13 +78,14 @@
 	let phasesDone: boolean = false;
 	let stagesDone: boolean = false;
 	let loading: boolean = false;
+	let hasPhaseStarted: boolean = false;
+	let stageSuccessStatus: (boolean | null)[] = [];
 
-	async function callStageApi(stage: Stage) {
+	async function callStageApi(stage: Stage, stageIndex: number) {
 		try {
 			if (!stage.endpoint) {
-				// Handle stages without an endpoint
 				console.warn(`No endpoint specified for stage ${stage.name}`);
-				return;
+				return { success: true, data: null }; // Assuming no endpoint means success by default
 			}
 
 			const requestOptions: RequestInit = {
@@ -100,12 +101,18 @@
 			const response = await fetch(stage.endpoint, requestOptions);
 
 			if (!response.ok) {
-				throw new Error(`API call for stage ${stage.name} failed`);
+				console.error(`API call for stage ${stage.name} failed`);
+				stageSuccessStatus[stageIndex] = false;
+				return { success: false, data: null };
 			}
 
-			return response.json();
+			const data = await response.json();
+			stageSuccessStatus[stageIndex] = true;
+			return { success: true, data };
 		} catch (error) {
 			console.error('Error calling stage API:', error);
+			stageSuccessStatus[stageIndex] = false;
+			return { success: false, data: null };
 		}
 	}
 
@@ -138,45 +145,46 @@
 		});
 	}
 
-	// Function to start a specific phase
 	async function startPhase(phaseIndex: number) {
-		loading = true; // Start loading when a phase starts
+		loading = true;
+		hasPhaseStarted = true;
+		stageSuccessStatus = phases[phaseIndex].stages.map(() => null);
 
 		const updatedPhases = updatePhaseEndpoints(phases, projectId);
 		const phase = updatedPhases[phaseIndex];
+		let allStagesSuccessful = true;
+
 		for (let i = 0; i < phase.stages.length; i++) {
 			currentStageIndex.set(i);
 			const stage = phase.stages[i];
-			// Only call the API if an endpoint is specified for the stage
+
 			if (stage.endpoint) {
-				if (phase.key === 'idea-creation') {
-					const result = await callStageApi(stage);
-					console.log(result);
+				const result = await callStageApi(stage, i);
+				if (!result.success) {
+					allStagesSuccessful = false;
+					break; // Stop the phase if any stage fails
 				}
 			}
 
-			// Check if this stage requires updating the project
 			if (stage.updatesProject) {
 				await getProjectById();
 			}
-
 			await delay(1000);
 		}
-		stagesDone = true;
 
-		// Check if all phases are completed
-		if (phaseIndex === phases.length - 1) {
-			phasesDone = true;
-			loading = false; // Stop loading only after all phases are done
-		} else if ($automaticMode) {
-			// If not the last phase and in automatic mode, proceed to next phase
-			currentPhaseIndex.update((n) => n + 1);
-			currentStageIndex.set(0);
-			stagesDone = false;
-			await startPhase(phaseIndex + 1);
+		if (allStagesSuccessful) {
+			stagesDone = true;
+			if (phaseIndex < phases.length - 1 && $automaticMode) {
+				// Proceed to next phase in automatic mode
+				currentPhaseIndex.update((n) => n + 1);
+				await startPhase($currentPhaseIndex);
+			}
 		} else {
-			loading = false; // If in manual mode, stop loading after each phase
+			stagesDone = false;
 		}
+
+		loading = false;
+		phasesDone = phaseIndex === phases.length - 1 && stagesDone;
 	}
 
 	// Handle the start of a phase
@@ -189,22 +197,23 @@
 		currentPhaseIndex.update((n) => n + 1);
 		currentStageIndex.set(0);
 		stagesDone = false;
+		hasPhaseStarted = false;
 	}
 
 	async function handleDashboard() {
 		goto('/dashboard');
 	}
 
-	function getResultWithProjectData(stage: Stage) {
-		let resultWithProjectData = stage.result;
+	function getResultWithProjectData(stage: Stage, isSuccess: boolean) {
+		let resultWithProjectData = isSuccess ? stage.successResult : stage.errorResult;
 
-		if (stage.result.includes('{project.idea_initial}')) {
+		if (resultWithProjectData.includes('{project.idea_initial}')) {
 			resultWithProjectData = resultWithProjectData.replace(
 				'{project.idea_initial}',
 				project.idea_initial
 			);
 		}
-		if (stage.result.includes('{project.idea_final}')) {
+		if (resultWithProjectData.includes('{project.idea_final}')) {
 			resultWithProjectData = resultWithProjectData.replace(
 				'{project.idea_final}',
 				project.idea_final
@@ -274,10 +283,12 @@
 								<div class="timeline-end timeline-box">
 									{#if index === $currentStageIndex && loading}
 										<span class="loading loading-spinner"></span>
-									{:else if index < $currentStageIndex}
-										<p>{getResultWithProjectData(stage)}</p>
-									{:else if index === $currentStageIndex && stage.key === 'done'}
-										<p>{getResultWithProjectData(stage)}</p>
+									{:else if hasPhaseStarted && (index < $currentStageIndex || (index === $currentStageIndex && !loading))}
+										<p class={stageSuccessStatus[index] === false ? 'text-error' : ''}>
+											{stageSuccessStatus[index] !== null
+												? getResultWithProjectData(stage, !!stageSuccessStatus[index])
+												: getResultWithProjectData(stage, true)}
+										</p>
 									{:else}
 										<IconClock
 											style="font-size: large;"
@@ -296,7 +307,7 @@
 				</div>
 			</div>
 			<div class="mt-8 flex flex-row justify-center">
-				{#if stagesDone === false}
+				{#if !stagesDone && !phasesDone}
 					<button
 						class="btn btn-warning btn-wide"
 						type="button"
@@ -309,7 +320,7 @@
 							Start
 						{/if}
 					</button>
-				{:else if phasesDone === false}
+				{:else if stagesDone && !phasesDone}
 					<button
 						class="btn btn-neutral btn-wide"
 						type="button"
