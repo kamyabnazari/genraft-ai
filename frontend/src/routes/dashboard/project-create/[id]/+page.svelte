@@ -39,8 +39,6 @@
 
 	// Function to fetch project details by ID
 	async function getProjectById() {
-		loading = true;
-
 		try {
 			const response = await fetch(`/api/projects/${projectId}`, {
 				method: 'GET',
@@ -57,8 +55,6 @@
 			project = result;
 		} catch (error) {
 			console.error('Error fetching project idea:', error);
-		} finally {
-			loading = false;
 		}
 	}
 

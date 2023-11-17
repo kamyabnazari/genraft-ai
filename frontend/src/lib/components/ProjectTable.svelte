@@ -54,6 +54,8 @@
 	}
 
 	async function deleteProject(id: string) {
+		loading = true;
+
 		try {
 			const response = await fetch(`/api/projects/${id}`, {
 				method: 'DELETE',
@@ -76,6 +78,8 @@
 	}
 
 	async function downloadProject(id: string) {
+		loading = true;
+
 		try {
 			const response = await fetch(`/api/projects/${id}/download`, {
 				method: 'GET'
@@ -151,14 +155,38 @@
 					<td>{project.created_at.split('.')[0].replace('T', ' at ')}</td>
 					<th>
 						<div class="flex flex-row gap-4">
-							<button class="btn btn-square btn-primary" on:click={() => openProject(project.id)}>
-								<IconHistory style="font-size: x-large;" />
+							<button
+								class="btn btn-square btn-primary"
+								on:click={() => openProject(project.id)}
+								disabled={loading}
+							>
+								{#if loading}
+									<span class="loading loading-spinner"></span>
+								{:else}
+									<IconHistory style="font-size: x-large;" />
+								{/if}
 							</button>
-							<button class="btn btn-square btn-info" on:click={() => downloadProject(project.id)}>
-								<IconDownload style="font-size: x-large;" />
+							<button
+								class="btn btn-square btn-info"
+								on:click={() => downloadProject(project.id)}
+								disabled={loading}
+							>
+								{#if loading}
+									<span class="loading loading-spinner"></span>
+								{:else}
+									<IconDownload style="font-size: x-large;" />
+								{/if}
 							</button>
-							<button class="btn btn-square btn-error" on:click={() => deleteProject(project.id)}>
-								<IconBin style="font-size: x-large;" />
+							<button
+								class="btn btn-square btn-error"
+								on:click={() => deleteProject(project.id)}
+								disabled={loading}
+							>
+								{#if loading}
+									<span class="loading loading-spinner"></span>
+								{:else}
+									<IconBin style="font-size: x-large;" />
+								{/if}
 							</button>
 						</div>
 					</th>

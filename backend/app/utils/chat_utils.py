@@ -96,9 +96,10 @@ async def associate_chat_with_project_util(project_id, chat_id):
     )
     await database.execute(association_query)
 
-async def chat_exists_util(name: str):
+async def chat_thread_exists_util(primary_to_secondary_name: str, secondary_to_primary_name: str):
     query = chats.select().where(
-        (chats.c.chat_name == name)
+        (chats.c.chat_name == primary_to_secondary_name) | 
+        (chats.c.chat_name == secondary_to_primary_name)
     )
     result = await database.fetch_one(query)
     return result is not None
