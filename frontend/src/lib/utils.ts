@@ -24,7 +24,15 @@ export const phases = [
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
-            { key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", result: "Chat Concluded!", updatesProject: false, endpoint: "/api/projects/{id}/idea-creation/chat-stakeholder-consultant", method: "POST", "body": {} },
+            {
+                key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", result: "Chat Concluded!", updatesProject: false, endpoint: "/api/projects/{id}/chats/chat-stakeholder-consultant", method: "POST",
+                "body": {
+                    "chat_name": "project-{id}-chat-stakeholder-and-consultant",
+                    "chat_assistant_primary": "project-{id}-assistant-stakeholder",
+                    "chat_assistant_secondary": "project-{id}-assistant-consultant",
+                    "chat_goal": "The goal of this conversation is to use the initial project idea and create a detailed project idea out of it. When you have reached the final result, mark the final sentence with <END>"
+                }
+            },
             { key: 'idea-final', name: "Final Idea", result: "Final Idea: {project.idea_final}", updatesProject: true },
             { key: 'done', name: "Done", result: "Idea Creation Phase Done!", updatesProject: false }
         ]

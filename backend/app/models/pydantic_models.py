@@ -48,3 +48,9 @@ class CreateAssistantRequest(BaseModel):
     assistant_type: str
     assistant_instructions: str
     assistant_model: str
+
+class CreateChatRequest(BaseModel):
+    chat_name: str
+    chat_assistant_primary: str
+    chat_assistant_secondary: str
+    chat_goal: str

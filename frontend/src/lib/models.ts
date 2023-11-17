@@ -35,6 +35,10 @@ export interface Body {
   assistant_type?: string,
   assistant_instructions?: string,
   assistant_model?: string,
+  chat_name?: string,
+  chat_goal?: string,
+  chat_assistant_primary?: string,
+  chat_assistant_secondary?: string,
 }
 
 export type Phases = Phase[];
