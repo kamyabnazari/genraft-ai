@@ -13,21 +13,40 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         if await chat_exists_util(request_body.chat_name):
             return {"message": f"{request_body.chat_name} Chat already exists for this name"}
         
+        # Assitant Primary to Assistant Secondary Chat
+        
         # Create an assistant
-        chat_thread_data = await create_chat_thread_util()
+        primary_secondary_chat_thread_data = await create_chat_thread_util()
         
         # Insert the assistant data into the assistants table
-        chat_id = await insert_chat_data_util(
-            chat_thread_id=chat_thread_data.id,
-            chat_name=request_body.chat_name,
+        primary_secondary_chat_id = await insert_chat_data_util(
+            chat_thread_id=primary_secondary_chat_thread_data.id,
+            chat_name=request_body.chat_name + "-primary-to-secondary",
             chat_assistant_primary=request_body.chat_assistant_primary,
             chat_assistant_secondary=request_body.chat_assistant_secondary,
             chat_goal=request_body.chat_goal
             )
 
         # Associate the assistant with the project
-        await associate_chat_with_project_util(id, chat_id)
+        await associate_chat_with_project_util(id, primary_secondary_chat_id)
 
-        return {"message": f"{request_body.chat_name} Chat Created Successfully for project {id}", "chat_id": chat_id}
+        # Assitant Secondary to Assistant Primary Chat
+        
+        # Create an assistant
+        secondary_primary_chat_thread_data = await create_chat_thread_util()
+        
+        # Insert the assistant data into the assistants table
+        secondary_primary_chat_id = await insert_chat_data_util(
+            chat_thread_id=secondary_primary_chat_thread_data.id,
+            chat_name=request_body.chat_name + "-secondary-to-primary",
+            chat_assistant_primary=request_body.chat_assistant_secondary,
+            chat_assistant_secondary=request_body.chat_assistant_primary,
+            chat_goal=request_body.chat_goal
+            )
+
+        # Associate the assistant with the project
+        await associate_chat_with_project_util(id, secondary_primary_chat_id)
+
+        return {"message": f"Chat '{request_body.chat_name}' created successfully for project {id}"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating stakeholder assistant: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error creating chat: {str(e)}")
