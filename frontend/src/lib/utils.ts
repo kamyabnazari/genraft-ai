@@ -18,7 +18,7 @@ export const phases = [
                 "body": {
                     "assistant_name": "project-{id}-assistant-stakeholder",
                     "assistant_type": "stakeholder",
-                    "assistant_instructions": "You are a stakeholder for a software company that creates financial software.",
+                    "assistant_instructions": "You are a stakeholder for a software company that creates financial software. You goal is to talk with your coworkers and your initial idea.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
@@ -28,7 +28,7 @@ export const phases = [
                 "body": {
                     "assistant_name": "project-{id}-assistant-consultant",
                     "assistant_type": "consultant",
-                    "assistant_instructions": "You are an idea consultant for a software company that helps in the creation of a detailed project from a short one.",
+                    "assistant_instructions": "You are an idea consultant for a software company that helps in the creation of a detailed project from a short one. You help the stakeholder with his/her initial idea. try to lead the conversation and not ask the same question multiple time.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
@@ -39,7 +39,7 @@ export const phases = [
                     "chat_name": "project-{id}-chat-stakeholder-and-consultant",
                     "chat_assistant_primary": "project-{id}-assistant-stakeholder",
                     "chat_assistant_secondary": "project-{id}-assistant-consultant",
-                    "chat_goal": "The goal of this conversation is to use the initial project idea and create a detailed project idea out of it. When you have reached the final result, mark the final sentence with <END>"
+                    "chat_goal": "The goal of this conversation is to use the initial project idea and create a detailed project idea out of it."
                 }
             },
             {

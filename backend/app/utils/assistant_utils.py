@@ -86,3 +86,9 @@ async def get_project_openai_assistant_ids_util(project_id: int):
     # Execute the query and fetch results
     result = await database.fetch_all(join_query)
     return [row['assistant_id'] for row in result]
+
+# Function to get the OpenAI Assistant ID using the assistant name
+async def get_openai_assistant_id_by_name_util(assistant_name: str):
+    query = select([assistants.c.assistant_id]).where(assistants.c.assistant_name == assistant_name)
+    result = await database.fetch_one(query)
+    return result['assistant_id'] if result else None
