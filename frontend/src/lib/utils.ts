@@ -33,7 +33,7 @@ export const phases = [
                 }
             },
             {
-                key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", successResult: "Chat Started with Stakeholder and Consultant",
+                key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", successResult: "Chat Ended Successfully!",
                 errorResult: "Error in Starting Chat with Stakeholder and Consultant", updatesProject: false, endpoint: "/api/projects/{id}/chats/chat-stakeholder-consultant", method: "POST",
                 "body": {
                     "chat_name": "project-{id}-chat-stakeholder-and-consultant",

@@ -148,7 +148,10 @@ async def chat_thread_exists_util(chat_name: str, primary_to_secondary_name: str
     chat_query = chats.select().where(
         chats.c.chat_name == chat_name
     )
-    chat_exists = await database.fetch_one(chat_query) is not None
+    chat_result = await database.fetch_one(chat_query)
+
+    if chat_result:
+        return True, chat_result['id']  # Return True and the found chat_id
 
     # Check if the threads exist
     thread_query = threads.select().where(
@@ -157,7 +160,7 @@ async def chat_thread_exists_util(chat_name: str, primary_to_secondary_name: str
     )
     thread_exists = await database.fetch_one(thread_query) is not None
 
-    return chat_exists or thread_exists
+    return thread_exists, None  # Return False and None if no chat_id is found
 
 # Function to insert chat data into the database
 async def insert_chat_data_util(chat_name, chat_assistant_primary, chat_assistant_secondary, chat_goal, chat_messages):

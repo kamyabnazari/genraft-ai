@@ -17,12 +17,13 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         secondary_to_primary_name = request_body.chat_name + "-secondary-to-primary"
         
         # Check if the chat or its threads already exist
-        if await chat_thread_exists_util(
+        exists, chat_id = await chat_thread_exists_util(
             chat_name=request_body.chat_name,
             primary_to_secondary_name=primary_to_secondary_name,
             secondary_to_primary_name=secondary_to_primary_name
-        ):
-            return {"message": f"Chat or threads related to '{request_body.chat_name}' already exist"}
+        )
+        if exists:
+            return {"message": f"Chat or threads related to '{request_body.chat_name}' already exist", "chat_id": chat_id}
 
         # Assitant Primary to Assistant Secondary Chat
         
@@ -204,7 +205,7 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating chat: {str(e)}")
 
-@router.get("/get-chat-conversation/{chat_id}")
+@router.get("/{chat_id}")
 async def get_chat_conversation(chat_id: int):
     try:
         conversation = await fetch_conversation_util(chat_id)

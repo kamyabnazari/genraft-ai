@@ -98,6 +98,7 @@
 	let loading: boolean = false;
 	let hasPhaseStarted: boolean = false;
 	let stageSuccessStatus: (boolean | null)[] = [];
+	let chatId: string;
 
 	async function callStageApi(stage: Stage, stageIndex: number) {
 		try {
@@ -126,6 +127,13 @@
 
 			const data = await response.json();
 			stageSuccessStatus[stageIndex] = true;
+
+			// Check if the response contains a chat_id and store it
+			if (data.chat_id) {
+				chatId = data.chat_id;
+				fetchChatHistory(chatId);
+			}
+
 			return { success: true, data };
 		} catch (error) {
 			console.error('Error calling stage API:', error);
@@ -225,6 +233,32 @@
 
 	async function handleDashboard() {
 		goto('/dashboard');
+	}
+
+	async function fetchChatHistory(chatId: string) {
+		if (!chatId) {
+			console.error('Chat ID is not available');
+			return;
+		}
+		try {
+			const response = await fetch(`/api/projects/${projectId}/chats/${chatId}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error('Server responded with an error!');
+			}
+
+			const result = await response.json();
+			let chatMessages = result;
+
+			console.log(chatMessages);
+		} catch (error) {
+			console.error('Error fetching chat messages:', error);
+		}
 	}
 
 	function getResultWithProjectData(stage: Stage, isSuccess: boolean) {
