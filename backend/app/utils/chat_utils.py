@@ -1,3 +1,4 @@
+import json
 from openai import OpenAI, OpenAIError
 from app.core.config import settings
 from app.models.database import chats, project_chat_association
@@ -55,6 +56,17 @@ async def get_assistant_messages_util(thread_id):
     except OpenAIError as e:
         raise e
 
+async def fetch_conversation_util(chat_id: int):
+    try:
+        query = select([chats.c.chat_messages]).where(chats.c.id == chat_id)
+        result = await database.fetch_one(query)
+        if result:
+            return json.loads(result['chat_messages'])
+        else:
+            return None
+    except Exception as e:
+        raise e
+
 async def delete_project_chats_util(project_id: int):
     try:
         # Retrieve chat thread IDs associated with the project
@@ -92,6 +104,17 @@ async def insert_chat_data_util(chat_thread_id, chat_name, chat_assistant_primar
     )
     chat_id = await database.execute(chat_query)
     return chat_id
+
+async def save_conversation_util(chat_id, conversation):
+    try:
+        update_query = chats.update().where(
+            chats.c.id == chat_id
+        ).values(
+            chat_messages=json.dumps(conversation)
+        )
+        await database.execute(update_query)
+    except Exception as e:
+        raise e
 
 # Function to associate chat with a project
 async def associate_chat_with_project_util(project_id, chat_id):

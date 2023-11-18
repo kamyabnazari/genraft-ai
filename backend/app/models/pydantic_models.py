@@ -9,13 +9,6 @@ class Project(BaseModel):
     folder_path: str
     created_at: datetime
 
-class ChatMessage(BaseModel):
-    id: int
-    thread_id: str
-    content: str
-    role: str
-    created_at: datetime
-
 class Assistant(BaseModel):
     id: int
     assistant_id: str

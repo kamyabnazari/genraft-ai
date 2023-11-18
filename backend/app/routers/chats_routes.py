@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
 from app.utils.project_utils import get_project_folder_path_util, get_project_idea_initial_util
 from app.models.pydantic_models import CreateChatRequest
-from app.utils.chat_utils import create_chat_thread_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, poll_for_completion_util, send_initial_message_util
+from app.utils.chat_utils import create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
 from app.dependencies import get_database
 import json
 import os
@@ -166,12 +166,19 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
             # Check for End Condition in both threads
             if "<END>" in latest_response_from_consultant or "<END>" in latest_response_from_stakeholder:
                 break
+        
+        # Save the conversation in the database
+        await save_conversation_util(primary_secondary_chat_id, conversation)
+        await save_conversation_util(secondary_primary_chat_id, conversation)
 
         # Assuming you have the folder_path from get_project_folder_path_util
         folder_path = await get_project_folder_path_util(id)
-
+        
+        json_name = request_body.chat_name.replace('-', '_').lower()
+        file_name = f"logs_chat_messages_{json_name}.json"
+        
         # Define file path using folder_path
-        conversation_file_path = os.path.join(folder_path, 'conversation.json')
+        conversation_file_path = os.path.join(folder_path, file_name)
 
         # Save the conversation to a JSON file
         with open(conversation_file_path, 'w') as file:
@@ -180,3 +187,11 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         return {"message": f"Chat '{request_body.chat_name}' created successfully for project {id}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating chat: {str(e)}")
+
+@router.get("/get-chat-conversation/{chat_id}")
+async def get_chat_conversation(chat_id: int):
+    try:
+        conversation = await fetch_conversation_util(chat_id)
+        return {"conversation": conversation}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching conversation: {str(e)}")
