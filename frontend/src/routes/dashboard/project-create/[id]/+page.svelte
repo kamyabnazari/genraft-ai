@@ -25,8 +25,10 @@
 	let chatContainer: HTMLDivElement;
 	let stagesContainer: HTMLDivElement;
 	let messages = writable<string[]>([]);
-	let messagesArray: string[] = [];
-	let messagesArrayString: string = '';
+	type ChatMessage = {
+		sender: string;
+		message: string;
+	};
 
 	// Reactive declaration for projectId
 	let projectId: string = '';
@@ -81,11 +83,6 @@
 			}
 		}
 	}
-
-	messages.subscribe((value) => {
-		messagesArray = value;
-		messagesArrayString = JSON.stringify(value);
-	});
 
 	// Stages and Phases
 
@@ -253,9 +250,12 @@
 			}
 
 			const result = await response.json();
-			let chatMessages = result;
 
-			console.log(chatMessages);
+			// Update the messages store with the new chat history
+			messages.set(
+				result.conversation.map((item: ChatMessage) => `${item.sender}: ${item.message}`)
+			);
+			scrollToBottomChatContainer(); // Scroll to the bottom of the chat
 		} catch (error) {
 			console.error('Error fetching chat messages:', error);
 		}
@@ -416,32 +416,36 @@
 					class="form-control chat-container bg-base-100 border-rounded border-base-300 flex-grow overflow-y-auto rounded-lg border-2 p-2"
 					bind:this={chatContainer}
 				>
-					{#each $messages as message (message)}
-						<div class={0 === 0 ? 'chat chat-end my-4' : 'chat chat-start my-4'}>
+					{#each $messages as message, index (index)}
+						<div
+							class={message.startsWith('stakeholder')
+								? 'chat chat-end my-4'
+								: 'chat chat-start my-4'}
+						>
 							<div class="chat-image avatar">
 								<div class="w-10 rounded-lg shadow-sm">
-									{#if 0 === 0}
+									{#if message.startsWith('stakeholder')}
 										<img
-											src={true
-												? `https://ui-avatars.com/api/?name=user`
-												: `https://ui-avatars.com/api/?name=computer`}
-											alt="user avatar"
-											id="avatar-preview-navbar"
+											src={`https://ui-avatars.com/api/?name=Stakeholder`}
+											alt="Stakeholder avatar"
 										/>
 									{:else}
-										<img src="/favicon.png" alt="ee avatar" />
+										<img
+											src={`https://ui-avatars.com/api/?name=Consultant`}
+											alt="Consultant avatar"
+										/>
 									{/if}
 								</div>
 							</div>
 							<div class="chat-header">
-								{0 === 0 ? 'user' : 'computer'}
+								{message.split(':')[0]}
 							</div>
 							<div
-								class={0 === 0
+								class={message.startsWith('stakeholder')
 									? 'chat-bubble chat-bubble-primary shadow-sm'
 									: 'chat-bubble chat-bubble-info shadow-sm'}
 							>
-								Text message
+								{message.split(':').slice(1).join(':')}
 							</div>
 						</div>
 					{/each}
