@@ -53,10 +53,12 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         
         # Initating the Chat process!
 
+        conversation = []
+
         # Step 1: Prepare the initial message for the first thread
         idea_initial = await get_project_idea_initial_util(id)
         
-        initial_message = (
+        initial_message_chat_1 = (
             "The goal of this conversation is: " + request_body.chat_goal + 
             ". Here is my initial project idea: " + idea_initial +
             ". Important: When you have reached the final result, mark the final sentence with <END>"
@@ -72,90 +74,108 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         # Step 2: Start the Conversation in the First Thread
         primary_to_secondary_run = await send_initial_message_util(
             thread_id=primary_secondary_chat_thread_data.id,
-            assistant_id=primary_assistant_id,
-            initial_message=initial_message
+            assistant_id=secondary_assistant_id,
+            initial_message=initial_message_chat_1
         )
 
         # Wait for the response
         if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, primary_to_secondary_run.id):
             return {"message": "Error in completing the first chat"}
-
-        # Step 3: Relay the Response to the Second Thread
+        
+        # Get the last message from the first thread
         primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
-        response_from_first_assistant = primary_to_secondary_messages[-1]
+        response_from_secondary_assistant = primary_to_secondary_messages[0]
+                
+        initial_message_chat_2 = (
+            "This was your initial idea: " + idea_initial + 
+            ". Here was my firs response to your initial idea: " + response_from_secondary_assistant +
+            ". I want you to responsed to my response please."
+        )
 
         # Start the conversation in the second thread with the response from the first
         secondary_to_primary_run = await send_initial_message_util(
             thread_id=secondary_primary_chat_thread_data.id,
-            assistant_id=secondary_assistant_id,
-            initial_message=response_from_first_assistant
+            assistant_id=primary_assistant_id,
+            initial_message=initial_message_chat_2
         )
+        
+        # Wait for the response
+        if not await poll_for_completion_util(secondary_primary_chat_thread_data.id, secondary_to_primary_run.id):
+            return {"message": "Error in completing the second chat"}
+        
+        # Get the last message from the first thread
+        secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)
+        response_from_primary_assistant = secondary_to_primary_messages[0]
+                
+        # Add initial messages to the conversation list
 
+        # Append messages with identifiers to the conversation list
+        conversation.append({"sender": "stakeholder", "message": initial_message_chat_1})
+        conversation.append({"sender": "consultant", "message": response_from_secondary_assistant})
+        conversation.append({"sender": "consultant", "message": initial_message_chat_2})
+        conversation.append({"sender": "stakeholder", "message": response_from_primary_assistant})
+        
+        # Initial setup for the loop with the first set of responses
+        latest_response_from_stakeholder = response_from_primary_assistant
+        latest_response_from_consultant = response_from_secondary_assistant
+        
         # Define maximum number of exchanges to prevent infinite loops
-        max_exchanges = 3
+        max_exchanges = 1
         current_exchanges = 0
-
-        while current_exchanges < max_exchanges:
-            # Step 4: Conversation Loop
-            
-            # Wait for the second assistant's response
-            if not await poll_for_completion_util(secondary_primary_chat_thread_data.id, secondary_to_primary_run.id):
-                break  # Exit loop if there's an issue with the response
-
-            # Get the last message from the second thread
-            secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)
-            response_from_second_assistant = secondary_to_primary_messages[-1]
-
-            # Send this message as input to the first thread
+        
+        while current_exchanges < max_exchanges:                  
+            # Consultant (secondary assistant) responding to the latest message from Stakeholder
             primary_to_secondary_run = await send_initial_message_util(
                 thread_id=primary_secondary_chat_thread_data.id,
                 assistant_id=secondary_assistant_id,
-                initial_message=response_from_second_assistant
+                initial_message=latest_response_from_stakeholder
             )
-
-            # Continue the loop with the roles reversed
+            
+            
+            # Wait for the response
             if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, primary_to_secondary_run.id):
-                break  # Exit loop if there's an issue with the response
-
-            # Get the last message from the first thread
+                return {"message": "Error in completing the first chat"}
+            
             primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
-            response_from_first_assistant = primary_to_secondary_messages[-1]
 
-            print(f"Latest message from primary to secondary: {response_from_second_assistant}")
-            print(f"Latest message from secondary to primary: {response_from_first_assistant}")
+            latest_response_from_consultant = primary_to_secondary_messages[0]
 
-            # Send this message as input to the second thread
+            # Append consultant's response to the conversation
+            conversation.append({"sender": "consultant", "message": latest_response_from_consultant})
+
+            # Stakeholder (primary assistant) responding to the latest message from Consultant
             secondary_to_primary_run = await send_initial_message_util(
                 thread_id=secondary_primary_chat_thread_data.id,
                 assistant_id=primary_assistant_id,
-                initial_message=response_from_first_assistant
+                initial_message=latest_response_from_consultant
             )
+
+            # Wait for the response
+            if not await poll_for_completion_util(secondary_primary_chat_thread_data.id, secondary_to_primary_run.id):
+                return {"message": "Error in completing the second chat"}
+            
+            secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)            
+            latest_response_from_stakeholder = secondary_to_primary_messages[0]
+            
+            # Append stakeholder's response to the conversation
+            conversation.append({"sender": "stakeholder", "message": latest_response_from_stakeholder})
 
             # Increment the exchange count
             current_exchanges += 1
 
-            # Step 5: Check for End Condition
-            if "<END>" in response_from_second_assistant:
-                break  # End the conversation if the end condition is met
+            # Check for End Condition in both threads
+            if "<END>" in latest_response_from_consultant or "<END>" in latest_response_from_stakeholder:
+                break
 
-        # Step 6: Store and Process the Final Conversation
-        final_primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
-        final_secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)
-        
         # Assuming you have the folder_path from get_project_folder_path_util
         folder_path = await get_project_folder_path_util(id)
 
-        # Define file paths using folder_path
-        primary_to_secondary_file_path = os.path.join(folder_path, 'primary_to_secondary_chat_messages.json')
-        secondary_to_primary_file_path = os.path.join(folder_path, 'secondary_to_primary_chat_messages.json')
+        # Define file path using folder_path
+        conversation_file_path = os.path.join(folder_path, 'conversation.json')
 
-        # Save the primary to secondary messages to a JSON file
-        with open(primary_to_secondary_file_path, 'w') as file:
-            json.dump(final_primary_to_secondary_messages, file, indent=4)
-
-        # Save the secondary to primary messages to a JSON file
-        with open(secondary_to_primary_file_path, 'w') as file:
-            json.dump(final_secondary_to_primary_messages, file, indent=4)
+        # Save the conversation to a JSON file
+        with open(conversation_file_path, 'w') as file:
+            json.dump(conversation, file, indent=4)
         
         return {"message": f"Chat '{request_body.chat_name}' created successfully for project {id}"}
     except Exception as e:

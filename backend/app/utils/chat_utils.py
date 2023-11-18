@@ -43,10 +43,15 @@ async def poll_for_completion_util(thread_id, run_id, timeout=60):
 async def get_assistant_messages_util(thread_id):
     try:
         messages_response = client.beta.threads.messages.list(thread_id=thread_id)
-        return [
-            cp.text.value for msg in messages_response.data if msg.role == "assistant"
-            for cp in msg.content if cp.type == 'text' and hasattr(cp, 'text')
-        ]
+        assistant_messages = []
+        
+        for msg in messages_response.data:
+            if msg.role == "assistant":
+                for cp in msg.content:
+                    if cp.type == 'text' and hasattr(cp, 'text'):
+                        assistant_messages.append(cp.text.value)
+
+        return assistant_messages
     except OpenAIError as e:
         raise e
 

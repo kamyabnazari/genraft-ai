@@ -18,7 +18,7 @@ export const phases = [
                 "body": {
                     "assistant_name": "project-{id}-assistant-stakeholder",
                     "assistant_type": "stakeholder",
-                    "assistant_instructions": "You are a stakeholder for a software company that creates financial software. You goal is to talk with your coworkers and your initial idea.",
+                    "assistant_instructions": "You play the role of a stakeholder, you have an initial idea that you want to be created. You goal is to talk with your employees about your initial idea and give answares to their questions.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
@@ -28,7 +28,7 @@ export const phases = [
                 "body": {
                     "assistant_name": "project-{id}-assistant-consultant",
                     "assistant_type": "consultant",
-                    "assistant_instructions": "You are an idea consultant for a software company that helps in the creation of a detailed project from a short one. You help the stakeholder with his/her initial idea. try to lead the conversation and not ask the same question multiple time.",
+                    "assistant_instructions": "You play the role of an idea consultant that helps stakeholder in the creation of a detailed project from a short one. You help the stakeholder with his/her initial idea. try to lead the conversation and not ask the same question multiple time.",
                     "assistant_model": "gpt-3.5-turbo"
                 }
             },
