@@ -18,12 +18,23 @@ chats = Table(
     "chats",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("chat_thread_id", String, nullable=False),  # ID returned by OpenAI API
     Column("chat_name", String, nullable=False),
     Column("chat_assistant_primary", String, nullable=False),
     Column("chat_assistant_secondary", String, nullable=False),
     Column("chat_goal", String, nullable=False),
     Column("chat_messages", String, nullable=True),
+    Column("created_at", DateTime, nullable=False)
+)
+
+threads = Table(
+    "threads",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("thread_id", String, nullable=False),  # ID returned by OpenAI API
+    Column("thread_name", String, nullable=False),
+    Column("thread_assistant_primary", String, nullable=False),
+    Column("thread_assistant_secondary", String, nullable=False),
+    Column("thread_goal", String, nullable=False),
     Column("created_at", DateTime, nullable=False)
 )
 
@@ -51,6 +62,13 @@ project_chat_association = Table(
     metadata,
     Column("project_id", Integer, ForeignKey("projects.id"), primary_key=True),
     Column("chat_id", Integer, ForeignKey("chats.id"), primary_key=True)
+)
+
+chat_thread_association = Table(
+    "chat_thread_association",
+    metadata,
+    Column("chat_id", Integer, ForeignKey("chats.id"), primary_key=True),
+    Column("thread_id", Integer, ForeignKey("threads.id"), primary_key=True)
 )
 
 def create_tables(engine):

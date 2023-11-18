@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
 from app.utils.project_utils import get_project_folder_path_util, get_project_idea_initial_util
 from app.models.pydantic_models import CreateChatRequest
-from app.utils.chat_utils import create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
+from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
 from app.dependencies import get_database
 import json
 import os
@@ -16,13 +16,14 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         primary_to_secondary_name = request_body.chat_name + "-primary-to-secondary"
         secondary_to_primary_name = request_body.chat_name + "-secondary-to-primary"
         
-        # Check if the chat threads already exist
+        # Check if the chat or its threads already exist
         if await chat_thread_exists_util(
+            chat_name=request_body.chat_name,
             primary_to_secondary_name=primary_to_secondary_name,
             secondary_to_primary_name=secondary_to_primary_name
         ):
-            return {"message": f"Chat threads related to '{request_body.chat_name}' already exist"}
-        
+            return {"message": f"Chat or threads related to '{request_body.chat_name}' already exist"}
+
         # Assitant Primary to Assistant Secondary Chat
         
         # Create an assistant
@@ -30,27 +31,39 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         secondary_primary_chat_thread_data = await create_chat_thread_util()
         
         # Insert the assistant data into the assistants table
-        primary_secondary_chat_id = await insert_chat_data_util(
-            chat_thread_id=primary_secondary_chat_thread_data.id,
-            chat_name=primary_to_secondary_name,
+        chat_id = await insert_chat_data_util(
+            chat_name=request_body.chat_name,
             chat_assistant_primary=request_body.chat_assistant_primary,
             chat_assistant_secondary=request_body.chat_assistant_secondary,
-            chat_goal=request_body.chat_goal
+            chat_goal=request_body.chat_goal,
+            chat_messages=""
             )
         
         # Insert the assistant data into the assistants table
-        secondary_primary_chat_id = await insert_chat_data_util(
-            chat_thread_id=secondary_primary_chat_thread_data.id,
-            chat_name=secondary_to_primary_name,
-            chat_assistant_primary=request_body.chat_assistant_secondary,
-            chat_assistant_secondary=request_body.chat_assistant_primary,
-            chat_goal=request_body.chat_goal
+        primary_secondary_thread_id = await insert_thread_data_util(
+            thread_id=primary_secondary_chat_thread_data.id,
+            thread_name=primary_to_secondary_name,
+            thread_assistant_primary=request_body.chat_assistant_primary,
+            thread_assistant_secondary=request_body.chat_assistant_secondary,
+            thread_goal=request_body.chat_goal
             )
         
-        # Associate the assistant with the project
-        await associate_chat_with_project_util(id, primary_secondary_chat_id)
-        await associate_chat_with_project_util(id, secondary_primary_chat_id)
+        # Insert the assistant data into the assistants table
+        secondary_primary_thread_id = await insert_thread_data_util(
+            thread_id=secondary_primary_chat_thread_data.id,
+            thread_name=secondary_to_primary_name,
+            thread_assistant_primary=request_body.chat_assistant_secondary,
+            thread_assistant_secondary=request_body.chat_assistant_primary,
+            thread_goal=request_body.chat_goal
+            )
         
+        # Associate the chat with the project
+        await associate_chat_with_project_util(id, chat_id)
+
+        # Associate the thread with the chat
+        await associate_thread_with_chat_util(chat_id, primary_secondary_thread_id)
+        await associate_thread_with_chat_util(chat_id, secondary_primary_thread_id)
+                
         # Initating the Chat process!
 
         conversation = []
@@ -168,8 +181,8 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
                 break
         
         # Save the conversation in the database
-        await save_conversation_util(primary_secondary_chat_id, conversation)
-        await save_conversation_util(secondary_primary_chat_id, conversation)
+        await save_conversation_util(primary_secondary_thread_id, conversation)
+        await save_conversation_util(secondary_primary_thread_id, conversation)
 
         # Assuming you have the folder_path from get_project_folder_path_util
         folder_path = await get_project_folder_path_util(id)
@@ -184,7 +197,10 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         with open(conversation_file_path, 'w') as file:
             json.dump(conversation, file, indent=4)
         
-        return {"message": f"Chat '{request_body.chat_name}' created successfully for project {id}"}
+        return {
+            "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
+            "chat_id": chat_id
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating chat: {str(e)}")
 
