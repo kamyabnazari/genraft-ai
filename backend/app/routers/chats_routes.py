@@ -10,8 +10,8 @@ import os
 router = APIRouter()
 database = get_database()
 
-@router.post("/chat-stakeholder-consultant")
-async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
+@router.post("/create-chat")
+async def create_chat(id: int, request_body: CreateChatRequest):
     try:
         primary_to_secondary_name = request_body.chat_name + "-primary-to-secondary"
         secondary_to_primary_name = request_body.chat_name + "-secondary-to-primary"
@@ -64,7 +64,10 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         # Associate the thread with the chat
         await associate_thread_with_chat_util(chat_id, primary_secondary_thread_id)
         await associate_thread_with_chat_util(chat_id, secondary_primary_thread_id)
-                
+        
+        sender_name_primary = request_body.chat_assistant_primary.split(f"project-{id}-assistant-")[-1]
+        sender_name_secondary = request_body.chat_assistant_secondary.split(f"project-{id}-assistant-")[-1]
+        
         # Initating the Chat process!
 
         conversation = []
@@ -102,7 +105,7 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
                 
         initial_message_chat_2 = (
             "This was your initial idea: " + idea_initial + 
-            ". Here was my firs response to your initial idea: " + response_from_secondary_assistant +
+            ". Here was my first response to your initial idea: " + response_from_secondary_assistant +
             ". I want you to responsed to my response please."
         )
 
@@ -124,10 +127,10 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
         # Add initial messages to the conversation list
 
         # Append messages with identifiers to the conversation list
-        conversation.append({"sender": "stakeholder", "message": initial_message_chat_1})
-        conversation.append({"sender": "consultant", "message": response_from_secondary_assistant})
-        conversation.append({"sender": "consultant", "message": initial_message_chat_2})
-        conversation.append({"sender": "stakeholder", "message": response_from_primary_assistant})
+        conversation.append({"sender": sender_name_primary, "message": initial_message_chat_1})
+        conversation.append({"sender": sender_name_secondary, "message": response_from_secondary_assistant})
+        conversation.append({"sender": sender_name_secondary, "message": initial_message_chat_2})
+        conversation.append({"sender": sender_name_primary, "message": response_from_primary_assistant})
         
         # Initial setup for the loop with the first set of responses
         latest_response_from_stakeholder = response_from_primary_assistant
@@ -155,7 +158,7 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
             latest_response_from_consultant = primary_to_secondary_messages[0]
 
             # Append consultant's response to the conversation
-            conversation.append({"sender": "consultant", "message": latest_response_from_consultant})
+            conversation.append({"sender": sender_name_secondary, "message": latest_response_from_consultant})
 
             # Stakeholder (primary assistant) responding to the latest message from Consultant
             secondary_to_primary_run = await send_initial_message_util(
@@ -172,7 +175,7 @@ async def chat_stakeholder_consultant(id: int, request_body: CreateChatRequest):
             latest_response_from_stakeholder = secondary_to_primary_messages[0]
             
             # Append stakeholder's response to the conversation
-            conversation.append({"sender": "stakeholder", "message": latest_response_from_stakeholder})
+            conversation.append({"sender": sender_name_primary, "message": latest_response_from_stakeholder})
 
             # Increment the exchange count
             current_exchanges += 1

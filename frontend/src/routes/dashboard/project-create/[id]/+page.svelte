@@ -437,7 +437,7 @@
 					{#each $messages as message (message)}
 						<div class={'chat ' + determineAlignment(message.split(':')[0]) + ' my-4'}>
 							<div class="chat-header">
-								{message.split(':')[0]}
+								{message.split(':')[0].toUpperCase()}
 							</div>
 							<div
 								class={'chat-bubble ' + determineBubbleStyle(message.split(':')[0]) + ' shadow-sm'}

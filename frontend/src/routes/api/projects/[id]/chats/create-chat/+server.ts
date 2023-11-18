@@ -12,7 +12,7 @@ export async function POST({ params, request }) {
     }
 
     try {
-        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/chats/chat-stakeholder-consultant`, {
+        const response = await fetch(`${env.PRIVATE_BACKEND_URL}/api/projects/${id}/chats/create-chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody)

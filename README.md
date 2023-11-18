@@ -1,9 +1,5 @@
 # Genraft AI
 
-⚠️ This project is work in progress, reaching 0.1.0 version end of November 2023!
-
-If it becomes popular, further work will be made on this project, it depends on the support made by you guys.
-
 <div style="text-align: center;">
   <img src="misc/genraft_ai_icon.png" alt="Genraft AI Framework Logo" style="max-width: 30%; height: auto; display: block; margin: 0 auto;">
 </div>
@@ -22,11 +18,11 @@ The Genraft AI Toolkit is a dynamic resource for creating sophisticated backend 
 
 ## Available Convenience
 
-- Dockerfile supported 
+- Dockerfile supported
 - Docker Compose supported
 - kubernetes supported
 - MonoRepo Project supported
-- Separate Services for Frontend and Backend supported 
+- Separate Services for Frontend and Backend supported
 
 ## Getting Started
 
@@ -93,11 +89,13 @@ Please setup in the following order:
 ---
 
 ### Wiki
+
 How is the process and worklflow behind the generative software development? Read more on the [Wiki](WIKI.md) page.
 
 ---
 
 ### License
+
 This project is licensed under the [Apache-2.0 license] License - see the LICENSE file for details.
 
 ---
