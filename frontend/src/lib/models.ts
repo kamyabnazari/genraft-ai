@@ -13,6 +13,11 @@ export interface ProjectStats {
   total_assets: number;
 }
 
+export interface ChatMessage {
+  sender: string;
+  message: string;
+};
+
 export interface Stage {
   key: string;
   name: string;

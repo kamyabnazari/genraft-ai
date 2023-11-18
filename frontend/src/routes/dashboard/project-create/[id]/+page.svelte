@@ -10,7 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
-	import type { Phases, Project, Stage } from '$lib/models';
+	import type { Phases, Project, Stage, ChatMessage } from '$lib/models';
 	import { phases } from '$lib/utils';
 
 	let project: Project = {
@@ -25,10 +25,6 @@
 	let chatContainer: HTMLDivElement;
 	let stagesContainer: HTMLDivElement;
 	let messages = writable<string[]>([]);
-	type ChatMessage = {
-		sender: string;
-		message: string;
-	};
 
 	// Reactive declaration for projectId
 	let projectId: string = '';
@@ -59,6 +55,23 @@
 		} catch (error) {
 			console.error('Error fetching project idea:', error);
 		}
+	}
+
+	let uniqueSenders = writable(new Set());
+	let firstSender: string | unknown = '';
+
+	uniqueSenders.subscribe((senders) => {
+		firstSender = Array.from(senders)[0];
+	});
+
+	function determineAlignment(sender: string) {
+		// Assign one style to the first sender and another to the second sender
+		return sender === firstSender ? 'chat-end' : 'chat-start';
+	}
+
+	function determineBubbleStyle(sender: string) {
+		// Similar logic for bubble style
+		return sender === firstSender ? 'chat-bubble-primary' : 'chat-bubble-info';
 	}
 
 	async function scrollToBottomChatContainer() {
@@ -255,6 +268,11 @@
 			messages.set(
 				result.conversation.map((item: ChatMessage) => `${item.sender}: ${item.message}`)
 			);
+
+			// Extract unique senders and update the uniqueSenders store
+			let senders = new Set(result.conversation.map((item: ChatMessage) => item.sender));
+			uniqueSenders.set(senders);
+
 			scrollToBottomChatContainer(); // Scroll to the bottom of the chat
 		} catch (error) {
 			console.error('Error fetching chat messages:', error);
@@ -416,34 +434,13 @@
 					class="form-control chat-container bg-base-100 border-rounded border-base-300 flex-grow overflow-y-auto rounded-lg border-2 p-2"
 					bind:this={chatContainer}
 				>
-					{#each $messages as message, index (index)}
-						<div
-							class={message.startsWith('stakeholder')
-								? 'chat chat-end my-4'
-								: 'chat chat-start my-4'}
-						>
-							<div class="chat-image avatar">
-								<div class="w-10 rounded-lg shadow-sm">
-									{#if message.startsWith('stakeholder')}
-										<img
-											src={`https://ui-avatars.com/api/?name=Stakeholder`}
-											alt="Stakeholder avatar"
-										/>
-									{:else}
-										<img
-											src={`https://ui-avatars.com/api/?name=Consultant`}
-											alt="Consultant avatar"
-										/>
-									{/if}
-								</div>
-							</div>
+					{#each $messages as message (message)}
+						<div class={'chat ' + determineAlignment(message.split(':')[0]) + ' my-4'}>
 							<div class="chat-header">
 								{message.split(':')[0]}
 							</div>
 							<div
-								class={message.startsWith('stakeholder')
-									? 'chat-bubble chat-bubble-primary shadow-sm'
-									: 'chat-bubble chat-bubble-success shadow-sm'}
+								class={'chat-bubble ' + determineBubbleStyle(message.split(':')[0]) + ' shadow-sm'}
 							>
 								{message.split(':').slice(1).join(':')}
 							</div>
