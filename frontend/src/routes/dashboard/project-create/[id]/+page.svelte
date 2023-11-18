@@ -443,7 +443,7 @@
 							<div
 								class={message.startsWith('stakeholder')
 									? 'chat-bubble chat-bubble-primary shadow-sm'
-									: 'chat-bubble chat-bubble-info shadow-sm'}
+									: 'chat-bubble chat-bubble-success shadow-sm'}
 							>
 								{message.split(':').slice(1).join(':')}
 							</div>
