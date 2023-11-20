@@ -176,13 +176,10 @@ async def insert_chat_data_util(chat_name, chat_assistant_primary, chat_assistan
     return chat_id
 
 # Function to insert thread data into the database
-async def insert_thread_data_util(thread_id, thread_name, thread_assistant_primary, thread_assistant_secondary, thread_goal):
+async def insert_thread_data_util(thread_id, thread_name):
     thread_query = threads.insert().values(
         thread_id=thread_id,
         thread_name=thread_name,
-        thread_assistant_primary=thread_assistant_primary,
-        thread_assistant_secondary=thread_assistant_secondary,
-        thread_goal=thread_goal,
         created_at=datetime.datetime.now()
     )
     thread_db_id = await database.execute(thread_query)

@@ -34,9 +34,6 @@ threads = Table(
     Column("id", Integer, primary_key=True),
     Column("thread_id", String, nullable=False),  # ID returned by OpenAI API
     Column("thread_name", String, nullable=False),
-    Column("thread_assistant_primary", String, nullable=False),
-    Column("thread_assistant_secondary", String, nullable=False),
-    Column("thread_goal", String, nullable=False),
     Column("created_at", DateTime, nullable=False)
 )
 

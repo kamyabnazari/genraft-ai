@@ -43,19 +43,13 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Insert the assistant data into the assistants table
         primary_secondary_thread_id = await insert_thread_data_util(
             thread_id=primary_secondary_chat_thread_data.id,
-            thread_name=primary_to_secondary_name,
-            thread_assistant_primary=request_body.chat_assistant_primary,
-            thread_assistant_secondary=request_body.chat_assistant_secondary,
-            thread_goal=request_body.chat_goal
+            thread_name=primary_to_secondary_name
             )
         
         # Insert the assistant data into the assistants table
         secondary_primary_thread_id = await insert_thread_data_util(
             thread_id=secondary_primary_chat_thread_data.id,
-            thread_name=secondary_to_primary_name,
-            thread_assistant_primary=request_body.chat_assistant_secondary,
-            thread_assistant_secondary=request_body.chat_assistant_primary,
-            thread_goal=request_body.chat_goal
+            thread_name=secondary_to_primary_name
             )
         
         # Associate the chat with the project

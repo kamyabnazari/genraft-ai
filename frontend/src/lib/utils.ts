@@ -44,7 +44,7 @@ export const phases = [
             },
             {
                 key: 'idea-final', name: "Final Idea", successResult: "Final Idea Created: {project.idea_final}",
-                errorResult: "Error in Creating Final Idea", updatesProject: false
+                errorResult: "Error in Creating Final Idea", updatesProject: true
             },
             {
                 key: 'done', name: "Done", successResult: "Idea Creation Phase Completed",
