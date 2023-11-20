@@ -39,7 +39,7 @@ export const phases = [
                     "chat_name": "project-{id}-chat-stakeholder-and-consultant",
                     "chat_assistant_primary": "project-{id}-assistant-stakeholder",
                     "chat_assistant_secondary": "project-{id}-assistant-consultant",
-                    "chat_goal": "It is to take the initial project idea and create a detailed project idea out of it."
+                    "chat_goal": "The objective is to collaboratively refine and expand the initial project idea into a detailed and actionable project concept, focusing exclusively on the idea's development. Discussions should center on elaborating the idea's specifics, potential features, and implementation strategy, while avoiding unrelated business or operational topics."
                 }
             },
             {

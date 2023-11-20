@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from app.models.database import projects
 from app.dependencies import get_database
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 database = get_database()
 
@@ -20,3 +20,7 @@ async def get_project_idea_initial_util(project_id: int):
         return result['idea_initial']
     else:
         raise HTTPException(status_code=404, detail=f"Project with id {project_id} not found")
+
+async def save_project_idea_final_util(project_id: int, final_idea: str):
+    query = update(projects).where(projects.c.id == project_id).values(idea_final=final_idea)
+    await database.execute(query)

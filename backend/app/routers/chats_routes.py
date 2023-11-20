@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
-from app.utils.project_utils import get_project_folder_path_util, get_project_idea_initial_util
+from app.utils.project_utils import get_project_folder_path_util, get_project_idea_initial_util, save_project_idea_final_util
 from app.utils.protocol_utils import chat_config
 from app.models.pydantic_models import CreateChatRequest
 from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
@@ -191,7 +191,10 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 start_index = latest_response_from_primary_assistant.find(output_format_start) + len(output_format_start)
                 end_index = latest_response_from_primary_assistant.find(output_format_end)
                 final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
-                print("Final Idea:", final_idea)
+                
+                # Save the final idea to the database
+                await save_project_idea_final_util(project_id=id, final_idea=final_idea)
+                
                 break
             
             # Increment the exchange count
