@@ -55,6 +55,9 @@
 			const result = await response.json();
 			project = result;
 
+			// Update the endpoints with the correct projectId
+			let projectPhases = updatePhaseEndpoints(phases, projectId);
+
 			const phaseIndex = phases.findIndex((p) => p.key === project.current_phase);
 			currentPhaseIndex.set(phaseIndex >= 0 ? phaseIndex : 0);
 
@@ -63,6 +66,23 @@
 					? phases[phaseIndex].stages.findIndex((s) => s.key === project.current_stage)
 					: 0;
 			currentStageIndex.set(stageIndex >= 0 ? stageIndex : 0);
+
+			if ($currentPhaseIndex !== 0 || $currentStageIndex !== 0) {
+				hasPhaseStarted = true;
+				stageSuccessStatus = phases[$currentPhaseIndex].stages.map((_, index) =>
+					index < $currentStageIndex ? true : null
+				);
+
+				// Call API for each completed stage to fetch chat history if necessary
+				for (let i = 0; i <= $currentStageIndex; i++) {
+					const stage = projectPhases[$currentPhaseIndex].stages[i];
+					if (stage.endpoint && stage.endpoint.includes('/chats/')) {
+						await callStageApi(stage, i); // Force call for completed stages
+					}
+				}
+			}
+
+			scrollToBottomStagesContainer();
 		} catch (error) {
 			console.error('Error fetching project idea:', error);
 		}
