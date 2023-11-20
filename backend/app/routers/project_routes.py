@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
 from app.utils.assistant_utils import delete_project_assistants_util
 from app.utils.chat_utils import delete_project_chats_util
-from app.models.pydantic_models import Project, InitializeProjectRequest
+from app.models.pydantic_models import Project, InitializeProjectRequest, UpdateProgressRequest
 from app.models.database import projects
 from app.dependencies import get_database
 from app.core.config import settings
@@ -70,7 +70,7 @@ async def initialize_project(request_body: InitializeProjectRequest):
 @router.get("/{id}", response_model=Project)
 async def get_project_by_id(id: int = Path(..., description="The ID of the project to retrieve")):
     try:
-        # Start by checking if the project exists
+        # Existing logic to fetch project
         select_query = projects.select().where(projects.c.id == id)
         project = await database.fetch_one(select_query)
 
@@ -145,4 +145,15 @@ async def download_project_by_id(id: int = Path(..., description="The ID of the 
         return FileResponse(zip_path, media_type='application/octet-stream', filename=os.path.basename(zip_path))
     except Exception as e:
         print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.patch("/{id}/update-progress")
+async def update_project_progress(id: int, request_body: UpdateProgressRequest):
+    try:
+        update_query = projects.update().\
+            where(projects.c.id == id).\
+            values(current_phase=request_body.current_phase, current_stage=request_body.current_stage)
+        await database.execute(update_query)
+        return {"message": "Project updated successfully"}
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

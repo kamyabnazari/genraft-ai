@@ -19,7 +19,9 @@
 		idea_initial: '',
 		idea_final: '',
 		folder_path: '',
-		created_at: ''
+		created_at: '',
+		current_phase: '',
+		current_stage: ''
 	};
 
 	let chatContainer: HTMLDivElement;
@@ -52,8 +54,38 @@
 
 			const result = await response.json();
 			project = result;
+
+			const phaseIndex = phases.findIndex((p) => p.key === project.current_phase);
+			currentPhaseIndex.set(phaseIndex >= 0 ? phaseIndex : 0);
+
+			const stageIndex =
+				phaseIndex >= 0
+					? phases[phaseIndex].stages.findIndex((s) => s.key === project.current_stage)
+					: 0;
+			currentStageIndex.set(stageIndex >= 0 ? stageIndex : 0);
 		} catch (error) {
 			console.error('Error fetching project idea:', error);
+		}
+	}
+
+	async function updateProjectProgress(phaseKey: string, stageKey: string) {
+		try {
+			const response = await fetch(`/api/projects/${projectId}/update-progress`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					current_phase: phaseKey,
+					current_stage: stageKey
+				})
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to update project progress');
+			}
+		} catch (error) {
+			console.error('Error updating project progress:', error);
 		}
 	}
 
@@ -205,6 +237,10 @@
 					allStagesSuccessful = false;
 					break; // Stop the phase if any stage fails
 				}
+
+				const currentPhaseKey = phases[$currentPhaseIndex].key;
+				const currentStageKey = phases[$currentPhaseIndex].stages[$currentStageIndex].key;
+				await updateProjectProgress(currentPhaseKey, currentStageKey);
 			}
 
 			if (stage.updatesProject) {
@@ -239,6 +275,10 @@
 		currentStageIndex.set(0);
 		stagesDone = false;
 		hasPhaseStarted = false;
+
+		const nextPhaseKey = phases[$currentPhaseIndex].key;
+		const nextStageKey = phases[$currentPhaseIndex].stages[0].key;
+		await updateProjectProgress(nextPhaseKey, nextStageKey);
 	}
 
 	async function handleDashboard() {

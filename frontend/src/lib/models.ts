@@ -5,6 +5,8 @@ export interface Project {
   idea_final: string;
   folder_path: string;
   created_at: string;
+  current_phase: string | null;
+  current_stage: string | null;
 }
 
 export interface ProjectStats {
