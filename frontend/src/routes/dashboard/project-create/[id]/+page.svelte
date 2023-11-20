@@ -47,6 +47,7 @@
 	onMount(async () => {
 		if (projectId) {
 			await getProjectById();
+			await getInitialProjectProgress();
 		}
 	});
 
@@ -66,35 +67,6 @@
 
 			const result = await response.json();
 			project = result;
-
-			// Update the endpoints with the correct projectId
-			let projectPhases = updatePhaseEndpoints(phases, projectId);
-
-			const phaseIndex = phases.findIndex((p) => p.key === project.current_phase);
-			currentPhaseIndex.set(phaseIndex >= 0 ? phaseIndex : 0);
-
-			const stageIndex =
-				phaseIndex >= 0
-					? phases[phaseIndex].stages.findIndex((s) => s.key === project.current_stage)
-					: 0;
-			currentStageIndex.set(stageIndex >= 0 ? stageIndex : 0);
-
-			if ($currentPhaseIndex !== 0 || $currentStageIndex !== 0) {
-				hasPhaseStarted = true;
-				stageSuccessStatus = phases[$currentPhaseIndex].stages.map((_, index) =>
-					index < $currentStageIndex ? true : null
-				);
-
-				// Call API for each completed stage to fetch chat history if necessary
-				for (let i = 0; i <= $currentStageIndex; i++) {
-					const stage = projectPhases[$currentPhaseIndex].stages[i];
-					if (stage.endpoint && stage.endpoint.includes('/chats/')) {
-						await callStageApi(stage, i); // Force call for completed stages
-					}
-				}
-			}
-
-			scrollToBottomStagesContainer();
 		} catch (error) {
 			console.error('Error fetching project idea:', error);
 		}
@@ -119,6 +91,44 @@
 		} catch (error) {
 			console.error('Error updating project progress:', error);
 		}
+	}
+
+	async function getInitialProjectProgress() {
+		// Update the endpoints with the correct projectId
+		let projectPhases = updatePhaseEndpoints(phases, projectId);
+
+		const phaseIndex = phases.findIndex((p) => p.key === project.current_phase);
+		currentPhaseIndex.set(phaseIndex >= 0 ? phaseIndex : 0);
+
+		const stageIndex =
+			phaseIndex >= 0
+				? phases[phaseIndex].stages.findIndex((s) => s.key === project.current_stage)
+				: 0;
+		currentStageIndex.set(stageIndex >= 0 ? stageIndex : 0);
+
+		if ($currentPhaseIndex !== 0 || $currentStageIndex !== 0) {
+			// Set hasPhaseStarted to true only if beyond the first stage
+			if ($currentStageIndex > 0) {
+				hasPhaseStarted = true;
+			}
+
+			stageSuccessStatus = phases[$currentPhaseIndex].stages.map((_, index) =>
+				index < $currentStageIndex ? true : null
+			);
+
+			if ($currentStageIndex === phases[$currentPhaseIndex].stages.length - 1) {
+				stagesDone = true;
+			}
+
+			// Call API for each completed stage to fetch chat history if necessary
+			for (let i = 0; i <= $currentStageIndex; i++) {
+				const stage = projectPhases[$currentPhaseIndex].stages[i];
+				if (stage.endpoint && stage.endpoint.includes('/chats/')) {
+					await callStageApi(stage, i); // Force call for completed stages
+				}
+			}
+		}
+		scrollToBottomStagesContainer();
 	}
 
 	uniqueSenders.subscribe((senders) => {
@@ -255,15 +265,16 @@
 					allStagesSuccessful = false;
 					break; // Stop the phase if any stage fails
 				}
-
-				const currentPhaseKey = phases[$currentPhaseIndex].key;
-				const currentStageKey = phases[$currentPhaseIndex].stages[$currentStageIndex].key;
-				await updateProjectProgress(currentPhaseKey, currentStageKey);
 			}
 
 			if (stage.updatesProject) {
 				await getProjectById();
 			}
+
+			const currentPhaseKey = phases[$currentPhaseIndex].key;
+			const currentStageKey = phases[$currentPhaseIndex].stages[$currentStageIndex].key;
+			await updateProjectProgress(currentPhaseKey, currentStageKey);
+
 			await delay(1000);
 		}
 
