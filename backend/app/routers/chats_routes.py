@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
+from app.utils.file_utils import save_conversation_to_file_util
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
-from app.utils.project_utils import get_project_folder_path_util, get_project_idea_initial_util, save_project_idea_final_util
+from app.utils.project_utils import get_project_idea_initial_util, save_project_idea_final_util
 from app.utils.protocol_utils import chat_config
 from app.models.pydantic_models import CreateChatRequest
 from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
@@ -155,6 +156,30 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         latest_response_from_primary_assistant = response_from_primary_assistant
         latest_response_from_secondary_assistant = response_from_secondary_assistant
         
+        # Check if conversation has already concluded before entering the loop
+        if output_format_end in latest_response_from_primary_assistant:
+            start_index = latest_response_from_primary_assistant.find(output_format_start) + len(output_format_start)
+            end_index = latest_response_from_primary_assistant.find(output_format_end)
+            if start_index != -1 and end_index != -1:
+                final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
+                
+                # Save the final idea to the database
+                await save_project_idea_final_util(project_id=id, final_idea=final_idea)
+
+                # Save the conversation in the database
+                await save_conversation_util(chat_id=chat_id, conversation=conversation)
+                
+                # Save the conversation to a JSON file
+                success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
+                if not success:
+                    # Handle the error case as needed
+                    raise HTTPException(status_code=500, detail="Error saving conversation to file")
+                
+                return {
+                    "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
+                    "chat_id": chat_id
+                }
+        
         current_exchanges = 0
         
         while current_exchanges < max_exchanges:                  
@@ -208,19 +233,12 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         
         # Save the conversation in the database
         await save_conversation_util(chat_id=chat_id, conversation=conversation)
-
-        # Assuming you have the folder_path from get_project_folder_path_util
-        folder_path = await get_project_folder_path_util(id)
         
-        json_name = request_body.chat_name.replace('-', '_').lower()
-        file_name = f"logs_chat_messages_{json_name}.json"
-        
-        # Define file path using folder_path
-        conversation_file_path = os.path.join(folder_path, file_name)
-
         # Save the conversation to a JSON file
-        with open(conversation_file_path, 'w') as file:
-            json.dump(conversation, file, indent=4)
+        success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
+        if not success:
+            # Handle the error case as needed
+            raise HTTPException(status_code=500, detail="Error saving conversation to file")
         
         return {
             "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
