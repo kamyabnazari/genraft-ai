@@ -10,8 +10,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
-	import type { Phases, Project, Stage, ChatMessage } from '$lib/models';
 	import { phases } from '$lib/utils';
+	import type { Phases, Project, Stage, ChatMessage } from '$lib/models';
 
 	let project: Project = {
 		id: '',
@@ -24,13 +24,25 @@
 		current_stage: ''
 	};
 
-	let chatContainer: HTMLDivElement;
-	let stagesContainer: HTMLDivElement;
-	let messages = writable<string[]>([]);
-
 	// Reactive declaration for projectId
 	let projectId: string = '';
 	$: projectId = $page.params.id;
+
+	const currentPhaseIndex = writable(0);
+	const currentStageIndex = writable(0);
+	let messages = writable<string[]>([]);
+	let automaticMode = writable(false);
+	let chatContainer: HTMLDivElement;
+	let stagesContainer: HTMLDivElement;
+	let previousStageIndex = 0;
+	let phasesDone: boolean = false;
+	let stagesDone: boolean = false;
+	let loading: boolean = false;
+	let hasPhaseStarted: boolean = false;
+	let stageSuccessStatus: (boolean | null)[] = [];
+	let uniqueSenders = writable(new Set());
+	let firstSender: string | unknown = '';
+	let chatId: string;
 
 	onMount(async () => {
 		if (projectId) {
@@ -109,9 +121,6 @@
 		}
 	}
 
-	let uniqueSenders = writable(new Set());
-	let firstSender: string | unknown = '';
-
 	uniqueSenders.subscribe((senders) => {
 		firstSender = Array.from(senders)[0];
 	});
@@ -150,17 +159,6 @@
 	}
 
 	// Stages and Phases
-
-	const currentPhaseIndex = writable(0);
-	const currentStageIndex = writable(0);
-	let automaticMode = writable(false);
-	let previousStageIndex = 0;
-	let phasesDone: boolean = false;
-	let stagesDone: boolean = false;
-	let loading: boolean = false;
-	let hasPhaseStarted: boolean = false;
-	let stageSuccessStatus: (boolean | null)[] = [];
-	let chatId: string;
 
 	async function callStageApi(stage: Stage, stageIndex: number) {
 		try {
