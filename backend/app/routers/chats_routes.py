@@ -66,31 +66,34 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Initating the Chat process!
 
         conversation = []
-        
-        # Define maximum number of exchanges to prevent infinite loops
-        max_exchanges = 6
-        current_exchanges = 0
 
         # Determine the chat type, e.g., "stakeholder_consultant"
         chat_type = sender_name_primary + "_" + sender_name_secondary
         
         # Access the configuration for the determined chat type
-        config = chat_config[chat_type]
+        global_properties = chat_config["global_properties"]
+        
+        tech_scope=global_properties["tech_scope"],
+        max_exchanges=global_properties["max_exchanges"]
+        
+        # Access the specific chat configuration
+        chat_specific_config = chat_config["chats"][chat_type]
 
-        output_format_start = config["output_format_start"]
-        output_format_end = config["output_format_end"]
-        initial_message_chat_1_template = config["initial_message_chat_1"]
-        initial_message_template_chat_2 = config["initial_message_chat_2"]
+        output_format_start = chat_specific_config["output_format_start"]
+        output_format_end = chat_specific_config["output_format_end"]
+        initial_message_chat_1_template = chat_specific_config["initial_message_chat_1"]
+        initial_message_template_chat_2 = chat_specific_config["initial_message_chat_2"]
 
         # Step 1: Prepare the initial input for the first thread
         
-        idea_initial = await get_project_idea_initial_util(id)
+        idea_initial = await get_project_idea_initial_util(id) # Chat Specific!
         
         initial_message_chat_1 = initial_message_chat_1_template.format(
+            tech_scope=tech_scope,
             max_exchanges=max_exchanges,
             chat_goal=request_body.chat_goal,
             idea_initial=idea_initial
-        )
+        ) # Chat Specific!
         
         # Retrieve OpenAI Assistant IDs for primary and secondary assistants
         primary_assistant_id = await get_openai_assistant_id_by_name_util(request_body.chat_assistant_primary)
@@ -116,13 +119,14 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 
         # Step 2: Prepare the initial message for the second thread
         initial_message_chat_2 = initial_message_template_chat_2.format(
+            tech_scope=tech_scope,
             max_exchanges=max_exchanges,
             chat_goal=request_body.chat_goal,
             idea_initial=idea_initial, 
             response_from_secondary=response_from_secondary_assistant,
             output_format_start=output_format_start,
             output_format_end=output_format_end
-        )
+        ) # Chat Specific!
 
         # Start the conversation in the second thread with the response from the first
         secondary_to_primary_run = await send_initial_message_util(
@@ -150,6 +154,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Initial setup for the loop with the first set of responses
         latest_response_from_primary_assistant = response_from_primary_assistant
         latest_response_from_secondary_assistant = response_from_secondary_assistant
+        
+        current_exchanges = 0
         
         while current_exchanges < max_exchanges:                  
             # Secondary assistant responding to the latest message from Primary assistant
@@ -193,7 +199,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
                 
                 # Save the final idea to the database
-                await save_project_idea_final_util(project_id=id, final_idea=final_idea)
+                await save_project_idea_final_util(project_id=id, final_idea=final_idea) # Chat Specific!
                 
                 break
             
@@ -201,8 +207,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             current_exchanges += 1
         
         # Save the conversation in the database
-        await save_conversation_util(primary_secondary_thread_id, conversation)
-        await save_conversation_util(secondary_primary_thread_id, conversation)
+        await save_conversation_util(chat_id=chat_id, conversation=conversation)
 
         # Assuming you have the folder_path from get_project_folder_path_util
         folder_path = await get_project_folder_path_util(id)
