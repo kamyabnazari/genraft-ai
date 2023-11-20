@@ -5,73 +5,165 @@ export const phases = [
         title: "Idea Creation Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Idea Creation Phase Started",
-                errorResult: "Error in Starting Idea Creation Phase", updatesProject: false
+                key: 'start',
+                name: "Start",
+                successResult: "Idea Creation Phase Started",
+                errorResult: "Error in Starting Idea Creation Phase",
+                updatesProject: false
             },
             {
-                key: 'idea-initial', name: "Initial Idea", successResult: "Initial Idea Retrieved: {project.idea_initial}",
-                errorResult: "Error in Getting Initial Idea", updatesProject: true
+                key: 'idea-initial',
+                name: "Initial Idea",
+                successResult: "Initial Idea Retrieved: {project.idea_initial}",
+                errorResult: "Error in Getting Initial Idea",
+                updatesProject: true
             },
             {
-                key: 'assistant-stakeholder', name: "Stakeholder Assistant", successResult: "Stakeholder Assistant Created",
-                errorResult: "Error in Creating Stakeholder Assistant", updatesProject: false, endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
-                "body": {
-                    "assistant_name": "project-{id}-assistant-stakeholder",
-                    "assistant_type": "stakeholder",
-                    "assistant_instructions": "You play the role of a stakeholder, you have an initial idea that you want to be created. You goal is to talk with your employees about your initial idea and give answares to their questions.",
-                    "assistant_model": "gpt-3.5-turbo"
+                key: 'assistant-stakeholder',
+                name: "Stakeholder Assistant",
+                successResult: "Stakeholder Assistant Created",
+                errorResult: "Error in Creating Stakeholder Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-stakeholder",
+                    assistant_type: "stakeholder",
+                    assistant_instructions: "You play the role of a stakeholder, you have an initial idea that you want to be created. You goal is to talk with your employees about your initial idea and give answares to their questions.",
+                    assistant_model: "gpt-3.5-turbo"
                 }
             },
             {
-                key: 'assistant-consultant', name: "Consultant Assistant", successResult: "Consultant Assistant Created",
-                errorResult: "Error in Creating Consultant Assistant", updatesProject: false, endpoint: "/api/projects/{id}/assistants/create-assistant", method: "POST",
-                "body": {
-                    "assistant_name": "project-{id}-assistant-consultant",
-                    "assistant_type": "consultant",
-                    "assistant_instructions": "You play the role of an idea consultant that helps stakeholder in the creation of a detailed project from a short one. You help the stakeholder with his/her initial idea. try to lead the conversation and not ask the same question multiple time.",
-                    "assistant_model": "gpt-3.5-turbo"
+                key: 'assistant-consultant',
+                name: "Consultant Assistant",
+                successResult: "Consultant Assistant Created",
+                errorResult: "Error in Creating Consultant Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-consultant",
+                    assistant_type: "consultant",
+                    assistant_instructions: "You play the role of an idea consultant that helps stakeholder in the creation of a detailed project from a short one. You help the stakeholder with his/her initial idea. try to lead the conversation and not ask the same question multiple time.",
+                    assistant_model: "gpt-3.5-turbo"
                 }
             },
             {
-                key: 'chat-stakeholder-and-consultant', name: "Chat Stakeholder and Consultant", successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with Stakeholder and Consultant", updatesProject: false, endpoint: "/api/projects/{id}/chats/create-chat", method: "POST",
-                "body": {
-                    "chat_name": "project-{id}-chat-stakeholder-and-consultant",
-                    "chat_assistant_primary": "project-{id}-assistant-stakeholder",
-                    "chat_assistant_secondary": "project-{id}-assistant-consultant",
-                    "chat_goal": "The objective is to collaboratively refine and expand the initial project idea into a detailed and actionable project concept, focusing exclusively on the idea's development. Discussions should center on elaborating the idea's specifics, potential features, while avoiding unrelated business or operational topics and even technical details, this should be very much surface level details."
+                key: 'chat-stakeholder-and-consultant',
+                name: "Chat Stakeholder and Consultant",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with Stakeholder and Consultant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-stakeholder-and-consultant",
+                    chat_assistant_primary: "project-{id}-assistant-stakeholder",
+                    chat_assistant_secondary: "project-{id}-assistant-consultant",
+                    chat_goal: "The objective is to collaboratively refine and expand the initial project idea into a detailed project idea, focusing exclusively on the idea's details. Discussions should center on elaborating the idea's specifics, potential features, while avoiding unrelated business or operational topics and even technical details, this should be very much surface level details."
                 }
             },
             {
-                key: 'idea-final', name: "Final Idea", successResult: "Final Idea Created: {project.idea_final}",
-                errorResult: "Error in Creating Final Idea", updatesProject: true
+                key: 'idea-final',
+                name: "Final Idea",
+                successResult: "Final Idea Created: {project.idea_final}",
+                errorResult: "Error in Creating Final Idea",
+                updatesProject: true
             },
             {
-                key: 'done', name: "Done", successResult: "Idea Creation Phase Completed",
-                errorResult: "Error in Completing Idea Creation Phase", updatesProject: false
+                key: 'done',
+                name: "Done",
+                successResult: "Idea Creation Phase Completed",
+                errorResult: "Error in Completing Idea Creation Phase",
+                updatesProject: false
             }
         ]
     },
     {
-        key: 'company-creation',
+        key: "company-creation",
         name: "Company Creation",
         title: "Company Creation Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Company Creation Phase Started",
-                errorResult: "Error in Starting Company Creation Phase", updatesProject: false
+                key: "start",
+                name: "Start",
+                successResult: "Company Creation Phase Started",
+                errorResult: "Error in Starting Company Creation Phase",
+                updatesProject: false
             },
             {
-                key: 'goal-setting', name: "Goal Setting", successResult: "Goal Setting Started",
-                errorResult: "Error in Starting Goal Setting", updatesProject: false, endpoint: "/api/projects/{id}/company-creation/goal-setting", method: "POST", "body": {}
+                key: "assistant-ceo",
+                name: "CEO Assistant",
+                successResult: "CEO Assistant Created",
+                errorResult: "Error in Creating CEO Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-ceo",
+                    assistant_type: "ceo",
+                    assistant_instructions: "You play the role of a CEO, focusing on setting the strategic direction of the company, aligning it with the product idea, and discussing operational strategy with the COO.",
+                    assistant_model: "gpt-3.5-turbo"
+                }
             },
             {
-                key: 'role-definition', name: "Role Definition", successResult: "Role Definition Started",
-                errorResult: "Error in Starting Role Definition", updatesProject: false, endpoint: "/api/projects/{id}/company-creation/role-definition", method: "POST", "body": {}
+                key: "assistant-coo",
+                name: "COO Assistant",
+                successResult: "COO Assistant Created",
+                errorResult: "Error in Creating COO Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-coo",
+                    assistant_type: "coo",
+                    assistant_instructions: "You play the role of a COO, responsible for discussing the operational strategy, resource allocation, and defining new roles with the CEO.",
+                    assistant_model: "gpt-3.5-turbo"
+                }
             },
             {
-                key: 'done', name: "Done", successResult: "Company Creation Phase Completed",
-                errorResult: "Error in Completing Company Creation Phase", updatesProject: false
+                key: "chat-stakeholder-and-ceo",
+                name: "Chat Stakeholder and CEO",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with Stakeholder and CEO",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-stakeholder-and-ceo",
+                    chat_assistant_primary: "project-{id}-assistant-stakeholder",
+                    chat_assistant_secondary: "project-{id}-assistant-ceo",
+                    chat_goal: "The objective is to set company goals and align them with the detailed product idea to create a comprehensive company goals description."
+                }
+            },
+            {
+                key: 'company-goal',
+                name: "Company Goal",
+                successResult: "Company Goal Created: {project.company_goal}",
+                errorResult: "Error in Creating Company Goal",
+                updatesProject: true
+            },
+            {
+                key: "chat-ceo-and-coo",
+                name: "Chat CEO and COO",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with CEO and COO",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-ceo-and-coo",
+                    chat_assistant_primary: "project-{id}-assistant-ceo",
+                    chat_assistant_secondary: "project-{id}-assistant-coo",
+                    chat_goal: "The objective is to discuss and define the operational strategy, resource allocation, and create new job roles, ensuring alignment with the company goals."
+                }
+            },
+            {
+                key: "done",
+                name: "Done",
+                successResult: "Company Creation Phase Completed",
+                errorResult: "Error in Completing Company Creation Phase",
+                updatesProject: false
             }
         ]
     },

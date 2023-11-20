@@ -3,6 +3,7 @@ export interface Project {
   name: string;
   idea_initial: string;
   idea_final: string;
+  company_goal: string;
   folder_path: string;
   created_at: string;
   current_phase: string | null;

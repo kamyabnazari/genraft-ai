@@ -18,6 +18,7 @@
 		name: '',
 		idea_initial: '',
 		idea_final: '',
+		company_goal: '',
 		folder_path: '',
 		created_at: '',
 		current_phase: '',
@@ -363,7 +364,12 @@
 				project.idea_final
 			);
 		}
-
+		if (resultWithProjectData.includes('{project.company_goal}')) {
+			resultWithProjectData = resultWithProjectData.replace(
+				'{project.company_goal}',
+				project.company_goal
+			);
+		}
 		return resultWithProjectData;
 	}
 </script>

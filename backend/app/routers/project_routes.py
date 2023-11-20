@@ -54,6 +54,7 @@ async def initialize_project(request_body: InitializeProjectRequest):
             name=request_body.name,
             idea_initial=request_body.idea,
             idea_final="",
+            company_goal="",
             folder_path=project_folder,
             created_at=timestamp
         )

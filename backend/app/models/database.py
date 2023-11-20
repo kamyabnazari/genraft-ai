@@ -10,6 +10,7 @@ projects = Table(
     Column("name", String, nullable=False),
     Column("idea_initial", String, nullable=False),
     Column("idea_final", String, nullable=False),
+    Column("company_goal", String, nullable=False),
     Column("folder_path", String, nullable=False),
     Column("created_at", DateTime, nullable=False),
     Column("current_phase", String, nullable=True),
