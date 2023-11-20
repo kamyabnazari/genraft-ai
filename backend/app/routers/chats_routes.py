@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
 from app.utils.project_utils import get_project_folder_path_util, get_project_idea_initial_util
+from app.utils.protocol_utils import chat_config
 from app.models.pydantic_models import CreateChatRequest
 from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
 from app.dependencies import get_database
@@ -66,14 +67,22 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
         conversation = []
 
+        # Determine the chat type, e.g., "stakeholder_consultant"
+        chat_type = sender_name_primary + "_" + sender_name_secondary
+        
+        # Access the configuration for the determined chat type
+        config = chat_config[chat_type]
+
+        end_chat_protocol = config["end_protocol"]
+        output_format_protocol_start = config["output_format_start"]
+        output_format_protocol_end = config["output_format_end"]
+        initial_message_chat_1_template = config["initial_message_chat_1"]
+        initial_message_template_chat_2 = config["initial_message_chat_2"]
+
         # Step 1: Prepare the initial message for the first thread
         idea_initial = await get_project_idea_initial_util(id)
         
-        initial_message_chat_1 = (
-            "The goal of this conversation is: " + request_body.chat_goal + 
-            ". Here is my initial project idea: " + idea_initial +
-            ". Important: When you have reached the final result, mark the final sentence with <END>"
-        )
+        initial_message_chat_1 = initial_message_chat_1_template.format(chat_goal=request_body.chat_goal, idea_initial=idea_initial)
         
         # Retrieve OpenAI Assistant IDs for primary and secondary assistants
         primary_assistant_id = await get_openai_assistant_id_by_name_util(request_body.chat_assistant_primary)
@@ -97,10 +106,11 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
         response_from_secondary_assistant = primary_to_secondary_messages[0]
                 
-        initial_message_chat_2 = (
-            "This was your initial idea: " + idea_initial + 
-            ". Here was my first response to your initial idea: " + response_from_secondary_assistant +
-            ". I want you to responsed to my response please."
+        # Step 2: Prepare the initial message for the second thread
+        initial_message_chat_2 = initial_message_template_chat_2.format(
+            chat_goal=request_body.chat_goal,
+            idea_initial=idea_initial, 
+            response_from_secondary=response_from_secondary_assistant
         )
 
         # Start the conversation in the second thread with the response from the first
@@ -127,11 +137,11 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         conversation.append({"sender": sender_name_primary, "message": response_from_primary_assistant})
         
         # Initial setup for the loop with the first set of responses
-        latest_response_from_stakeholder = response_from_primary_assistant
-        latest_response_from_consultant = response_from_secondary_assistant
+        latest_response_from_primary_assistant = response_from_primary_assistant
+        latest_response_from_secondary_assistant = response_from_secondary_assistant
         
         # Define maximum number of exchanges to prevent infinite loops
-        max_exchanges = 1
+        max_exchanges = 3
         current_exchanges = 0
         
         while current_exchanges < max_exchanges:                  
@@ -139,9 +149,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             primary_to_secondary_run = await send_initial_message_util(
                 thread_id=primary_secondary_chat_thread_data.id,
                 assistant_id=secondary_assistant_id,
-                initial_message=latest_response_from_stakeholder
+                initial_message=latest_response_from_primary_assistant
             )
-            
             
             # Wait for the response
             if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, primary_to_secondary_run.id):
@@ -149,16 +158,16 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             
             primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
 
-            latest_response_from_consultant = primary_to_secondary_messages[0]
+            latest_response_from_secondary_assistant = primary_to_secondary_messages[0]
 
             # Append consultant's response to the conversation
-            conversation.append({"sender": sender_name_secondary, "message": latest_response_from_consultant})
+            conversation.append({"sender": sender_name_secondary, "message": latest_response_from_secondary_assistant})
 
-            # Stakeholder (primary assistant) responding to the latest message from Consultant
+            # Primary Assistant) responding to the latest message from Secondary
             secondary_to_primary_run = await send_initial_message_util(
                 thread_id=secondary_primary_chat_thread_data.id,
                 assistant_id=primary_assistant_id,
-                initial_message=latest_response_from_consultant
+                initial_message=latest_response_from_secondary_assistant
             )
 
             # Wait for the response
@@ -166,17 +175,21 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 return {"message": "Error in completing the second chat"}
             
             secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)            
-            latest_response_from_stakeholder = secondary_to_primary_messages[0]
+            latest_response_from_primary_assistant = secondary_to_primary_messages[0]
             
-            # Append stakeholder's response to the conversation
-            conversation.append({"sender": sender_name_primary, "message": latest_response_from_stakeholder})
+            # Append primary's response to the conversation
+            conversation.append({"sender": sender_name_primary, "message": latest_response_from_primary_assistant})
 
+            if end_chat_protocol in latest_response_from_primary_assistant:
+                start = latest_response_from_primary_assistant.find(output_format_protocol_start) + len(output_format_protocol_start)
+                end = latest_response_from_primary_assistant.find(output_format_protocol_end)
+                final_idea = latest_response_from_primary_assistant[start:end]
+                print("Final Idea:", final_idea)
+                # Conclude the chat here
+                break
+            
             # Increment the exchange count
             current_exchanges += 1
-
-            # Check for End Condition in both threads
-            if "<END>" in latest_response_from_consultant or "<END>" in latest_response_from_stakeholder:
-                break
         
         # Save the conversation in the database
         await save_conversation_util(primary_secondary_thread_id, conversation)
