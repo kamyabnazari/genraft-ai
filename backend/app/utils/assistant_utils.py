@@ -2,6 +2,7 @@ from openai import OpenAI, OpenAIError
 from app.core.config import settings
 from app.models.database import assistants, project_assistant_association
 from app.dependencies import get_database
+from app.config.project_config import project_config
 from sqlalchemy import select
 import datetime
 
@@ -92,3 +93,12 @@ async def get_openai_assistant_id_by_name_util(assistant_name: str):
     query = select([assistants.c.assistant_id]).where(assistants.c.assistant_name == assistant_name)
     result = await database.fetch_one(query)
     return result['assistant_id'] if result else None
+
+def generate_assistant_instructions(assistant_type):
+    instructions = project_config["assistants"][assistant_type]["instructions"]
+    global_props = project_config["global_properties"]
+    return instructions.format(
+        output_format_start=global_props["output_format_start"],
+        output_format_end=global_props["output_format_end"],
+        max_exchanges=global_props["max_exchanges"]
+    )

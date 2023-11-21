@@ -42,7 +42,6 @@ class InitializeProjectRequest(BaseModel):
 class CreateAssistantRequest(BaseModel):
     assistant_name: str
     assistant_type: str
-    assistant_instructions: str
     assistant_model: str
 
 class CreateChatRequest(BaseModel):

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.utils.file_utils import save_conversation_to_file_util
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
 from app.utils.project_utils import get_project_company_goal_util, get_project_idea_final_util, get_project_idea_initial_util, save_project_company_goal_util, save_project_idea_final_util
-from app.utils.protocol_utils import chat_config
+from app.config.project_config import project_config
 from app.models.pydantic_models import CreateChatRequest
 from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
 from app.dependencies import get_database
@@ -69,19 +69,19 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         chat_type = sender_name_primary + "_" + sender_name_secondary
         
         # Access the configuration for the determined chat type
-        global_properties = chat_config["global_properties"]
+        global_properties = project_config["global_properties"]
         
-        tech_scope=global_properties["tech_scope"],
         max_exchanges=global_properties["max_exchanges"]
+        output_format_start = global_properties["output_format_start"]
+        output_format_end = global_properties["output_format_end"]
+        tech_scope=global_properties["tech_scope"]
         
         # Access the specific chat configuration
-        chat_specific_config = chat_config["chats"][chat_type]
+        chat_specific_config = project_config["chats"][chat_type]
 
-        output_format_start = chat_specific_config["output_format_start"]
-        output_format_end = chat_specific_config["output_format_end"]
         chat_goal = chat_specific_config["chat_goal"]
         initial_message_chat_1_template = chat_specific_config["initial_message_chat_1"]
-        initial_message_template_chat_2 = chat_specific_config["initial_message_chat_2"]
+        initial_message_chat_2_template = chat_specific_config["initial_message_chat_2"]
 
         # Step 1: Prepare the initial input for the first thread
         
@@ -141,7 +141,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Step 2: Prepare the initial message for the second thread
         if(chat_type == "stakeholder_consultant"):
             idea_initial = await get_project_idea_initial_util(id)
-            initial_message_chat_2 = initial_message_template_chat_2.format(
+            initial_message_chat_2 = initial_message_chat_2_template.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
                 chat_goal=chat_goal,
@@ -152,7 +152,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             )
         elif(chat_type == "stakeholder_ceo"):
             idea_final = await get_project_idea_final_util(id)
-            initial_message_chat_2 = initial_message_template_chat_2.format(
+            initial_message_chat_2 = initial_message_chat_2_template.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
                 chat_goal=chat_goal,
@@ -163,7 +163,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             )
         elif(chat_type == "ceo_coo"):
             company_goal = await get_project_company_goal_util(id)
-            initial_message_chat_2 = initial_message_template_chat_2.format(
+            initial_message_chat_2 = initial_message_chat_2_template.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
                 chat_goal=chat_goal,

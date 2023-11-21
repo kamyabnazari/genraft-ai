@@ -7,7 +7,6 @@ export async function POST({ params, request }) {
     const requestBody = {
         assistant_name: body.assistant_name,
         assistant_type: body.assistant_type,
-        assistant_instructions: body.assistant_instructions,
         assistant_model: body.assistant_model
     }
 
