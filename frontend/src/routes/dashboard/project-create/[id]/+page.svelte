@@ -406,7 +406,7 @@
 		</button>
 	</div>
 	<div class="self-center">
-		<h1 class="mb-8 text-2xl font-bold md:text-3xl">Project Creation Assistant</h1>
+		<h1 class="mb-8 text-2xl font-bold md:text-3xl">{project.name}</h1>
 	</div>
 	<div class="flex flex-col justify-center gap-8 lg:flex-row">
 		<div class="flex flex-col justify-center gap-8">
@@ -537,7 +537,7 @@
 					on:change={() => fetchChatHistory(chatId)}
 				>
 					{#each $chatIds as { chat_id, name }}
-						<option value={chat_id}>{name}</option>
+						<option value={chat_id}>{chat_id}: {name}</option>
 					{/each}
 				</select>
 				<div
