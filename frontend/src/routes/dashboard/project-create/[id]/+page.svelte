@@ -11,7 +11,7 @@
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/stores';
 	import { phases } from '$lib/utils';
-	import type { Phases, Project, Stage, ChatMessage } from '$lib/models';
+	import type { Phases, Project, Stage, ChatMessage, ChatHistory } from '$lib/models';
 
 	let project: Project = {
 		id: '',
@@ -44,6 +44,7 @@
 	let uniqueSenders = writable(new Set());
 	let firstSender: string | unknown = '';
 	let chatId: string;
+	let chatIds = writable<ChatHistory[]>([]);
 
 	onMount(async () => {
 		if (projectId) {
@@ -121,11 +122,24 @@
 				stagesDone = true;
 			}
 
-			// Call API for each completed stage to fetch chat history if necessary
-			for (let i = 0; i <= $currentStageIndex; i++) {
-				const stage = projectPhases[$currentPhaseIndex].stages[i];
-				if (stage.endpoint && stage.endpoint.includes('/chats/')) {
-					await callStageApi(stage, i); // Force call for completed stages
+			// Call API for each completed stage of all phases to fetch chat history if necessary
+			for (let p = 0; p <= $currentPhaseIndex; p++) {
+				const currentPhase = projectPhases[p];
+				// Determine the last stage to check in the current iteration phase
+				let lastStageToCheck = currentPhase.stages.length;
+
+				// If it's the current phase, only iterate up to the current stage
+				if (p === $currentPhaseIndex) {
+					lastStageToCheck = $currentStageIndex + 1; // Include the current stage as well
+				}
+
+				for (let s = 0; s < lastStageToCheck; s++) {
+					const stage = currentPhase.stages[s];
+					// Assuming stages before the current stage in the current phase are completed
+					// and all stages in previous phases are completed.
+					if (stage.endpoint && stage.endpoint.includes('/chats/')) {
+						await callStageApi(stage, s); // Force call for completed stages
+					}
 				}
 			}
 		}
@@ -203,6 +217,17 @@
 			if (data.chat_id) {
 				chatId = data.chat_id;
 				fetchChatHistory(chatId);
+
+				chatIds.update((currentChatIds: ChatHistory[]) => {
+					const existingChatId = currentChatIds.find((chat) => chat.chat_id === data.chat_id);
+					if (!existingChatId) {
+						// If this chat_id is not already in the list, add it
+						return [...currentChatIds, { chat_id: data.chat_id, name: stage.name }];
+					} else {
+						// Otherwise, return the list unmodified
+						return currentChatIds;
+					}
+				});
 			}
 
 			return { success: true, data };
@@ -505,6 +530,16 @@
 		</div>
 		<div class="bg-base-200 flex-1 rounded-md p-8 shadow-lg">
 			<div class="flex h-full flex-col justify-between gap-8">
+				<h1 class="text-l text-center font-bold md:text-xl">Messages</h1>
+				<select
+					class="select select-bordered w-full"
+					bind:value={chatId}
+					on:change={() => fetchChatHistory(chatId)}
+				>
+					{#each $chatIds as { chat_id, name }}
+						<option value={chat_id}>{name}</option>
+					{/each}
+				</select>
 				<div
 					class="form-control chat-container bg-base-100 border-rounded border-base-300 flex-grow overflow-y-auto rounded-lg border-2 p-2"
 					bind:this={chatContainer}
@@ -530,7 +565,7 @@
 <style>
 	.chat-container {
 		height: calc(
-			75vh - 20rem
+			65vh - 20rem
 		); /* Adjust the subtraction value according to your header and footer size */
 	}
 </style>

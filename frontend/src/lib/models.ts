@@ -50,4 +50,9 @@ export interface Body {
   chat_assistant_secondary?: string,
 }
 
+export interface ChatHistory {
+  chat_id: string;
+  name: string;
+}
+
 export type Phases = Phase[];
