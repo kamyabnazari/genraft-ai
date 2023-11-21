@@ -238,10 +238,6 @@
 		}
 	}
 
-	function delay(ms: number) {
-		return new Promise((resolve) => setTimeout(resolve, ms));
-	}
-
 	function updatePhaseEndpoints(phases: Phases, projectId: string) {
 		return phases.map((phase) => {
 			return {
@@ -300,8 +296,6 @@
 			const currentPhaseKey = phases[$currentPhaseIndex].key;
 			const currentStageKey = phases[$currentPhaseIndex].stages[$currentStageIndex].key;
 			await updateProjectProgress(currentPhaseKey, currentStageKey);
-
-			await delay(1000);
 		}
 
 		if (allStagesSuccessful) {
