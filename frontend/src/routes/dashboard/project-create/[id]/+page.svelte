@@ -530,14 +530,14 @@
 		</div>
 		<div class="bg-base-200 flex-1 rounded-md p-8 shadow-lg">
 			<div class="flex h-full flex-col justify-between gap-8">
-				<h1 class="text-l text-center font-bold md:text-xl">Messages</h1>
+				<h1 class="text-l text-center font-bold md:text-xl">Chats</h1>
 				<select
 					class="select select-bordered w-full"
 					bind:value={chatId}
 					on:change={() => fetchChatHistory(chatId)}
 				>
-					{#each $chatIds as { chat_id, name }}
-						<option value={chat_id}>{chat_id}: {name}</option>
+					{#each $chatIds as { chat_id, name }, index}
+						<option value={chat_id}>{index + 1}: {name}</option>
 					{/each}
 				</select>
 				<div
