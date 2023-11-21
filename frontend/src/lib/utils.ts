@@ -1,22 +1,15 @@
 export const phases = [
     {
-        key: 'idea-creation',
-        name: "Idea Creation",
-        title: "Idea Creation Phase",
+        key: "assistants-creation",
+        name: "Assistants Creation",
+        title: "Assistants Creation Phase",
         stages: [
             {
-                key: 'start',
+                key: "start",
                 name: "Start",
-                successResult: "Idea Creation Phase Started",
-                errorResult: "Error in Starting Idea Creation Phase",
+                successResult: "Assistants Creation Phase Started",
+                errorResult: "Error in Starting Assistants Creation Phase",
                 updatesProject: false
-            },
-            {
-                key: 'idea-initial',
-                name: "Initial Idea",
-                successResult: "{project.idea_initial}",
-                errorResult: "Error in Getting Initial Idea",
-                updatesProject: true
             },
             {
                 key: 'assistant-stakeholder',
@@ -47,6 +40,48 @@ export const phases = [
                 }
             },
             {
+                key: "assistant-ceo",
+                name: "CEO Assistant",
+                successResult: "CEO Assistant Created",
+                errorResult: "Error in Creating CEO Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-ceo",
+                    assistant_type: "ceo",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "done",
+                name: "Done",
+                successResult: "Assistants Creation Phase Completed",
+                errorResult: "Error in Completing Assistants Creation Phase",
+                updatesProject: false
+            }
+        ]
+    },
+    {
+        key: 'preparation',
+        name: "Preparation",
+        title: "Preparation Phase",
+        stages: [
+            {
+                key: 'start',
+                name: "Start",
+                successResult: "Preparation Phase Started",
+                errorResult: "Error in Starting Preparation Phase",
+                updatesProject: false
+            },
+            {
+                key: 'idea-initial',
+                name: "Initial Idea",
+                successResult: "{project.idea_initial}",
+                errorResult: "Error in Getting Initial Idea",
+                updatesProject: true
+            },
+            {
                 key: 'chat-stakeholder-and-consultant',
                 name: "Chat Stakeholder and Consultant",
                 successResult: "Chat Ended Successfully!",
@@ -66,55 +101,6 @@ export const phases = [
                 successResult: "{project.idea_final}",
                 errorResult: "Error in Creating Final Idea",
                 updatesProject: true
-            },
-            {
-                key: 'done',
-                name: "Done",
-                successResult: "Idea Creation Phase Completed",
-                errorResult: "Error in Completing Idea Creation Phase",
-                updatesProject: false
-            }
-        ]
-    },
-    {
-        key: "company-creation",
-        name: "Company Creation",
-        title: "Company Creation Phase",
-        stages: [
-            {
-                key: "start",
-                name: "Start",
-                successResult: "Company Creation Phase Started",
-                errorResult: "Error in Starting Company Creation Phase",
-                updatesProject: false
-            },
-            {
-                key: "assistant-ceo",
-                name: "CEO Assistant",
-                successResult: "CEO Assistant Created",
-                errorResult: "Error in Creating CEO Assistant",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/assistants/create-assistant",
-                method: "POST",
-                body: {
-                    assistant_name: "project-{id}-assistant-ceo",
-                    assistant_type: "ceo",
-                    assistant_model: "gpt-3.5-turbo"
-                }
-            },
-            {
-                key: "assistant-coo",
-                name: "COO Assistant",
-                successResult: "COO Assistant Created",
-                errorResult: "Error in Creating COO Assistant",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/assistants/create-assistant",
-                method: "POST",
-                body: {
-                    assistant_name: "project-{id}-assistant-coo",
-                    assistant_type: "coo",
-                    assistant_model: "gpt-3.5-turbo"
-                }
             },
             {
                 key: "chat-stakeholder-and-ceo",
@@ -138,24 +124,10 @@ export const phases = [
                 updatesProject: true
             },
             {
-                key: "chat-ceo-and-coo",
-                name: "Chat CEO and COO",
-                successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with CEO and COO",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/chats/create-chat",
-                method: "POST",
-                body: {
-                    chat_name: "project-{id}-chat-ceo-and-coo",
-                    chat_assistant_primary: "project-{id}-assistant-ceo",
-                    chat_assistant_secondary: "project-{id}-assistant-coo"
-                }
-            },
-            {
-                key: "done",
+                key: 'done',
                 name: "Done",
-                successResult: "Company Creation Phase Completed",
-                errorResult: "Error in Completing Company Creation Phase",
+                successResult: "Preparation Phase Completed",
+                errorResult: "Error in Completing Preparation Phase",
                 updatesProject: false
             }
         ]

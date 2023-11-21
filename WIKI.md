@@ -4,15 +4,14 @@
 
 In the generative AI application creation process, the following roles, envisioned as AI agents, are integral for ensuring a smooth flow from conception to documentation:
 
-### Idea Creation Phase
+### Assistants Creation Phase
 
-- **Stakeholder**: Provides the initial product idea and has a vested interest in the project's success.
-- **Consultant**: Assists in refining and detailing the product idea.
+- Here assistants will be created!
 
-### Company Creation Phase
+### Preparation Phase
 
-- **CEO (Chief Executive Officer)**: Sets the strategic direction of the company and oversees the alignment of the product with company goals.
-- **COO (Chief Operating Officer)**: Responsible for operational strategy, resource allocation, and defining new roles specific to the project.
+- **Idea Development**: Refining and detailing the initial product idea.
+- **Company Goal Setting**: Establishing a clear company direction based on the refined product idea.
 
 ### Designing Phase
 
@@ -38,9 +37,15 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 ## Process and Workflow
 
-### 1. Idea Creation Phase
+### 1. Assistants Creation Phase
 
-**Goal**: To set up the foundational elements for the project by creating the necessary AI assistants. To refine and detail the initial product idea.
+**Goal**: To set up the foundational elements for the project by creating the necessary AI assistants.
+
+- **Stages**: Creation of all assistants.
+
+### 2. Preparation Phase
+
+**Goal**: To refine the initial product idea and establish a clear company direction.
 
 #### Chat 1: Stakeholder and Idea Consultant
 
@@ -48,21 +53,11 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Input**: Short product idea.
 - **Output**: Detailed product idea.
 
-### 2. Company Creation Phase
+#### Chat 2: Stakeholder and CEO
 
-**Goal**: To establish a clear company direction and create detailed role descriptions for the project.
-
-#### Chat 1: Stakeholder and CEO
-
-- **Topic**: Setting company goals and aligning them with the product idea.
+- **Topic**: Setting company goals and aligning them with the detailed product idea.
 - **Input**: Detailed product idea.
 - **Output**: Comprehensive company goals description.
-
-#### Chat 2: CEO and COO
-
-- **Topic**: Operational strategy, resource allocation, and creation of new job roles.
-- **Input**: Company goals and detailed product idea.
-- **Output**: Operational strategy and new job role descriptions.
 
 ### 3. Designing Phase
 
@@ -92,10 +87,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 #### Chat 2: Programmer and Designer
 
-- **Topic**: Creation of UI/UX assets and interactive
-
-elements.
-
+- **Topic**: Creation of UI/UX assets and interactive elements.
 - **Input**: Product design specifications.
 - **Output**: Design assets like logos, UI elements, and style guides.
 
