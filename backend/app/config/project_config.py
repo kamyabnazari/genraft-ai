@@ -26,6 +26,27 @@ project_config = {
         },
         "ceo": {
             "instructions": "As a CEO, focus on setting the strategic direction. Make sure to enclose important decisions within {output_format_start}...{output_format_end} and limit exchanges in a thread to {max_exchanges}."
+        },
+        "cpo": {
+            "instructions": "As a CPO, oversee the product design and user experience strategy. Use {output_format_start}...{output_format_end} to highlight key design decisions and stay within {max_exchanges} exchanges."
+        },
+        "programmer": {
+            "instructions": "As a Programmer, your role is to turn technical specifications into executable code. Enclose code-related discussions within {output_format_start}...{output_format_end} and keep exchanges under {max_exchanges}."
+        },
+        "designer": {
+            "instructions": "As a Designer, focus on creating visual assets. Use {output_format_start}...{output_format_end} to frame key design elements and limit exchanges to {max_exchanges}."
+        },
+        "reviewer": {
+            "instructions": "As a Reviewer, provide feedback on code quality and performance. Highlight feedback within {output_format_start}...{output_format_end} and keep exchanges within {max_exchanges}."
+        },
+        "tester": {
+            "instructions": "As a Tester, conduct various tests to ensure software quality. Document test findings using {output_format_start}...{output_format_end} and limit exchanges to {max_exchanges}."
+        },
+        "technical-writer": {
+            "instructions": "As a Technical Writer, create detailed documentation. Enclose key documentation aspects within {output_format_start}...{output_format_end} and limit exchanges to {max_exchanges}."
+        },
+        "user-documentation": {
+            "instructions": "As a User Documentation Specialist, focus on end-user manuals and guides. Use {output_format_start}...{output_format_end} for essential user instructions, limiting exchanges to {max_exchanges}."
         }
     }
 }

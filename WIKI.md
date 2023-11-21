@@ -31,7 +31,7 @@ In the generative AI application creation process, the following roles, envision
 ### Documenting Phase
 
 - **Technical Writer**: Specializes in creating technical documentation, including code documentation, API manuals, and system architecture diagrams.
-- **User Documentation Specialist**: Focuses on creating end-user documentation, such as user manuals, FAQs, and troubleshooting guides.
+- **User Documentation**: Focuses on creating end-user documentation, such as user manuals, FAQs, and troubleshooting guides.
 
 Each role contributes its expertise to the collaborative development of the AI application, simulating relevant conversations and activities within each phase.
 
@@ -117,7 +117,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Input**: Technical specifications, architecture details, and source code.
 - **Output**: Technical documentation such as API documentation, code documentation, system architecture diagrams, and development guides.
 
-#### Chat 2: User Documentation Specialist and CPO (Chief Product Officer)
+#### Chat 2: User Documentation and CPO (Chief Product Officer)
 
 - **Topic**: Developing end-user documentation.
 - **Input**: Product specifications, UX/UI design details, and user interface prototypes.

@@ -14,8 +14,8 @@ export const phases = [
             {
                 key: 'assistant-stakeholder',
                 name: "Stakeholder Assistant",
-                successResult: "Stakeholder Assistant Created",
-                errorResult: "Error in Creating Stakeholder Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
                 updatesProject: false,
                 endpoint: "/api/projects/{id}/assistants/create-assistant",
                 method: "POST",
@@ -28,8 +28,8 @@ export const phases = [
             {
                 key: 'assistant-consultant',
                 name: "Consultant Assistant",
-                successResult: "Consultant Assistant Created",
-                errorResult: "Error in Creating Consultant Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
                 updatesProject: false,
                 endpoint: "/api/projects/{id}/assistants/create-assistant",
                 method: "POST",
@@ -42,14 +42,112 @@ export const phases = [
             {
                 key: "assistant-ceo",
                 name: "CEO Assistant",
-                successResult: "CEO Assistant Created",
-                errorResult: "Error in Creating CEO Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
                 updatesProject: false,
                 endpoint: "/api/projects/{id}/assistants/create-assistant",
                 method: "POST",
                 body: {
                     assistant_name: "project-{id}-assistant-ceo",
                     assistant_type: "ceo",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-cpo",
+                name: "CPO Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-cpo",
+                    assistant_type: "cpo",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-programmer",
+                name: "Programmer Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-programmer",
+                    assistant_type: "programmer",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-designer",
+                name: "Designer Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-designer",
+                    assistant_type: "designer",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-reviewer",
+                name: "Reviewer Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-reviewer",
+                    assistant_type: "reviewer",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-tester",
+                name: "Tester Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-tester",
+                    assistant_type: "tester",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-technical-writer",
+                name: "Technical Writer Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-technical-writer",
+                    assistant_type: "technical-writer",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
+                key: "assistant-user-documentation",
+                name: "User Documentation Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-user-documentation",
+                    assistant_type: "user-documentation",
                     assistant_model: "gpt-3.5-turbo"
                 }
             },
