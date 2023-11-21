@@ -68,6 +68,20 @@ export const phases = [
                 }
             },
             {
+                key: "assistant-cto",
+                name: "CTO Assistant",
+                successResult: "Assistant Created",
+                errorResult: "Error in Creating Assistant",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/assistants/create-assistant",
+                method: "POST",
+                body: {
+                    assistant_name: "project-{id}-assistant-cto",
+                    assistant_type: "cto",
+                    assistant_model: "gpt-3.5-turbo"
+                }
+            },
+            {
                 key: "assistant-programmer",
                 name: "Programmer Assistant",
                 successResult: "Assistant Created",
@@ -236,20 +250,46 @@ export const phases = [
         title: "Designing Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Designing Phase Started",
-                errorResult: "Error in Starting Designing Phase", updatesProject: false
+                key: 'start',
+                name: "Start",
+                successResult: "Designing Phase Started",
+                errorResult: "Error in Starting Designing Phase",
+                updatesProject: false
             },
             {
-                key: 'product-specification', name: "Product Specification", successResult: "Product Specification Started",
-                errorResult: "Error in Starting Product Specification", updatesProject: false, endpoint: "/api/projects/{id}/designing/product-specification", method: "POST", "body": {}
+                key: "chat-ceo-and-cpo",
+                name: "Chat CEO and CPO",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with CEO and CPO",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-ceo-and-cpo",
+                    chat_assistant_primary: "project-{id}-assistant-ceo",
+                    chat_assistant_secondary: "project-{id}-assistant-cpo"
+                }
             },
             {
-                key: 'prototype-development', name: "Prototype Development", successResult: "Prototype Development Started",
-                errorResult: "Error in Starting Prototype Development", updatesProject: false, endpoint: "/api/projects/{id}/designing/prototype-development", method: "POST", "body": {}
+                key: "chat-ceo-and-cto",
+                name: "Chat CEO and CTO",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with CEO and CTO",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-ceo-and-cto",
+                    chat_assistant_primary: "project-{id}-assistant-ceo",
+                    chat_assistant_secondary: "project-{id}-assistant-cto"
+                }
             },
             {
-                key: 'done', name: "Done", successResult: "Designing Phase Completed",
-                errorResult: "Error in Completing Designing Phase", updatesProject: false
+                key: 'done',
+                name: "Done",
+                successResult: "Designing Phase Completed",
+                errorResult: "Error in Completing Designing Phase",
+                updatesProject: false
             }
         ]
     },

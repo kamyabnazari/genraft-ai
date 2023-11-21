@@ -15,6 +15,16 @@ project_config = {
             "chat_goal": "The objective is to set company goals and align them with the detailed product idea to create a comprehensive company goals description.",
             "initial_message_chat_1": "The Tech Scope is: {tech_scope}. The goal of this conversation is: {chat_goal}. Here is the final project idea: {idea_final}. Let's discuss this to create a comprehensive company goals description. Please keep the conversation concise and limit exchanges to a maximum of {max_exchanges} messages per participant.",
             "initial_message_chat_2": "The Tech Scope is: {tech_scope}. The goal of this conversation is: {chat_goal}. We are discussing the final project idea: {idea_final}. Based on this, let’s refine our company's direction. Enclose the final company goals within {output_format_start}...{output_format_end}. Please limit exchanges to a maximum of {max_exchanges} exchanges each, summarize the discussion and provide a provisional final idea. Here was my first response to your initial idea: {response_from_secondary}. Please respond concisely to my response."
+        },
+        "ceo_cpo": {
+            "chat_goal": "The objective is to develop product design specifications and UX strategy, based on the company goals and detailed product idea.",
+            "initial_message_chat_1": "The Tech Scope is: {tech_scope}. The goal of this conversation is: {chat_goal}. We need to discuss and create a plan for product design specifications and UX strategy. Input includes: {company_goal} and {idea_final}. Please keep the conversation concise and limit exchanges to a maximum of {max_exchanges} messages per participant.",
+            "initial_message_chat_2": "The Tech Scope is: {tech_scope}. The goal of this conversation is: {chat_goal}. Let's focus on developing a coherent UX strategy and design specifications that align with our company goals: {company_goal} and the detailed idea: {idea_final}. Enclose the final design plan within {output_format_start}...{output_format_end}. Limit exchanges to {max_exchanges} messages per participant."
+        },
+        "ceo_cto": {
+            "chat_goal": "The objective is to address technical challenges, decide on architecture, and integration with existing technologies, aligning with the detailed product idea and company goals.",
+            "initial_message_chat_1": "The Tech Scope is: {tech_scope}. The goal of this conversation is: {chat_goal}. Our focus is on addressing technical challenges and deciding on the architecture. Input: {company_goal} and {idea_final}. Please keep the conversation concise, limiting to {max_exchanges} messages per participant.",
+            "initial_message_chat_2": "The Tech Scope is: {tech_scope}. The goal of this conversation is: {chat_goal}. We need to align our architecture and tech stack with the company goals: {company_goal} and our product idea: {idea_final}. Enclose key technical decisions within {output_format_start}...{output_format_end}, keeping the exchange within {max_exchanges} messages."
         }
     },
     "assistants": {
@@ -29,6 +39,9 @@ project_config = {
         },
         "cpo": {
             "instructions": "As a CPO, oversee the product design and user experience strategy. Use {output_format_start}...{output_format_end} to highlight key design decisions and stay within {max_exchanges} exchanges."
+        },
+        "cto": {
+            "instructions": "As a CTO, your primary focus is on the technical architecture, technology stack, and integration of technologies. Collaborate effectively with other team members, particularly the CEO and CPO, to ensure technical decisions align with the overall product strategy and company goals. Enclose key technical details and decisions within {output_format_start}...{output_format_end} to highlight them, and keep your exchanges within the limit of {max_exchanges} messages per conversation to maintain clarity and efficiency."
         },
         "programmer": {
             "instructions": "As a Programmer, your role is to turn technical specifications into executable code. Enclose code-related discussions within {output_format_start}...{output_format_end} and keep exchanges under {max_exchanges}."
