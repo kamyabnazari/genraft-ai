@@ -7,8 +7,7 @@ export async function POST({ params, request }) {
     const requestBody = {
         chat_name: body.chat_name,
         chat_assistant_primary: body.chat_assistant_primary,
-        chat_assistant_secondary: body.chat_assistant_secondary,
-        chat_goal: body.chat_goal
+        chat_assistant_secondary: body.chat_assistant_secondary
     }
 
     try {

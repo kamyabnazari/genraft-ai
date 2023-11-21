@@ -36,7 +36,6 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             chat_name=request_body.chat_name,
             chat_assistant_primary=request_body.chat_assistant_primary,
             chat_assistant_secondary=request_body.chat_assistant_secondary,
-            chat_goal=request_body.chat_goal,
             chat_messages=""
             )
         
@@ -80,6 +79,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
         output_format_start = chat_specific_config["output_format_start"]
         output_format_end = chat_specific_config["output_format_end"]
+        chat_goal = chat_specific_config["chat_goal"]
         initial_message_chat_1_template = chat_specific_config["initial_message_chat_1"]
         initial_message_template_chat_2 = chat_specific_config["initial_message_chat_2"]
 
@@ -95,7 +95,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             initial_message_chat_1 = initial_message_chat_1_template.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
-                chat_goal=request_body.chat_goal,
+                chat_goal=chat_goal,
                 idea_initial=idea_initial
             )
         elif(chat_type == "stakeholder_ceo"):
@@ -103,7 +103,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             initial_message_chat_1 = initial_message_chat_1_template.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
-                chat_goal=request_body.chat_goal,
+                chat_goal=chat_goal,
                 idea_final=idea_final
             )
         elif(chat_type == "ceo_coo"):
@@ -111,7 +111,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             initial_message_chat_1 = initial_message_chat_1_template.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
-                chat_goal=request_body.chat_goal,
+                chat_goal=chat_goal,
                 idea_final=idea_final,
                 company_goal=company_goal
             )
@@ -144,7 +144,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             initial_message_chat_2 = initial_message_template_chat_2.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
-                chat_goal=request_body.chat_goal,
+                chat_goal=chat_goal,
                 idea_initial=idea_initial, 
                 response_from_secondary=response_from_secondary_assistant,
                 output_format_start=output_format_start,
@@ -155,7 +155,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             initial_message_chat_2 = initial_message_template_chat_2.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
-                chat_goal=request_body.chat_goal,
+                chat_goal=chat_goal,
                 idea_final=idea_final,
                 response_from_secondary=response_from_secondary_assistant,
                 output_format_start=output_format_start,
@@ -166,7 +166,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             initial_message_chat_2 = initial_message_template_chat_2.format(
                 tech_scope=tech_scope,
                 max_exchanges=max_exchanges,
-                chat_goal=request_body.chat_goal,
+                chat_goal=chat_goal,
                 idea_final=idea_final,
                 company_goal=company_goal,
                 response_from_secondary=response_from_secondary_assistant,

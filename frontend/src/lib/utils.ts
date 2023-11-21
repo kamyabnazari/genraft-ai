@@ -14,7 +14,7 @@ export const phases = [
             {
                 key: 'idea-initial',
                 name: "Initial Idea",
-                successResult: "Initial Idea Retrieved: {project.idea_initial}",
+                successResult: "{project.idea_initial}",
                 errorResult: "Error in Getting Initial Idea",
                 updatesProject: true
             },
@@ -59,14 +59,13 @@ export const phases = [
                 body: {
                     chat_name: "project-{id}-chat-stakeholder-and-consultant",
                     chat_assistant_primary: "project-{id}-assistant-stakeholder",
-                    chat_assistant_secondary: "project-{id}-assistant-consultant",
-                    chat_goal: "The objective is to collaboratively refine and expand the initial project idea into a detailed project idea, focusing exclusively on the idea's details. Discussions should center on elaborating the idea's specifics, potential features, while avoiding unrelated business or operational topics and even technical details, this should be very much surface level details."
+                    chat_assistant_secondary: "project-{id}-assistant-consultant"
                 }
             },
             {
                 key: 'idea-final',
                 name: "Final Idea",
-                successResult: "Final Idea Created: {project.idea_final}",
+                successResult: "{project.idea_final}",
                 errorResult: "Error in Creating Final Idea",
                 updatesProject: true
             },
@@ -132,14 +131,13 @@ export const phases = [
                 body: {
                     chat_name: "project-{id}-chat-stakeholder-and-ceo",
                     chat_assistant_primary: "project-{id}-assistant-stakeholder",
-                    chat_assistant_secondary: "project-{id}-assistant-ceo",
-                    chat_goal: "The objective is to set company goals and align them with the detailed product idea to create a comprehensive company goals description."
+                    chat_assistant_secondary: "project-{id}-assistant-ceo"
                 }
             },
             {
                 key: 'company-goal',
                 name: "Company Goal",
-                successResult: "Company Goal Created: {project.company_goal}",
+                successResult: "{project.company_goal}",
                 errorResult: "Error in Creating Company Goal",
                 updatesProject: true
             },
@@ -154,8 +152,7 @@ export const phases = [
                 body: {
                     chat_name: "project-{id}-chat-ceo-and-coo",
                     chat_assistant_primary: "project-{id}-assistant-ceo",
-                    chat_assistant_secondary: "project-{id}-assistant-coo",
-                    chat_goal: "The objective is to discuss and define the operational strategy, resource allocation, and create new job roles, ensuring alignment with the company goals."
+                    chat_assistant_secondary: "project-{id}-assistant-coo"
                 }
             },
             {

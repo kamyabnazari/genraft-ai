@@ -24,7 +24,6 @@ chats = Table(
     Column("chat_name", String, nullable=False),
     Column("chat_assistant_primary", String, nullable=False),
     Column("chat_assistant_secondary", String, nullable=False),
-    Column("chat_goal", String, nullable=False),
     Column("chat_messages", String, nullable=True),
     Column("created_at", DateTime, nullable=False)
 )

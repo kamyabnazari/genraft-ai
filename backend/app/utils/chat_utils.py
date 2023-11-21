@@ -163,12 +163,11 @@ async def chat_thread_exists_util(chat_name: str, primary_to_secondary_name: str
     return thread_exists, None  # Return False and None if no chat_id is found
 
 # Function to insert chat data into the database
-async def insert_chat_data_util(chat_name, chat_assistant_primary, chat_assistant_secondary, chat_goal, chat_messages):
+async def insert_chat_data_util(chat_name, chat_assistant_primary, chat_assistant_secondary, chat_messages):
     chat_query = chats.insert().values(
         chat_name=chat_name,
         chat_assistant_primary=chat_assistant_primary,
         chat_assistant_secondary=chat_assistant_secondary,
-        chat_goal=chat_goal,
         chat_messages=json.dumps(chat_messages),
         created_at=datetime.datetime.now()
     )

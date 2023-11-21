@@ -49,7 +49,6 @@ class CreateChatRequest(BaseModel):
     chat_name: str
     chat_assistant_primary: str
     chat_assistant_secondary: str
-    chat_goal: str
 
 class UpdateProgressRequest(BaseModel):
     current_phase: str
