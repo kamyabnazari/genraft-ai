@@ -19,6 +19,8 @@
 		idea_initial: '',
 		idea_final: '',
 		company_goal: '',
+		technical_plan: '',
+		design_strategy: '',
 		folder_path: '',
 		created_at: '',
 		current_phase: '',

@@ -1,6 +1,6 @@
 project_config = {
     "global_properties": {
-        "max_exchanges": 5,
+        "max_exchanges": 3,
         "chat_end": "<END_CHAT>",
         "tech_scope": "Focus on Python, HTML, CSS, JavaScript, and web technologies only.",
         "output_format_instructions": "Please respond in a clear, third-person format. Start directly with the content, avoiding first-person statements or lead-in phrases. The response should consist only of the specific, essential details necessary for the task, with no additional commentary or explanatory text."
@@ -21,13 +21,13 @@ project_config = {
         "ceo_cpo": {
             "chat_goal": "Develop detailed product design and UX strategy, ensuring alignment with the project's vision and goals.",
             "initial_message_chat_1": "Goal: {chat_goal}. Inputs: {company_goal}, {idea_final}. Develop a plan in Markdown. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Develop UX strategy and design specs in Markdown. Consider {company_goal}, {idea_final}. If satisfied with the plan, signify the end with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Develop UX strategy and design specs. Consider {company_goal}, {idea_final}. If satisfied with the plan, signify the end with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Outline the product design and UX strategy, emphasizing essential design elements and user experience considerations in relation to the project's vision."
         },
         "ceo_cto": {
             "chat_goal": "Formulate a comprehensive technical plan covering architecture, technology stack, and integration strategies.",
             "initial_message_chat_1": "Goal: {chat_goal}. Produce a detailed technical plan. Inputs: {company_goal}, {idea_final}. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Detail architecture and tech stack in Markdown. Consider {company_goal}, {idea_final}. If you agree with the plan, signify the end with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Detail architecture and tech stack. Consider {company_goal}, {idea_final}. If you agree with the plan, signify the end with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Provide a comprehensive technical plan, focusing on architecture, technology stack, and integration strategies with clear technical specifics."
         }
     },
