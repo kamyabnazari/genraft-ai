@@ -1,5 +1,9 @@
 import json
+from syslog import LOG_PERROR
 from openai import OpenAI, OpenAIError
+from app.utils.project_utils import get_project_company_goal_util
+from app.utils.project_utils import get_project_idea_final_util
+from app.utils.project_utils import get_project_idea_initial_util
 from app.core.config import settings
 from app.models.database import chats, threads, project_chat_association, chat_thread_association
 from app.dependencies import get_database
@@ -211,3 +215,29 @@ async def retrieve_message_file(thread_id, message_id, file_id):
         return client.beta.threads.messages.files.retrieve(thread_id=thread_id, message_id=message_id, file_id=file_id)
     except OpenAIError as e:
         raise e
+
+async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant):
+    try:
+        idea_initial, idea_final, company_goal = None, None, None
+
+        if chat_type in ["stakeholder_consultant", "stakeholder_ceo"]:
+            idea_initial = await get_project_idea_initial_util(id)
+        if chat_type in ["stakeholder_ceo", "ceo_cpo", "ceo_cto"]:
+            idea_final = await get_project_idea_final_util(id)
+        if chat_type in ["ceo_cpo", "ceo_cto"]:
+            company_goal = await get_project_company_goal_util(id)
+
+        return template.format(
+            tech_scope=tech_scope,
+            chat_goal=chat_goal,
+            idea_initial=idea_initial,
+            idea_final=idea_final,
+            company_goal=company_goal,
+            max_exchanges=max_exchanges,
+            chat_end=chat_end,
+            response_from_secondary=response_from_secondary_assistant
+        )
+    except Exception as e:
+        # Log the error for debugging
+        LOG_PERROR("Error in formatting message: " + str(e))
+        return None

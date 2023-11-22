@@ -98,7 +98,5 @@ def generate_assistant_instructions(assistant_type):
     instructions = project_config["assistants"][assistant_type]["instructions"]
     global_props = project_config["global_properties"]
     return instructions.format(
-        output_format_start=global_props["output_format_start"],
-        output_format_end=global_props["output_format_end"],
         max_exchanges=global_props["max_exchanges"]
     )
