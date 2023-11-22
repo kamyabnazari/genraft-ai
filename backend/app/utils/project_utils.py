@@ -37,6 +37,22 @@ async def get_project_company_goal_util(project_id: int):
     else:
         raise HTTPException(status_code=404, detail=f"Project with id {project_id} not found")
 
+async def get_project_technical_plan_util(project_id: int):
+    query = select([projects.c.technical_plan]).where(projects.c.id == project_id)
+    result = await database.fetch_one(query)
+    if result:
+        return result['technical_plan']
+    else:
+        raise HTTPException(status_code=404, detail=f"Project with id {project_id} not found")
+
+async def get_project_design_strategy_util(project_id: int):
+    query = select([projects.c.design_strategy]).where(projects.c.id == project_id)
+    result = await database.fetch_one(query)
+    if result:
+        return result['design_strategy']
+    else:
+        raise HTTPException(status_code=404, detail=f"Project with id {project_id} not found")
+
 async def save_project_idea_final_util(project_id: int, final_idea: str):
     query = update(projects).where(projects.c.id == project_id).values(idea_final=final_idea)
     await database.execute(query)

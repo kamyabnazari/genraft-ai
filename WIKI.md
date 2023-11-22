@@ -81,15 +81,15 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 #### Chat 1: CTO and Programmer
 
-- **Topic**: Coding standards, version control, and implementation details.
-- **Input**: Technical specifications and tech stack information.
-- **Output**: Source code adhering to standards and specifications.
+- **Focus**: Active feature implementation based on the technical plan.
+- **Input**: Detailed technical plan including specifications and tech stack.
+- **Output**: Executable source code for specified features, adhering to technical specifications.
 
 #### Chat 2: Programmer and Designer
 
-- **Topic**: Creation of UI/UX assets and interactive elements.
-- **Input**: Product design specifications.
-- **Output**: Design assets like logos, UI elements, and style guides.
+- **Focus**: Creation and provision of UI/UX design assets for project implementation.
+- **Input**: Product design specifications and UX strategy.
+- **Output**: UI/UX design assets, including logos, UI elements, mockups, and style guides, ready for implementation in the project.
 
 ### 5. Testing Phase
 

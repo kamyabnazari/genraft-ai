@@ -74,8 +74,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         
         max_exchanges=global_properties["max_exchanges"]
         chat_end = global_properties["chat_end"]
-        tech_scope=global_properties["tech_scope"]
-        output_format_instructions=global_properties["output_format_instructions"]
+        tech_scope = global_properties["tech_scope"]
+        output_format_instructions = global_properties["output_format_instructions"]
         
         initial_message_chat_1_template = chat_specific_config["initial_message_chat_1"]
         initial_message_chat_2_template = chat_specific_config["initial_message_chat_2"]
@@ -84,14 +84,14 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         
         # Step 1: Prepare the initial input for the first thread
         initial_message_chat_1 = await format_initial_message(
-            chat_type, 
-            initial_message_chat_1_template, 
-            id, 
-            tech_scope, 
-            chat_goal, 
-            max_exchanges, 
-            chat_end, 
-            None
+            chat_type=chat_type, 
+            template=initial_message_chat_1_template, 
+            id=id, 
+            tech_scope=tech_scope, 
+            chat_goal=chat_goal, 
+            max_exchanges=max_exchanges, 
+            chat_end=chat_end, 
+            response_from_secondary_assistant=None
         )
         
         if not initial_message_chat_1:
@@ -121,14 +121,14 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         
         # Step 2: Prepare the initial message for the second thread
         initial_message_chat_2 = await format_initial_message(
-            chat_type, 
-            initial_message_chat_2_template, 
-            id, 
-            tech_scope, 
-            chat_goal, 
-            max_exchanges, 
-            chat_end, 
-            response_from_secondary_assistant
+            chat_type=chat_type, 
+            template=initial_message_chat_2_template, 
+            id=id, 
+            tech_scope=tech_scope, 
+            chat_goal=chat_goal, 
+            max_exchanges=max_exchanges, 
+            chat_end=chat_end,
+            response_from_secondary_assistant=response_from_secondary_assistant
         )
 
         if not initial_message_chat_2:
@@ -194,6 +194,10 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 await save_project_design_strategy_util(project_id=id, design_strategy=output_content)
             elif(chat_type == "ceo_cto"):
                 await save_project_technical_plan_util(project_id=id, technical_plan=output_content)
+            elif(chat_type == "cto_programmer"):
+                print(output_content)
+            elif(chat_type == "programmer_designer"):
+                print(output_content)
 
             # Save the conversation in the database
             await save_conversation_util(chat_id=chat_id, conversation=conversation)
@@ -284,7 +288,11 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                     await save_project_design_strategy_util(project_id=id, design_strategy=output_content)
                 elif(chat_type == "ceo_cto"):
                     await save_project_technical_plan_util(project_id=id, technical_plan=output_content)
-            
+                elif(chat_type == "cto_programmer"):
+                    print(output_content)
+                elif(chat_type == "programmer_designer"):
+                    print(output_content)
+                
                 break
             
             # Increment the exchange count

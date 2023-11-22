@@ -299,20 +299,45 @@ export const phases = [
         title: "Coding Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Coding Phase Started",
-                errorResult: "Error in Starting Coding Phase", updatesProject: false
+                key: 'start',
+                name: "Start", successResult: "Coding Phase Started",
+                errorResult: "Error in Starting Coding Phase",
+                updatesProject: false
             },
             {
-                key: 'implementation', name: "Implementation", successResult: "Implementation Started",
-                errorResult: "Error in Starting Implementation", updatesProject: false, endpoint: "/api/projects/{id}/coding/implementation", method: "POST", "body": {}
+                key: "chat-cto-and-programmer",
+                name: "Chat CTO and Programmer",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with CTO and Programmer",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-cto-and-programmer",
+                    chat_assistant_primary: "project-{id}-assistant-cto",
+                    chat_assistant_secondary: "project-{id}-assistant-programmer"
+                }
             },
             {
-                key: 'ui-design', name: "UI Design", successResult: "UI Design Started",
-                errorResult: "Error in Starting UI Design", updatesProject: false, endpoint: "/api/projects/{id}/coding/ui-design", method: "POST", "body": {}
+                key: "chat-programmer-and-designer",
+                name: "Chat Programmer and Designer",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with Programmer and Designer",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-programmer-and-designer",
+                    chat_assistant_primary: "project-{id}-assistant-programmer",
+                    chat_assistant_secondary: "project-{id}-assistant-designer"
+                }
             },
             {
-                key: 'done', name: "Done", successResult: "Coding Phase Completed",
-                errorResult: "Error in Completing Coding Phase", updatesProject: false
+                key: 'done',
+                name: "Done",
+                successResult: "Coding Phase Completed",
+                errorResult: "Error in Completing Coding Phase",
+                updatesProject: false
             }
         ]
     },

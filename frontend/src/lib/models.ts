@@ -4,8 +4,8 @@ export interface Project {
   idea_initial: string;
   idea_final: string;
   company_goal: string;
-  technical_plan: string;
   design_strategy: string;
+  technical_plan: string;
   folder_path: string;
   created_at: string;
   current_phase: string | null;

@@ -7,8 +7,8 @@ class Project(BaseModel):
     idea_initial: str
     idea_final: str
     company_goal: str
-    technical_plan: str
     design_strategy: str
+    technical_plan: str
     folder_path: str
     created_at: datetime
     current_phase: str | None

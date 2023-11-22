@@ -1,7 +1,7 @@
 import json
 from syslog import LOG_PERROR
 from openai import OpenAI, OpenAIError
-from app.utils.project_utils import get_project_company_goal_util
+from app.utils.project_utils import get_project_company_goal_util, get_project_design_strategy_util, get_project_technical_plan_util
 from app.utils.project_utils import get_project_idea_final_util
 from app.utils.project_utils import get_project_idea_initial_util
 from app.core.config import settings
@@ -218,14 +218,18 @@ async def retrieve_message_file(thread_id, message_id, file_id):
 
 async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant):
     try:
-        idea_initial, idea_final, company_goal = None, None, None
+        idea_initial, idea_final, company_goal, design_strategy, technical_plan  = None, None, None, None, None
 
         if chat_type in ["stakeholder_consultant", "stakeholder_ceo"]:
             idea_initial = await get_project_idea_initial_util(id)
-        if chat_type in ["stakeholder_ceo", "ceo_cpo", "ceo_cto"]:
+        if chat_type in ["stakeholder_ceo", "ceo_cpo"]:
             idea_final = await get_project_idea_final_util(id)
-        if chat_type in ["ceo_cpo", "ceo_cto"]:
+        if chat_type in ["ceo_cpo"]:
             company_goal = await get_project_company_goal_util(id)
+        if chat_type in ["ceo_cto"]:
+            design_strategy = await get_project_design_strategy_util(id)
+        if chat_type in ["cto_programmer"]:
+            technical_plan = await get_project_technical_plan_util(id)
 
         return template.format(
             tech_scope=tech_scope,
@@ -233,6 +237,8 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
             idea_initial=idea_initial,
             idea_final=idea_final,
             company_goal=company_goal,
+            design_strategy=design_strategy,
+            technical_plan=technical_plan,
             max_exchanges=max_exchanges,
             chat_end=chat_end,
             response_from_secondary=response_from_secondary_assistant

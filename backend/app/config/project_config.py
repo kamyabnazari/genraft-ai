@@ -26,9 +26,21 @@ project_config = {
         },
         "ceo_cto": {
             "chat_goal": "Formulate a comprehensive technical plan covering architecture, technology stack, and integration strategies.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Produce a detailed technical plan. Inputs: {company_goal}, {idea_final}. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Detail architecture and tech stack. Consider {company_goal}, {idea_final}. If you agree with the plan, signify the end with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Produce a detailed technical plan. Inputs: {design_strategy}, {company_goal}. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Detail architecture and tech stack. Consider {design_strategy}, {company_goal}. If you agree with the plan, signify the end with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Provide a comprehensive technical plan, focusing on architecture, technology stack, and integration strategies with clear technical specifics."
+        },
+        "cto_programmer": {
+            "chat_goal": "Translate the technical plan into executable code by implementing listed features.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Implement the assigned features based on the technical plan. Input: {technical_plan}. Ensure code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "output_request": "Provide completed source code for the assigned features, ensuring compliance with the technical specifications and best coding practices."
+        },
+        "programmer_designer": {
+            "chat_goal": "Create UI designs and assets for implementation in the project.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Design UI assets and mockups. Input: Product design specifications. Focus on creating assets for UI implementation. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Develop UI assets and designs based on provided specifications. Your designs will guide the UI implementation. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "output_request": "Generate and ouput Images only. Deliver UI designs, mockups, and assets that are ready for implementation, aligning with the product's visual and UX design specifications."
         }
     },
     "assistants": {
