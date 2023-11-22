@@ -199,3 +199,15 @@ async def associate_thread_with_chat_util(chat_id, thread_id):
         thread_id=thread_id
     )
     await database.execute(association_query)
+
+async def list_thread_messages(thread_id):
+    try:
+        return client.beta.threads.messages.list(thread_id=thread_id)
+    except OpenAIError as e:
+        raise e
+
+async def retrieve_message_file(thread_id, message_id, file_id):
+    try:
+        return client.beta.threads.messages.files.retrieve(thread_id=thread_id, message_id=message_id, file_id=file_id)
+    except OpenAIError as e:
+        raise e

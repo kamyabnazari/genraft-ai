@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
-from app.utils.file_utils import save_conversation_to_file_util
+from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
-from app.utils.project_utils import get_project_company_goal_util, get_project_idea_final_util, get_project_idea_initial_util, save_project_company_goal_util, save_project_idea_final_util
+from app.utils.project_utils import get_project_company_goal_util, get_project_folder_path_util, get_project_idea_final_util, get_project_idea_initial_util, save_project_company_goal_util, save_project_idea_final_util
 from app.config.project_config import project_config
 from app.models.pydantic_models import CreateChatRequest
-from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
+from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, fetch_conversation_util, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, list_thread_messages, poll_for_completion_util, retrieve_message_file, save_conversation_util, send_initial_message_util
 from app.dependencies import get_database
 
 router = APIRouter()
@@ -230,32 +230,31 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         if output_format_end in latest_response_from_primary_assistant:
             start_index = latest_response_from_primary_assistant.find(output_format_start) + len(output_format_start)
             end_index = latest_response_from_primary_assistant.find(output_format_end)
-            if start_index != -1 and end_index != -1:
-                if(chat_type == "stakeholder_consultant"):
-                    final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
-                    await save_project_idea_final_util(project_id=id, final_idea=final_idea)
-                elif(chat_type == "stakeholder_ceo"):
-                    company_goal = latest_response_from_primary_assistant[start_index:end_index].strip()
-                    await save_project_company_goal_util(project_id=id, company_goal=company_goal)
-                elif(chat_type == "ceo_cpo"):
-                    result = latest_response_from_primary_assistant[start_index:end_index].strip()
-                elif(chat_type == "ceo_cto"):
-                    result = latest_response_from_primary_assistant[start_index:end_index].strip()
-
-                # Save the conversation in the database
-                await save_conversation_util(chat_id=chat_id, conversation=conversation)
-                
-                # Save the conversation to a JSON file
-                success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
-                if not success:
-                    # Handle the error case as needed
-                    raise HTTPException(status_code=500, detail="Error saving conversation to file")
-                
-                return {
-                    "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
-                    "chat_id": chat_id
-                }
-        
+            
+            if(chat_type == "stakeholder_consultant"):
+                final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
+                await save_project_idea_final_util(project_id=id, final_idea=final_idea)
+            elif(chat_type == "stakeholder_ceo"):
+                company_goal = latest_response_from_primary_assistant[start_index:end_index].strip()
+                await save_project_company_goal_util(project_id=id, company_goal=company_goal)
+            if chat_type in ["ceo_cpo", "ceo_cto"]:
+                markdown_content = latest_response_from_primary_assistant[start_index:end_index].strip()
+                await save_markdown_to_file_util(project_id=id, chat_name=request_body.chat_name, markdown_content=markdown_content)
+            
+            # Save the conversation in the database
+            await save_conversation_util(chat_id=chat_id, conversation=conversation)
+            
+            # Save the conversation to a JSON file
+            success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
+            if not success:
+                # Handle the error case as needed
+                raise HTTPException(status_code=500, detail="Error saving conversation to file")
+            
+            return {
+                "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
+                "chat_id": chat_id
+            }
+    
         current_exchanges = 0
         
         while current_exchanges < max_exchanges:                  
@@ -275,7 +274,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             latest_response_from_secondary_assistant = primary_to_secondary_messages[0]
 
             # Append a reminder about the output format protocols to the secondary assistant's response
-            reminder_message = " Remember to enclose the final idea within " + output_format_start + " ... " + output_format_end + " if you're ready to conclude."
+            reminder_message = " Remember to enclose the final idea within " + output_format_start + "..." + output_format_end + " if you're ready to conclude."
             latest_response_from_secondary_assistant += reminder_message
 
             # Append consultant's response to the conversation
@@ -301,19 +300,16 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             if output_format_end in latest_response_from_primary_assistant:
                 start_index = latest_response_from_primary_assistant.find(output_format_start) + len(output_format_start)
                 end_index = latest_response_from_primary_assistant.find(output_format_end)
-                final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
-                
                 if(chat_type == "stakeholder_consultant"):
                     final_idea = latest_response_from_primary_assistant[start_index:end_index].strip()
                     await save_project_idea_final_util(project_id=id, final_idea=final_idea)
                 elif(chat_type == "stakeholder_ceo"):
                     company_goal = latest_response_from_primary_assistant[start_index:end_index].strip()
                     await save_project_company_goal_util(project_id=id, company_goal=company_goal)
-                elif(chat_type == "ceo_cpo"):
-                    result = latest_response_from_primary_assistant[start_index:end_index].strip()
-                elif(chat_type == "ceo_cto"):
-                    result = latest_response_from_primary_assistant[start_index:end_index].strip()
-                                
+                if chat_type in ["ceo_cpo", "ceo_cto"]:
+                    markdown_content = latest_response_from_primary_assistant[start_index:end_index].strip()
+                    await save_markdown_to_file_util(project_id=id, chat_name=request_body.chat_name, markdown_content=markdown_content)                           
+                
                 break
             
             # Increment the exchange count
@@ -323,7 +319,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         await save_conversation_util(chat_id=chat_id, conversation=conversation)
         
         # Save the conversation to a JSON file
-        success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
+        success = await save_conversation_to_file_util(project_id=id, chat_name=request_body.chat_name, conversation=conversation)
         if not success:
             # Handle the error case as needed
             raise HTTPException(status_code=500, detail="Error saving conversation to file")
