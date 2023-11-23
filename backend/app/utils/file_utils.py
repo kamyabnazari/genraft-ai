@@ -42,3 +42,21 @@ async def save_markdown_to_file_util(project_id: int, chat_name: str, markdown_c
         # Handle any exceptions (logging, custom error handling, etc.)
         print(f"Error saving markdown to file: {e}")
         return False
+
+async def save_python_to_file_util(project_id: int, chat_name: str, python_content):
+    try:
+        # Get the project folder path
+        folder_path = await get_project_folder_path_util(project_id)
+        
+        # Format the file name
+        python_name = f"{chat_name}_code.py"
+        
+        # Define the complete file path
+        conversation_file_path = os.path.join(folder_path, python_name)
+
+        with open(conversation_file_path, 'w') as file:
+            file.write(python_content)
+    except Exception as e:
+        # Handle any exceptions (logging, custom error handling, etc.)
+        print(f"Error saving markdown to file: {e}")
+        return False

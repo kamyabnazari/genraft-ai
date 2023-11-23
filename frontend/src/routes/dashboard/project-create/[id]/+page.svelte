@@ -391,6 +391,18 @@
 				project.company_goal
 			);
 		}
+		if (resultWithProjectData.includes('{project.design_strategy}')) {
+			resultWithProjectData = resultWithProjectData.replace(
+				'{project.design_strategy}',
+				project.design_strategy
+			);
+		}
+		if (resultWithProjectData.includes('{project.technical_plan}')) {
+			resultWithProjectData = resultWithProjectData.replace(
+				'{project.technical_plan}',
+				project.technical_plan
+			);
+		}
 		return resultWithProjectData;
 	}
 </script>

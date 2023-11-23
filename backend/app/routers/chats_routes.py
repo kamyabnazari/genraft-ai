@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util
+from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util, save_python_to_file_util
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
 from app.utils.project_utils import save_project_company_goal_util, save_project_design_strategy_util, save_project_idea_final_util, save_project_technical_plan_util
 from app.config.project_config import project_config
@@ -195,7 +195,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             elif(chat_type == "ceo_cto"):
                 await save_project_technical_plan_util(project_id=id, technical_plan=output_content)
             elif(chat_type == "cto_programmer"):
-                print(output_content)
+                await save_python_to_file_util(project_id=id, chat_name=request_body.chat_name, python_content=output_content)
             elif(chat_type == "programmer_designer"):
                 print(output_content)
 
@@ -289,7 +289,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 elif(chat_type == "ceo_cto"):
                     await save_project_technical_plan_util(project_id=id, technical_plan=output_content)
                 elif(chat_type == "cto_programmer"):
-                    print(output_content)
+                    await save_python_to_file_util(project_id=id, chat_name=request_body.chat_name, python_content=output_content)
                 elif(chat_type == "programmer_designer"):
                     print(output_content)
                 

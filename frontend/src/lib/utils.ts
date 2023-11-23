@@ -271,6 +271,13 @@ export const phases = [
                 }
             },
             {
+                key: 'design-strategy',
+                name: "Design Strategy",
+                successResult: "{project.design_strategy}",
+                errorResult: "Error in Getting Design Strategy",
+                updatesProject: true
+            },
+            {
                 key: "chat-ceo-and-cto",
                 name: "Chat CEO and CTO",
                 successResult: "Chat Ended Successfully!",
@@ -283,6 +290,13 @@ export const phases = [
                     chat_assistant_primary: "project-{id}-assistant-ceo",
                     chat_assistant_secondary: "project-{id}-assistant-cto"
                 }
+            },
+            {
+                key: 'technical-plan',
+                name: "Technical Plan",
+                successResult: "{project.technical_plan}",
+                errorResult: "Error in Getting Technical Plan",
+                updatesProject: true
             },
             {
                 key: 'done',
@@ -347,20 +361,17 @@ export const phases = [
         title: "Testing Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Testing Phase Started",
-                errorResult: "Error in Starting Testing Phase", updatesProject: false
+                key: 'start', name: "Start",
+                successResult: "Testing Phase Started",
+                errorResult: "Error in Starting Testing Phase",
+                updatesProject: false
             },
             {
-                key: 'code-review', name: "Code Review", successResult: "Code Review Started",
-                errorResult: "Error in Starting Code Review", updatesProject: false, endpoint: "/api/projects/{id}/testing/code-review", method: "POST", "body": {}
-            },
-            {
-                key: 'quality-assurance', name: "Quality Assurance", successResult: "Quality Assurance Started",
-                errorResult: "Error in Starting Quality Assurance", updatesProject: false, endpoint: "/api/projects/{id}/testing/quality-assurance", method: "POST", "body": {}
-            },
-            {
-                key: 'done', name: "Done", successResult: "Testing Phase Completed",
-                errorResult: "Error in Completing Testing Phase", updatesProject: false
+                key: 'done',
+                name: "Done",
+                successResult: "Testing Phase Completed",
+                errorResult: "Error in Completing Testing Phase",
+                updatesProject: false
             }
         ]
     },
@@ -370,20 +381,18 @@ export const phases = [
         title: "Documenting Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Documenting Phase Started",
-                errorResult: "Error in Starting Documenting Phase", updatesProject: false
+                key: 'start',
+                name: "Start",
+                successResult: "Documenting Phase Started",
+                errorResult: "Error in Starting Documenting Phase",
+                updatesProject: false
             },
             {
-                key: 'technical-writing', name: "Technical Writing", successResult: "Technical Writing Started",
-                errorResult: "Error in Starting Technical Writing", updatesProject: false, endpoint: "/api/projects/{id}/documenting/technical-writing", method: "POST", "body": {}
-            },
-            {
-                key: 'user-guides', name: "User Guides", successResult: "User Guides Started",
-                errorResult: "Error in Starting User Guides", updatesProject: false, endpoint: "/api/projects/{id}/documenting/user-guides", method: "POST", "body": {}
-            },
-            {
-                key: 'done', name: "Done", successResult: "Documenting Phase Completed",
-                errorResult: "Error in Completing Documenting Phase", updatesProject: false
+                key: 'done',
+                name: "Done",
+                successResult: "Documenting Phase Completed",
+                errorResult: "Error in Completing Documenting Phase",
+                updatesProject: false
             }
         ]
     },
@@ -393,20 +402,18 @@ export const phases = [
         title: "Project Completion Phase",
         stages: [
             {
-                key: 'start', name: "Start", successResult: "Project Completion Phase Started",
-                errorResult: "Error in Starting Project Completion Phase", updatesProject: false
+                key: 'start',
+                name: "Start",
+                successResult: "Project Completion Phase Started",
+                errorResult: "Error in Starting Project Completion Phase",
+                updatesProject: false
             },
             {
-                key: 'final-review', name: "Final Review", successResult: "Final Review Started",
-                errorResult: "Error in Starting Final Review", updatesProject: false, endpoint: "/api/projects/{id}/project-completion/final-review", method: "POST", "body": {}
-            },
-            {
-                key: 'project-download', name: "Project Download", successResult: "Project Download Started",
-                errorResult: "Error in Starting Project Download", updatesProject: false, endpoint: "/api/projects/{id}/project-completion/project-download", method: "POST", "body": {}
-            },
-            {
-                key: 'done', name: "Done", successResult: "Project Completion Phase Completed",
-                errorResult: "Error in Completing Project Completion Phase", updatesProject: false
+                key: 'done',
+                name: "Done",
+                successResult: "Project Completion Phase Completed",
+                errorResult: "Error in Completing Project Completion Phase",
+                updatesProject: false
             }
         ]
     },
