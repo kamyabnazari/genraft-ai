@@ -2,7 +2,7 @@ project_config = {
     "global_properties": {
         "max_exchanges": 5,
         "chat_end": "<END_CHAT>",
-        "tech_scope": "Focus on Python, HTML, CSS, JavaScript, and web technologies only.",
+        "tech_scope": "Focus on Python, HTML, CSS, JavaScript, and web technologies only. Only very Simple project implemenation, only Prototypes. No Networking, No Advanced Features, Only the basic libraries, tools and frameworks.",
         "output_format_instructions": "Please respond in a clear, third-person format. Start directly with the content, avoiding first-person statements or lead-in phrases. The response should consist only of the specific, essential details necessary for the task, with no additional commentary or explanatory text."
     },
     "chats": {
