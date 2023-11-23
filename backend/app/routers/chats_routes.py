@@ -162,6 +162,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         latest_response_from_secondary_assistant = response_from_secondary_assistant
         
         if chat_end in latest_response_from_primary_assistant:
+            end_called = True
+            
             # Send a new message to the secondary assistant asking for the final output
             final_output_request = output_format_instructions + " - " + output_request
             
@@ -214,6 +216,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             }
                 
         current_exchanges = 0
+        end_called = False
         
         while current_exchanges < max_exchanges:                  
             # Secondary assistant responding to the latest message from Primary assistant
@@ -232,8 +235,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             latest_response_from_secondary_assistant = primary_to_secondary_messages[0]            
 
             # Reminder message for the Secondary Assistant
-            reminder_message_secondary = " Please evaluate the output. If acceptable, end the conversation with '{}'.".format(chat_end)
-            latest_response_from_secondary_assistant += reminder_message_secondary
+            reminder_message_secondary = " Please evaluate the output. If acceptable, end the conversation with {} .".format(chat_end)
+            latest_response_from_secondary_assistant = reminder_message_secondary + latest_response_from_secondary_assistant
 
             # Append Secondary Assistant response to the conversation
             conversation.append({"sender": sender_name_secondary, "message": latest_response_from_secondary_assistant})
@@ -256,6 +259,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             conversation.append({"sender": sender_name_primary, "message": latest_response_from_primary_assistant})
 
             if chat_end in latest_response_from_primary_assistant:
+                end_called = True
+                
                 # Send a new message to the secondary assistant asking for the final output
                 final_output_request = output_format_instructions + " - " + output_request
                 
@@ -297,6 +302,44 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             
             # Increment the exchange count
             current_exchanges += 1
+            
+        if end_called != True:
+            # Send a new message to the secondary assistant asking for the final output
+            final_output_request = output_format_instructions + " - " + output_request
+            
+            # Append Primary Assistant response to the conversation
+            conversation.append({"sender": sender_name_primary, "message": final_output_request})
+            
+            request_to_secondary_for_output = await send_initial_message_util(
+                thread_id=primary_secondary_chat_thread_data.id,
+                assistant_id=secondary_assistant_id,
+                initial_message=final_output_request
+            )
+
+            # Wait for the response
+            if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, request_to_secondary_for_output.id):
+                return {"message": "Error in requesting final output"}
+
+            final_output_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
+            final_output_from_secondary = final_output_messages[0]
+
+            # Append Primary Assistant response to the conversation
+            conversation.append({"sender": sender_name_secondary, "message": final_output_from_secondary})
+            
+            # Directly use the response as the final output
+            output_content = final_output_from_secondary.strip()
+            if(chat_type == "stakeholder_consultant"):
+                await save_project_idea_final_util(project_id=id, final_idea=output_content)
+            elif(chat_type == "stakeholder_ceo"):
+                await save_project_company_goal_util(project_id=id, company_goal=output_content)
+            elif(chat_type == "ceo_cpo"):
+                await save_project_design_strategy_util(project_id=id, design_strategy=output_content)
+            elif(chat_type == "ceo_cto"):
+                await save_project_technical_plan_util(project_id=id, technical_plan=output_content)
+            elif(chat_type == "cto_programmer"):
+                await save_python_to_file_util(project_id=id, chat_name=request_body.chat_name, output_content=output_content)
+            elif(chat_type == "programmer_designer"):
+                print(output_content)
         
         # Save the conversation in the database
         await save_conversation_util(chat_id=chat_id, conversation=conversation)

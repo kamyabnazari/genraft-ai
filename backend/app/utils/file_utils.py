@@ -1,3 +1,4 @@
+import re
 from app.utils.project_utils import get_project_folder_path_util
 from typing import List, Dict
 import json
@@ -43,8 +44,16 @@ async def save_markdown_to_file_util(project_id: int, chat_name: str, markdown_c
         print(f"Error saving markdown to file: {e}")
         return False
 
-async def save_python_to_file_util(project_id: int, chat_name: str, python_content):
+async def save_python_to_file_util(project_id: int, chat_name: str, output_content):
     try:
+        # Extract Python code from the markdown content
+        match = re.search(r"```python\s+(.*?)\s+```", output_content, re.DOTALL)
+        if match:
+            python_content = match.group(1)
+        else:
+            print("No Python code block found.")
+            return False
+        
         # Get the project folder path
         folder_path = await get_project_folder_path_util(project_id)
         
