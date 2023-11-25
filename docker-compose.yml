@@ -45,6 +45,8 @@ services:
       - genraft-ai-network
     env_file:
       - frontend/.env
+    environment:
+      - PRIVATE_BACKEND_URL=http://genraft-ai-backend:5003
 
 networks:
   genraft-ai-network:
