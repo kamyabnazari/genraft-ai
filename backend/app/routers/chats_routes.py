@@ -1,11 +1,34 @@
 from fastapi import APIRouter, HTTPException
-from app.utils.file_utils import save_conversation_to_file_util, save_python_to_file_util
-from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
-from app.utils.project_utils import save_project_company_goal_util, save_project_design_strategy_util, save_project_idea_final_util, save_project_technical_plan_util
 from app.config.project_config import project_config
 from app.models.pydantic_models import CreateChatRequest
-from app.utils.chat_utils import associate_thread_with_chat_util, create_chat_thread_util, delete_specific_chat_and_threads, fetch_conversation_util, format_initial_message, get_assistant_messages_util, insert_chat_data_util, associate_chat_with_project_util, chat_thread_exists_util, insert_thread_data_util, poll_for_completion_util, save_conversation_util, send_initial_message_util
 from app.dependencies import get_database
+from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
+from app.utils.file_utils import (
+    save_conversation_to_file_util,
+    save_python_to_file_util
+    )
+from app.utils.project_utils import (
+    save_project_company_goal_util,
+    save_project_design_strategy_util,
+    save_project_idea_final_util,
+    save_project_technical_plan_util
+    )
+
+from app.utils.chat_utils import (
+    associate_thread_with_chat_util,
+    create_chat_thread_util,
+    delete_specific_chat_and_threads,
+    fetch_conversation_util,
+    format_initial_message,
+    get_assistant_messages_util,
+    insert_chat_data_util,
+    associate_chat_with_project_util,
+    chat_thread_exists_util,
+    insert_thread_data_util,
+    poll_for_completion_util,
+    save_conversation_util,
+    send_initial_message_util
+    )
 
 router = APIRouter()
 database = get_database()

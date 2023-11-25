@@ -1,7 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from app.models.pydantic_models import CreateAssistantRequest
-from app.utils.assistant_utils import create_assistant_util, insert_assistant_data_util, associate_assistant_with_project_util, assistant_exists_util, generate_assistant_instructions
 from app.dependencies import get_database
+from app.utils.assistant_utils import (
+    create_assistant_util,
+    insert_assistant_data_util,
+    associate_assistant_with_project_util,
+    assistant_exists_util,
+    generate_assistant_instructions
+    )
 
 router = APIRouter()
 database = get_database()
