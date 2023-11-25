@@ -12,11 +12,7 @@ import time
 import datetime
 from app.utils.file_utils import save_conversation_to_file_util, save_python_to_file_util
 from app.utils.project_utils import (
-    get_project_company_goal_util,
-    get_project_design_strategy_util,
     get_project_technical_plan_util,
-    save_project_company_goal_util,
-    save_project_design_strategy_util,
     save_project_idea_final_util,
     save_project_technical_plan_util
     )
@@ -277,16 +273,12 @@ async def retrieve_message_file(thread_id, message_id, file_id):
 
 async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant):
     try:
-        idea_initial, idea_final, company_goal, design_strategy, technical_plan  = None, None, None, None, None
+        idea_initial, idea_final, technical_plan  = None, None, None
 
-        if chat_type in ["stakeholder_consultant", "stakeholder_ceo"]:
+        if chat_type in ["stakeholder_consultant"]:
             idea_initial = await get_project_idea_initial_util(id)
-        if chat_type in ["stakeholder_ceo", "ceo_cpo"]:
-            idea_final = await get_project_idea_final_util(id)
-        if chat_type in ["ceo_cpo"]:
-            company_goal = await get_project_company_goal_util(id)
         if chat_type in ["ceo_cto"]:
-            design_strategy = await get_project_design_strategy_util(id)
+            idea_final = await get_project_idea_final_util(id)
         if chat_type in ["cto_programmer"]:
             technical_plan = await get_project_technical_plan_util(id)
 
@@ -295,8 +287,6 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
             chat_goal=chat_goal,
             idea_initial=idea_initial,
             idea_final=idea_final,
-            company_goal=company_goal,
-            design_strategy=design_strategy,
             technical_plan=technical_plan,
             max_exchanges=max_exchanges,
             chat_end=chat_end,
@@ -346,10 +336,6 @@ async def request_and_process_final_output(project_id,
     # Save the output based on the chat type
     if chat_type == "stakeholder_consultant":
         await save_project_idea_final_util(project_id=project_id, final_idea=output_content)
-    elif chat_type == "stakeholder_ceo":
-        await save_project_company_goal_util(project_id=project_id, company_goal=output_content)
-    elif chat_type == "ceo_cpo":
-        await save_project_design_strategy_util(project_id=project_id, design_strategy=output_content)
     elif chat_type == "ceo_cto":
         await save_project_technical_plan_util(project_id=project_id, technical_plan=output_content)
     elif chat_type == "cto_programmer":

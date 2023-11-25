@@ -8,14 +8,10 @@ In the generative AI application creation process, the following roles, envision
 
 - Here assistants will be created!
 
-### Preparation Phase
-
-- **Idea Development**: Refining and detailing the initial product idea.
-- **Company Goal Setting**: Establishing a clear company direction based on the refined product idea.
-
 ### Designing Phase
 
-- **CPO (Chief Product Officer)**: Focuses on product design specifications, user experience strategy, and preliminary prototypes.
+- **Stakeholder**: To help discuss the initial product idea.
+- **Consultant**: To help Refine and give details to the initial product idea.
 - **CTO (Chief Technology Officer)**: Deals with technical aspects including architecture, technology stack, and integration requirements.
 
 ### Coding Phase
@@ -43,9 +39,9 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 - **Stages**: Creation of all assistants.
 
-### 2. Preparation Phase
+### 2. Designing Phase
 
-**Goal**: To refine the initial product idea and establish a clear company direction.
+**Goal**: To refine the initial product idea and to develop product feature specifications.
 
 #### Chat 1: Stakeholder and Idea Consultant
 
@@ -53,29 +49,13 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Input**: Short product idea.
 - **Output**: Detailed product idea.
 
-#### Chat 2: Stakeholder and CEO
-
-- **Topic**: Setting company goals and aligning them with the detailed product idea.
-- **Input**: Detailed product idea.
-- **Output**: Comprehensive company goals description.
-
-### 3. Designing Phase
-
-**Goal**: To develop product design specifications and technical requirements.
-
-#### Chat 1: CEO and CPO (Chief Product Officer)
-
-- **Topic**: Product design specifications and UX strategy.
-- **Input**: Company goals and detailed product idea.
-- **Output**: Product design specifications, UX strategy, and preliminary prototypes.
-
 #### Chat 2: CEO and CTO (Chief Technology Officer)
 
 - **Topic**: Technical challenges, architecture, and integration with existing technologies.
 - **Input**: Detailed product idea and company goals.
 - **Output**: Detailed technical specifications, architecture, and tech stack requirements.
 
-### 4. Coding Phase
+### 3. Coding Phase
 
 **Goal**: To translate the technical specifications into executable code and design assets.
 
@@ -91,7 +71,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Input**: Product design specifications and UX strategy.
 - **Output**: UI/UX design assets, including logos, UI elements, mockups, and style guides, ready for implementation in the project.
 
-### 5. Testing Phase
+### 4. Testing Phase
 
 **Goal**: To ensure the software is functional, optimized, and free of major bugs.
 
@@ -107,7 +87,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Input**: Source code and features.
 - **Output**: Test reports including unit, integration, and system testing results.
 
-### 6. Documenting Phase
+### 5. Documenting Phase
 
 **Goal**: To create comprehensive documentation for both technical and end-user aspects.
 

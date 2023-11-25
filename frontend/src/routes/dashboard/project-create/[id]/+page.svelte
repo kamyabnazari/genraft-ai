@@ -18,8 +18,6 @@
 		name: '',
 		idea_initial: '',
 		idea_final: '',
-		company_goal: '',
-		design_strategy: '',
 		technical_plan: '',
 		folder_path: '',
 		created_at: '',
@@ -377,8 +375,6 @@
 		const placeholders: { [key: string]: string } = {
 			'{project.idea_initial}': project.idea_initial,
 			'{project.idea_final}': project.idea_final,
-			'{project.company_goal}': project.company_goal,
-			'{project.design_strategy}': project.design_strategy,
 			'{project.technical_plan}': project.technical_plan
 		};
 

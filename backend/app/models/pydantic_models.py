@@ -6,8 +6,6 @@ class Project(BaseModel):
     name: str
     idea_initial: str
     idea_final: str
-    company_goal: str
-    design_strategy: str
     technical_plan: str
     folder_path: str
     created_at: datetime

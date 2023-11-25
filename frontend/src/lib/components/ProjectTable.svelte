@@ -39,8 +39,6 @@
 				name: element.name,
 				idea_initial: element.idea_initial,
 				idea_final: element.idea_final,
-				company_goal: element.company_goal,
-				design_strategy: element.design_strategy,
 				technical_plan: element.technical_plan,
 				folder_path: element.folder_path,
 				created_at: element.created_at,

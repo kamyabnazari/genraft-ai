@@ -54,20 +54,6 @@ export const phases = [
                 }
             },
             {
-                key: "assistant-cpo",
-                name: "CPO Assistant",
-                successResult: "Assistant Created",
-                errorResult: "Error in Creating Assistant",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/assistants/create-assistant",
-                method: "POST",
-                body: {
-                    assistant_name: "project-{id}-assistant-cpo",
-                    assistant_type: "cpo",
-                    assistant_model: "gpt-3.5-turbo"
-                }
-            },
-            {
                 key: "assistant-cto",
                 name: "CTO Assistant",
                 successResult: "Assistant Created",
@@ -175,15 +161,15 @@ export const phases = [
         ]
     },
     {
-        key: 'preparation',
-        name: "Preparation",
-        title: "Preparation Phase",
+        key: 'designing',
+        name: "Designing",
+        title: "Designing Phase",
         stages: [
             {
                 key: 'start',
                 name: "Start",
-                successResult: "Preparation Phase Started",
-                errorResult: "Error in Starting Preparation Phase",
+                successResult: "Designing Phase Started",
+                errorResult: "Error in Starting Designing Phase",
                 updatesProject: false
             },
             {
@@ -212,69 +198,6 @@ export const phases = [
                 name: "Final Idea",
                 successResult: "{project.idea_final}",
                 errorResult: "Error in Creating Final Idea",
-                updatesProject: true
-            },
-            {
-                key: "chat-stakeholder-and-ceo",
-                name: "Chat Stakeholder and CEO",
-                successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with Stakeholder and CEO",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/chats/create-chat",
-                method: "POST",
-                body: {
-                    chat_name: "project-{id}-chat-stakeholder-and-ceo",
-                    chat_assistant_primary: "project-{id}-assistant-stakeholder",
-                    chat_assistant_secondary: "project-{id}-assistant-ceo"
-                }
-            },
-            {
-                key: 'company-goal',
-                name: "Company Goal",
-                successResult: "{project.company_goal}",
-                errorResult: "Error in Creating Company Goal",
-                updatesProject: true
-            },
-            {
-                key: 'done',
-                name: "Done",
-                successResult: "Preparation Phase Completed",
-                errorResult: "Error in Completing Preparation Phase",
-                updatesProject: false
-            }
-        ]
-    },
-    {
-        key: 'designing',
-        name: "Designing",
-        title: "Designing Phase",
-        stages: [
-            {
-                key: 'start',
-                name: "Start",
-                successResult: "Designing Phase Started",
-                errorResult: "Error in Starting Designing Phase",
-                updatesProject: false
-            },
-            {
-                key: "chat-ceo-and-cpo",
-                name: "Chat CEO and CPO",
-                successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with CEO and CPO",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/chats/create-chat",
-                method: "POST",
-                body: {
-                    chat_name: "project-{id}-chat-ceo-and-cpo",
-                    chat_assistant_primary: "project-{id}-assistant-ceo",
-                    chat_assistant_secondary: "project-{id}-assistant-cpo"
-                }
-            },
-            {
-                key: 'design-strategy',
-                name: "Design Strategy",
-                successResult: "{project.design_strategy}",
-                errorResult: "Error in Getting Design Strategy",
                 updatesProject: true
             },
             {
