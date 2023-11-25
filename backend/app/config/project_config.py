@@ -8,7 +8,7 @@ project_config = {
     "chats": {
         "stakeholder_consultant": {
             "chat_goal": "Collaboratively refine and detail the initial project concept, focusing on specific features and implementation strategies.",
-            "initial_message_chat_1": "Tech Scope: {tech_scope}. Goal: {chat_goal}. Initial idea: {idea_initial}. Keep exchanges concise. Limit: {max_exchanges} messages each.",
+            "initial_message_chat_1": "Tech Scope: {tech_scope}. Goal: {chat_goal}. help me refine my project idea and its concept. Initial idea: {idea_initial}. Keep exchanges concise. Limit: {max_exchanges} messages each.",
             "initial_message_chat_2": "Tech Scope: {tech_scope}. Goal: {chat_goal}. Your initial idea: {idea_initial}. Keep the conversation concise. If you agree with the final idea, signify the end with {chat_end}. Limit: {max_exchanges} messages each. Respond concisely to: {response_from_secondary}.",
             "output_request": "Provide a detailed summary of the refined project concept, focusing on key features and implementation strategies."
         },

@@ -156,7 +156,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 "chat_id": chat_id
             }
                 
-        current_exchanges = 0
+        current_exchanges = 1
         end_called = False
         
         while current_exchanges < max_exchanges:                  
@@ -176,7 +176,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             latest_response_from_secondary_assistant = primary_to_secondary_messages[0]            
 
             # Reminder message for the Secondary Assistant
-            reminder_message_secondary = " Please evaluate the output. If acceptable, end the conversation with {} .".format(chat_end)
+            reminder_message_secondary = f"Reminder: This is exchange {current_exchanges} from Maximum {max_exchanges} allowed. Please evaluate the output. If acceptable, end the conversation with the following signal: {chat_end}."
             latest_response_from_secondary_assistant = reminder_message_secondary + latest_response_from_secondary_assistant
 
             # Append Secondary Assistant response to the conversation
