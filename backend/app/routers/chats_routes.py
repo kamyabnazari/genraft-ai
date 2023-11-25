@@ -138,7 +138,6 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             end_called = await request_and_process_final_output(
                             project_id=id,
                             chat_type=chat_type,
-                            request_body=request_body,
                             primary_secondary_chat_thread_data=primary_secondary_chat_thread_data,
                             secondary_assistant_id=secondary_assistant_id,
                             output_format_instructions=output_format_instructions,
@@ -208,7 +207,6 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                 end_called = await request_and_process_final_output(
                                 project_id=id,
                                 chat_type=chat_type,
-                                request_body=request_body,
                                 primary_secondary_chat_thread_data=primary_secondary_chat_thread_data,
                                 secondary_assistant_id=secondary_assistant_id,
                                 output_format_instructions=output_format_instructions,
@@ -227,7 +225,6 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             end_called = await request_and_process_final_output(
                             project_id=id,
                             chat_type=chat_type,
-                            request_body=request_body,
                             primary_secondary_chat_thread_data=primary_secondary_chat_thread_data,
                             secondary_assistant_id=secondary_assistant_id,
                             output_format_instructions=output_format_instructions,

@@ -22,7 +22,7 @@ project_config = {
             "chat_goal": "Translate the technical plan into executable code by implementing listed features.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Here is the technical plan, please ensure that I as the developer create correct implementation, you act as a supervisor. Input: {technical_plan}. Ensure my code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Provide completed final code for the assigned features, ensuring compliance with the technical specifications and best coding practices."
+            "output_request": "Provide completed final code for the assigned features that is executable, ensuring compliance with the technical specifications and best coding practices."
         },
         "programmer_tester": {
             "chat_goal": "To ensure the software is functional, optimized, and free of major bugs.",

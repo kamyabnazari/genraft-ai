@@ -11,7 +11,7 @@ from app.dependencies import get_database
 from sqlalchemy import select
 import time
 import datetime
-from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util, save_python_to_file_util
+from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util, save_code_to_file_util
 from app.utils.project_utils import (
     get_project_technical_plan_util,
     save_project_idea_final_util,
@@ -274,10 +274,14 @@ async def retrieve_message_file(thread_id, message_id, file_id):
 
 async def get_source_code_from_folder_util(folder_path):
     file_contents = {}
+    # List of file extensions to consider
+    code_extensions = ['.py', '.html', '.css', '.js', '.txt'] # Add or remove extensions as needed
+
     for filename in os.listdir(folder_path):
-        if filename.endswith(".py"):
+        if any(filename.endswith(ext) for ext in code_extensions):
             with open(os.path.join(folder_path, filename), 'r') as file:
                 file_contents[filename] = file.read()
+
     return file_contents
 
 async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant, source_code_folder=None):
@@ -311,7 +315,6 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
 
 async def request_and_process_final_output(project_id,
                                            chat_type,
-                                           request_body,
                                            primary_secondary_chat_thread_data,
                                            secondary_assistant_id,
                                            output_format_instructions,
@@ -351,13 +354,13 @@ async def request_and_process_final_output(project_id,
     elif chat_type == "ceo_cto":
         await save_project_technical_plan_util(project_id=project_id, technical_plan=output_content)
     elif chat_type == "cto_programmer":
-        await save_python_to_file_util(project_id=project_id, file_name="main_v1", output_content=output_content)
+        await save_code_to_file_util(project_id=project_id, base_file_name="code", output_content=output_content)
     elif chat_type == "programmer_tester":
-        await save_python_to_file_util(project_id=project_id, file_name="main_v2", output_content=output_content)
+        await save_code_to_file_util(project_id=project_id, base_file_name="code", output_content=output_content)
     elif chat_type == "cto_technical-writer":
-        await save_markdown_to_file_util(project_id=project_id, file_name="technical_documentation", output_content=output_content)
+        await save_markdown_to_file_util(project_id=project_id, base_file_name="technical_documentation", output_content=output_content)
     elif chat_type == "ceo_user-documentation":
-        await save_markdown_to_file_util(project_id=project_id, file_name="user_documentation", output_content=output_content)
+        await save_markdown_to_file_util(project_id=project_id, base_file_name="user_documentation", output_content=output_content)
 
     return True
 
