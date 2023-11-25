@@ -95,14 +95,14 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         )
         
         if not initial_message_chat_1:
-            return {"message": "Error: Failed to format initial message for chat 1"}
+            raise HTTPException(status_code=500, detail="Error: Failed to format initial message for chat 1")
         
         # Retrieve OpenAI Assistant IDs for primary and secondary assistants
         primary_assistant_id = await get_openai_assistant_id_by_name_util(request_body.chat_assistant_primary)
         secondary_assistant_id = await get_openai_assistant_id_by_name_util(request_body.chat_assistant_secondary)
 
         if not primary_assistant_id or not secondary_assistant_id:
-            return {"message": "Error: Assistant not found"}
+            raise HTTPException(status_code=500, detail="Error: Assistant not found")
         
         # Step 2: Start the Conversation in the First Thread
         primary_to_secondary_run = await send_initial_message_util(
@@ -113,7 +113,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
         # Wait for the response
         if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, primary_to_secondary_run.id):
-            return {"message": "Error in completing the first chat"}
+            raise HTTPException(status_code=500, detail="Error: In completing the first chat")
         
         # Get the last message from the first thread
         primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
@@ -132,7 +132,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         )
 
         if not initial_message_chat_2:
-            return {"message": "Error: Failed to format initial message for chat 2"}
+            raise HTTPException(status_code=500, detail="Error: Failed to format initial message for chat 2")
 
         # Start the conversation in the second thread with the response from the first
         secondary_to_primary_run = await send_initial_message_util(
@@ -143,7 +143,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         
         # Wait for the response
         if not await poll_for_completion_util(secondary_primary_chat_thread_data.id, secondary_to_primary_run.id):
-            return {"message": "Error in completing the second chat"}
+            raise HTTPException(status_code=500, detail="Error: In completing the second chat")
         
         # Get the last message from the first thread
         secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)
@@ -178,7 +178,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
             # Wait for the response
             if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, request_to_secondary_for_output.id):
-                return {"message": "Error in requesting final output"}
+                raise HTTPException(status_code=500, detail="Error: In requesting final output")
 
             final_output_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
             final_output_from_secondary = final_output_messages[0]
@@ -208,7 +208,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
             if not success:
                 # Handle the error case as needed
-                raise HTTPException(status_code=500, detail="Error saving conversation to file")
+                raise HTTPException(status_code=500, detail="Error: Saving conversation to file")
             
             return {
                 "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
@@ -228,7 +228,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             
             # Wait for the response
             if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, primary_to_secondary_run.id):
-                return {"message": "Error in completing the first chat"}
+                raise HTTPException(status_code=500, detail="Error: In completing the first chat")
             
             primary_to_secondary_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
 
@@ -250,7 +250,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
             # Wait for the response
             if not await poll_for_completion_util(secondary_primary_chat_thread_data.id, secondary_to_primary_run.id):
-                return {"message": "Error in completing the second chat"}
+                raise HTTPException(status_code=500, detail="Error: In completing the second chat")
             
             secondary_to_primary_messages = await get_assistant_messages_util(secondary_primary_chat_thread_data.id)            
             latest_response_from_primary_assistant = secondary_to_primary_messages[0]
@@ -275,7 +275,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
                 # Wait for the response
                 if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, request_to_secondary_for_output.id):
-                    return {"message": "Error in requesting final output"}
+                    raise HTTPException(status_code=500, detail="Error: In requesting final output")
 
                 final_output_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
                 final_output_from_secondary = final_output_messages[0]
@@ -318,7 +318,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
 
             # Wait for the response
             if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, request_to_secondary_for_output.id):
-                return {"message": "Error in requesting final output"}
+                raise HTTPException(status_code=500, detail="Error: In requesting final output")
 
             final_output_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
             final_output_from_secondary = final_output_messages[0]
@@ -347,15 +347,14 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Save the conversation to a JSON file
         success = await save_conversation_to_file_util(project_id=id, chat_name=request_body.chat_name, conversation=conversation)
         if not success:
-            # Handle the error case as needed
-            raise HTTPException(status_code=500, detail="Error saving conversation to file")
+            raise HTTPException(status_code=500, detail="Error: Saving conversation to file")
         
         return {
             "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
             "chat_id": chat_id
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating chat: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: Creating chat: {str(e)}")
 
 @router.get("/{chat_id}")
 async def get_chat_conversation(chat_id: int):
@@ -363,4 +362,4 @@ async def get_chat_conversation(chat_id: int):
         conversation = await fetch_conversation_util(chat_id)
         return {"conversation": conversation}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching conversation: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: Fetching conversation: {str(e)}")

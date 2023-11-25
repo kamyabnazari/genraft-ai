@@ -8,6 +8,11 @@ export async function GET() {
             headers: { 'Content-Type': 'application/json' }
         });
 
+        if (!response.ok) {
+            // If the response is not OK (e.g., 500 error), throw an error to be caught in the catch block
+            throw new Error(`Backend returned an error: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
         return json(data);
     } catch {
@@ -28,6 +33,11 @@ export async function POST({ request }) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody)
         });
+
+        if (!response.ok) {
+            // If the response is not OK (e.g., 500 error), throw an error to be caught in the catch block
+            throw new Error(`Backend returned an error: ${response.status} ${response.statusText}`);
+        }
 
         const data = await response.json();
         return json(data);
