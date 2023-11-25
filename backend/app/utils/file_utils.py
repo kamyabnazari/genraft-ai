@@ -3,6 +3,7 @@ from app.utils.project_utils import get_project_folder_path_util
 from typing import List, Dict
 import json
 import os
+import datetime
 
 async def save_conversation_to_file_util(project_id: int, chat_name: str, conversation: List[Dict]):
     try:
@@ -64,6 +65,10 @@ async def save_code_to_file_util(project_id: int, base_file_name: str, output_co
             # Add other code types here
         }
 
+        # Get the current timestamp
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+        # Initialize file counter
         file_counter = 1
 
         # Iterate through code types
@@ -71,8 +76,8 @@ async def save_code_to_file_util(project_id: int, base_file_name: str, output_co
             for match in re.finditer(pattern, output_content, re.DOTALL):
                 code_content = match.group(1)
 
-                # Format the file name with the correct extension and counter
-                file_name_with_extension = f"{base_file_name}_{file_counter}.{code_type}"
+                # Format the file name with the correct extension, timestamp, and counter
+                file_name_with_extension = f"{base_file_name}_{timestamp}_{file_counter}.{code_type}"
 
                 # Define the complete file path
                 file_path = os.path.join(folder_path, file_name_with_extension)
@@ -82,10 +87,6 @@ async def save_code_to_file_util(project_id: int, base_file_name: str, output_co
                     file.write(code_content)
 
                 file_counter += 1
-
-        if file_counter == 1:
-            # If no code pattern matches, handle it as plain text or error
-            raise ValueError("No recognized code pattern found in the content.")
 
     except Exception as e:
         # Handle any exceptions (logging, custom error handling, etc.)

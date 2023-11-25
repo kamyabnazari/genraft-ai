@@ -142,7 +142,12 @@
 					}
 				}
 			}
+
+			if (phaseIndex === phases.length - 1 && stagesDone) {
+				phasesDone = true;
+			}
 		}
+
 		scrollToBottomStagesContainer();
 	}
 
