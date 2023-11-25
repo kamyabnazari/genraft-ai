@@ -19,6 +19,7 @@ from app.utils.chat_utils import (
     insert_thread_data_util,
     poll_for_completion_util,
     request_and_process_final_output,
+    save_and_record_conversation,
     save_conversation_util,
     send_initial_message_util
     )
@@ -31,6 +32,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
     try:
         primary_to_secondary_name = request_body.chat_name + "-primary-to-secondary"
         secondary_to_primary_name = request_body.chat_name + "-secondary-to-primary"
+        sender_name_primary = request_body.chat_assistant_primary.split(f"project-{id}-assistant-")[-1]
+        sender_name_secondary = request_body.chat_assistant_secondary.split(f"project-{id}-assistant-")[-1]
         
         # Check if the chat or its threads already exist
         exists, chat_id = await chat_thread_exists_util(
@@ -73,9 +76,6 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Associate the thread with the chat
         await associate_thread_with_chat_util(chat_id, primary_secondary_thread_id)
         await associate_thread_with_chat_util(chat_id, secondary_primary_thread_id)
-        
-        sender_name_primary = request_body.chat_assistant_primary.split(f"project-{id}-assistant-")[-1]
-        sender_name_secondary = request_body.chat_assistant_secondary.split(f"project-{id}-assistant-")[-1]
         
         # Initiating the Chat process!
 
@@ -191,14 +191,13 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                             sender_name_secondary=sender_name_secondary
                             )
 
-            # Save the conversation in the database
-            await save_conversation_util(chat_id=chat_id, conversation=conversation)
-            
-            # Save the conversation to a JSON file
-            success = await save_conversation_to_file_util(id, request_body.chat_name, conversation)
-            if not success:
-                # Handle the error case as needed
-                raise HTTPException(status_code=500, detail="Error: Saving conversation to file")
+            # Save the conversation
+            await save_and_record_conversation(
+                chat_id=chat_id,
+                project_id=id,
+                chat_name=request_body.chat_name,
+                conversation=conversation
+            )
             
             return {
                 "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
@@ -281,14 +280,14 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                             sender_name_secondary=sender_name_secondary
                             )
         
-        # Save the conversation in the database
-        await save_conversation_util(chat_id=chat_id, conversation=conversation)
-        
-        # Save the conversation to a JSON file
-        success = await save_conversation_to_file_util(project_id=id, chat_name=request_body.chat_name, conversation=conversation)
-        if not success:
-            raise HTTPException(status_code=500, detail="Error: Saving conversation to file")
-        
+        # Save the conversation
+        await save_and_record_conversation(
+            chat_id=chat_id,
+            project_id=id,
+            chat_name=request_body.chat_name,
+            conversation=conversation
+        )
+            
         return {
             "message": f"Chat '{request_body.chat_name}' created successfully for project {id}",
             "chat_id": chat_id

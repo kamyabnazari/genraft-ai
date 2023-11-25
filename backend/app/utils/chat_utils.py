@@ -10,7 +10,7 @@ from app.dependencies import get_database
 from sqlalchemy import select
 import time
 import datetime
-from app.utils.file_utils import save_python_to_file_util
+from app.utils.file_utils import save_conversation_to_file_util, save_python_to_file_util
 from app.utils.project_utils import (
     get_project_company_goal_util,
     get_project_design_strategy_util,
@@ -358,3 +358,24 @@ async def request_and_process_final_output(project_id,
         print(output_content)
 
     return True
+
+async def save_and_record_conversation(chat_id, project_id, chat_name, conversation):
+    """
+    Save the conversation in the database and to a JSON file.
+    
+    Args:
+        chat_id (int): The ID of the chat.
+        project_id (int): The ID of the project.
+        chat_name (str): The name of the chat.
+        conversation (list): The conversation data to be saved.
+
+    Raises:
+        HTTPException: If an error occurs in saving the conversation.
+    """
+    # Save the conversation in the database
+    await save_conversation_util(chat_id=chat_id, conversation=conversation)
+    
+    # Save the conversation to a JSON file
+    success = await save_conversation_to_file_util(project_id=project_id, chat_name=chat_name, conversation=conversation)
+    if not success:
+        raise HTTPException(status_code=500, detail="Error: Saving conversation to file")
