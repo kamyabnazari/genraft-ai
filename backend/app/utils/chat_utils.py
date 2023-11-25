@@ -390,7 +390,7 @@ async def initialize_chat_and_threads(id, request_body):
         secondary_to_primary_name=secondary_to_primary_name
     )
     if exists:
-        raise HTTPException(status_code=400, detail=f"Chat or threads related to '{request_body.chat_name}' already exist")
+        return chat_id, None, None 
 
     # Create chat threads
     primary_secondary_chat_thread_data = await create_chat_thread_util()

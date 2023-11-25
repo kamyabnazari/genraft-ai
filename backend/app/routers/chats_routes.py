@@ -23,6 +23,9 @@ async def create_chat(id: int, request_body: CreateChatRequest):
     try:
         chat_id, primary_secondary_chat_thread_data, secondary_primary_chat_thread_data = await initialize_chat_and_threads(id, request_body)
 
+        if(primary_secondary_chat_thread_data == None and secondary_primary_chat_thread_data == None):
+            return {"message": f"Chat or threads related to '{request_body.chat_name}' already exist", "chat_id": chat_id}
+
         sender_name_primary = request_body.chat_assistant_primary.split(f"project-{id}-assistant-")[-1]
         sender_name_secondary = request_body.chat_assistant_secondary.split(f"project-{id}-assistant-")[-1]
         
