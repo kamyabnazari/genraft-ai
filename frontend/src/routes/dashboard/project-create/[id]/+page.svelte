@@ -370,39 +370,24 @@
 		}
 	}
 
-	function getResultWithProjectData(stage: Stage, isSuccess: boolean) {
+	function getResultWithProjectData(stage: Stage, isSuccess: boolean, project: Project) {
 		let resultWithProjectData = isSuccess ? stage.successResult : stage.errorResult;
 
-		if (resultWithProjectData.includes('{project.idea_initial}')) {
-			resultWithProjectData = resultWithProjectData.replace(
-				'{project.idea_initial}',
-				project.idea_initial
-			);
+		// Define the placeholders with an index signature
+		const placeholders: { [key: string]: string } = {
+			'{project.idea_initial}': project.idea_initial,
+			'{project.idea_final}': project.idea_final,
+			'{project.company_goal}': project.company_goal,
+			'{project.design_strategy}': project.design_strategy,
+			'{project.technical_plan}': project.technical_plan
+		};
+
+		for (const key in placeholders) {
+			if (placeholders.hasOwnProperty(key)) {
+				resultWithProjectData = resultWithProjectData.replace(key, placeholders[key]);
+			}
 		}
-		if (resultWithProjectData.includes('{project.idea_final}')) {
-			resultWithProjectData = resultWithProjectData.replace(
-				'{project.idea_final}',
-				project.idea_final
-			);
-		}
-		if (resultWithProjectData.includes('{project.company_goal}')) {
-			resultWithProjectData = resultWithProjectData.replace(
-				'{project.company_goal}',
-				project.company_goal
-			);
-		}
-		if (resultWithProjectData.includes('{project.design_strategy}')) {
-			resultWithProjectData = resultWithProjectData.replace(
-				'{project.design_strategy}',
-				project.design_strategy
-			);
-		}
-		if (resultWithProjectData.includes('{project.technical_plan}')) {
-			resultWithProjectData = resultWithProjectData.replace(
-				'{project.technical_plan}',
-				project.technical_plan
-			);
-		}
+
 		return resultWithProjectData;
 	}
 </script>
@@ -469,8 +454,8 @@
 									{:else if hasPhaseStarted && (index < $currentStageIndex || (index === $currentStageIndex && !loading))}
 										<p class={stageSuccessStatus[index] === false ? 'text-error' : ''}>
 											{stageSuccessStatus[index] !== null
-												? getResultWithProjectData(stage, !!stageSuccessStatus[index])
-												: getResultWithProjectData(stage, true)}
+												? getResultWithProjectData(stage, !!stageSuccessStatus[index], project)
+												: getResultWithProjectData(stage, true, project)}
 										</p>
 									{:else}
 										<IconClock

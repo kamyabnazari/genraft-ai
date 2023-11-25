@@ -30,5 +30,5 @@
         "webui",
         "zipf"
     ],
-    "explorer.excludeGitIgnore": true
+    "explorer.excludeGitIgnore": false
 }
