@@ -272,7 +272,6 @@ async def retrieve_message_file(thread_id, message_id, file_id):
     except OpenAIError as e:
         raise e
 
-# Utility function to get source code from a specified folder
 async def get_source_code_from_folder_util(folder_path):
     file_contents = {}
     for filename in os.listdir(folder_path):
@@ -281,7 +280,6 @@ async def get_source_code_from_folder_util(folder_path):
                 file_contents[filename] = file.read()
     return file_contents
 
-# Updated format_initial_message function
 async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant, source_code_folder=None):
     try:
         idea_initial, idea_final, technical_plan, source_code = None, None, None, None
@@ -310,7 +308,6 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
         # Log the error for debugging
         LOG_PERROR("Error in formatting message: " + str(e))
         return None
-
 
 async def request_and_process_final_output(project_id,
                                            chat_type,
@@ -354,13 +351,13 @@ async def request_and_process_final_output(project_id,
     elif chat_type == "ceo_cto":
         await save_project_technical_plan_util(project_id=project_id, technical_plan=output_content)
     elif chat_type == "cto_programmer":
-        await save_python_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+        await save_python_to_file_util(project_id=project_id, file_name="main_v1", output_content=output_content)
     elif chat_type == "programmer_tester":
-        await save_python_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+        await save_python_to_file_util(project_id=project_id, file_name="main_v2", output_content=output_content)
     elif chat_type == "cto_technical-writer":
-        await save_markdown_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+        await save_markdown_to_file_util(project_id=project_id, file_name="technical_documentation", output_content=output_content)
     elif chat_type == "ceo_user-documentation":
-        await save_markdown_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+        await save_markdown_to_file_util(project_id=project_id, file_name="user_documentation", output_content=output_content)
 
     return True
 

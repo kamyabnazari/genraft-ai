@@ -33,14 +33,14 @@ project_config = {
         "cto_technical-writer": {
             "chat_goal": "To create comprehensive technical documentation.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Compile technical documentation. Input: Source code: {source_code}. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Collaborate to create technical documentation. Input: Technical specifications and source code. Confirm completion with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Produce technical documentation, code documentation, system architecture diagrams, and development guides in Markdown Format just as text and dont file."
+            "initial_message_chat_2": "Goal: {chat_goal}. Collaborate to create technical documentation. Input: Technical specifications: {technical_plan} and source code: {source_code}. Confirm completion with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "output_request": "Produce technical documentation, code documentation for the provided source code in Markdown Format just as text and dont file."
         },
         "ceo_user-documentation": {
             "chat_goal": "To develop end-user documentation.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Create end-user manuals and guides in Markdown Format. Input: code: {source_code} and technical plan {technical_plan}, UX/UI design details, and user interface prototypes. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Help to align the user manual to the created source code. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Generate end-user documentation including user manuals, how-to guides, FAQs, and troubleshooting instructions in Markdown Format just as text and dont file."
+            "output_request": "Generate end-user documentation including user manuals, how-to guides, FAQs in Markdown Format just as text and dont file."
         }
     },
     "assistants": {

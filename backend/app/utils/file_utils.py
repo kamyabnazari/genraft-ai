@@ -31,13 +31,13 @@ async def save_conversation_to_file_util(project_id: int, chat_name: str, conver
         print(f"Error saving conversation to file: {e}")
         return False
 
-async def save_markdown_to_file_util(project_id: int, chat_name: str, output_content):
+async def save_markdown_to_file_util(project_id: int, file_name: str, output_content):
     try:
         # Get the project folder path
         folder_path = await get_project_folder_path_util(project_id)
         
         # Format the file name
-        markdown_name = f"{chat_name}_output.md"
+        markdown_name = f"{file_name}.md"
         
         # Define the complete file path
         conversation_file_path = os.path.join(folder_path, markdown_name)
@@ -49,7 +49,7 @@ async def save_markdown_to_file_util(project_id: int, chat_name: str, output_con
         print(f"Error saving markdown to file: {e}")
         return False
 
-async def save_python_to_file_util(project_id: int, chat_name: str, output_content):
+async def save_python_to_file_util(project_id: int, file_name: str, output_content):
     try:
         # Extract Python code from the markdown content
         match = re.search(r"```python\s+(.*?)\s+```", output_content, re.DOTALL)
@@ -62,7 +62,7 @@ async def save_python_to_file_util(project_id: int, chat_name: str, output_conte
         folder_path = await get_project_folder_path_util(project_id)
         
         # Format the file name
-        python_name = f"{chat_name}_code.py"
+        python_name = f"{file_name}.py"
         
         # Define the complete file path
         conversation_file_path = os.path.join(folder_path, python_name)
