@@ -60,7 +60,7 @@ async def get_assistant_messages_util(thread_id):
     except OpenAIError as e:
         raise e
 
-# Function to delete project chats, threads, and their associations
+# Function to delete all chats, threads, and their associations for a specific project
 async def delete_project_chats_util(project_id: int):
     try:
         # Retrieve chat IDs associated with the project
@@ -69,27 +69,34 @@ async def delete_project_chats_util(project_id: int):
         )
         chat_ids = await database.fetch_all(chat_ids_query)
 
-        # Retrieve thread IDs associated with each chat
-        for chat_id in chat_ids:
-            thread_ids_query = chat_thread_association.select().where(
-                chat_thread_association.c.chat_id == chat_id['chat_id']
+        # Retrieve thread associations associated with each chat
+        for chat in chat_ids:
+            thread_associations_query = chat_thread_association.select().where(
+                chat_thread_association.c.chat_id == chat['chat_id']
             )
-            thread_ids = await database.fetch_all(thread_ids_query)
+            thread_associations = await database.fetch_all(thread_associations_query)
 
-            # Delete each thread from OpenAI and database
-            for thread_id in thread_ids:
-                # If using OpenAI API to manage threads, add deletion code here
-                # client.beta.threads.delete(thread_id=thread_id['thread_id'])
-
-                # Delete thread from database
-                delete_thread_query = threads.delete().where(
-                    threads.c.id == thread_id['thread_id']
+            # Delete each thread from OpenAI and database using the OpenAI thread_id
+            for association in thread_associations:
+                # Retrieve the actual OpenAI thread_id from the threads table
+                thread_query = threads.select().where(
+                    threads.c.id == association['thread_id']
                 )
-                await database.execute(delete_thread_query)
+                thread = await database.fetch_one(thread_query)
 
-            # Delete thread associations from the database
+                if thread:
+                    # Use the OpenAI API to delete the thread
+                    client.beta.threads.delete(thread_id=thread['thread_id'])
+
+                    # Delete thread from database
+                    delete_thread_query = threads.delete().where(
+                        threads.c.id == association['thread_id']
+                    )
+                    await database.execute(delete_thread_query)
+
+            # Delete the associations from database
             delete_thread_association_query = chat_thread_association.delete().where(
-                chat_thread_association.c.chat_id == chat_id['chat_id']
+                chat_thread_association.c.chat_id == chat['chat_id']
             )
             await database.execute(delete_thread_association_query)
 
@@ -106,6 +113,55 @@ async def delete_project_chats_util(project_id: int):
         await database.execute(delete_chats_query)
 
         return {"message": f"All chats and associated threads for project {project_id} have been deleted"}
+    except Exception as e:
+        raise e
+
+# Function to delete a specific chat and its associated threads
+async def delete_specific_chat_and_threads(chat_id: int):
+    try:
+        # Retrieve thread associations with the specific chat
+        thread_associations_query = chat_thread_association.select().where(
+            chat_thread_association.c.chat_id == chat_id
+        )
+        thread_associations = await database.fetch_all(thread_associations_query)
+
+        # Delete each thread from OpenAI and database using the OpenAI thread_id
+        for association in thread_associations:
+            # Retrieve the OpenAI thread_id from the threads table
+            thread_query = threads.select().where(
+                threads.c.id == association['thread_id']
+            )
+            thread = await database.fetch_one(thread_query)
+
+            if thread:
+                # Use the OpenAI API to delete the thread
+                client.beta.threads.delete(thread_id=thread['thread_id'])
+
+                # Delete thread from database
+                delete_thread_query = threads.delete().where(
+                    threads.c.id == association['thread_id']
+                )
+                await database.execute(delete_thread_query)
+
+        # Delete the chat threads associations from database
+        delete_association_query = chat_thread_association.delete().where(
+            chat_thread_association.c.chat_id == chat_id
+        )
+        await database.execute(delete_association_query)
+
+        # Delete project chat associations from the database
+        delete_chat_association_query = project_chat_association.delete().where(
+            project_chat_association.c.chat_id == chat_id
+        )
+        await database.execute(delete_chat_association_query)
+
+        # Delete the specific chat from the database
+        delete_chat_query = chats.delete().where(
+            chats.c.id == chat_id
+        )
+        await database.execute(delete_chat_query)
+
+        return {"message": f"Chat with ID {chat_id} and associated threads have been deleted"}
     except Exception as e:
         raise e
 

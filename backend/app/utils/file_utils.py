@@ -8,13 +8,18 @@ async def save_conversation_to_file_util(project_id: int, chat_name: str, conver
     try:
         # Get the project folder path
         folder_path = await get_project_folder_path_util(project_id)
+
+        # Create the 'logs' directory if it does not exist
+        logs_folder_path = os.path.join(folder_path, "logs")
+        if not os.path.exists(logs_folder_path):
+            os.makedirs(logs_folder_path)
         
         # Format the file name
         json_name = chat_name.replace('-', '_').lower()
         file_name = f"logs_chat_messages_{json_name}.json"
         
         # Define the complete file path
-        conversation_file_path = os.path.join(folder_path, file_name)
+        conversation_file_path = os.path.join(logs_folder_path, file_name)
 
         # Save the conversation to a JSON file
         with open(conversation_file_path, 'w') as file:
