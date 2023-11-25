@@ -51,8 +51,7 @@ async def save_python_to_file_util(project_id: int, chat_name: str, output_conte
         if match:
             python_content = match.group(1)
         else:
-            print("No Python code block found.")
-            return False
+            python_content = output_content
         
         # Get the project folder path
         folder_path = await get_project_folder_path_util(project_id)

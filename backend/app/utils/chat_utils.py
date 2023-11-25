@@ -34,7 +34,7 @@ async def send_initial_message_util(thread_id, assistant_id, initial_message):
     except OpenAIError as e:
         raise e
 
-async def poll_for_completion_util(thread_id, run_id, timeout=120):
+async def poll_for_completion_util(thread_id, run_id, timeout=300):
     start_time = time.time()
     while time.time() - start_time < timeout:
         run_status = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
