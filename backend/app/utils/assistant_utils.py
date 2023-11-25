@@ -45,7 +45,6 @@ async def delete_project_assistants_util(project_id: int):
     except Exception as e:
         raise e
 
-# Function to insert assistant data into the database
 async def insert_assistant_data_util(assistant_id, assistant_name, assistant_type, assistant_instructions, assistant_model):
     assistant_query = assistants.insert().values(
         assistant_id=assistant_id,
@@ -58,7 +57,6 @@ async def insert_assistant_data_util(assistant_id, assistant_name, assistant_typ
     assistant_id = await database.execute(assistant_query)
     return assistant_id
 
-# Function to associate assistant with a project
 async def associate_assistant_with_project_util(project_id, assistant_id):
     association_query = project_assistant_association.insert().values(
         project_id=project_id,
@@ -88,7 +86,6 @@ async def get_project_openai_assistant_ids_util(project_id: int):
     result = await database.fetch_all(join_query)
     return [row['assistant_id'] for row in result]
 
-# Function to get the OpenAI Assistant ID using the assistant name
 async def get_openai_assistant_id_by_name_util(assistant_name: str):
     query = select([assistants.c.assistant_id]).where(assistants.c.assistant_name == assistant_name)
     result = await database.fetch_one(query)

@@ -60,7 +60,6 @@ async def get_assistant_messages_util(thread_id):
     except OpenAIError as e:
         raise e
 
-# Function to delete all chats, threads, and their associations for a specific project
 async def delete_project_chats_util(project_id: int):
     try:
         # Retrieve chat IDs associated with the project
@@ -116,7 +115,6 @@ async def delete_project_chats_util(project_id: int):
     except Exception as e:
         raise e
 
-# Function to delete a specific chat and its associated threads
 async def delete_specific_chat_and_threads(chat_id: int):
     try:
         # Retrieve thread associations with the specific chat
@@ -202,7 +200,6 @@ async def get_project_openai_chat_thread_ids_util(project_id: int):
     result = await database.fetch_all(join_query)
     return [row['chat_thread_id'] for row in result]
 
-# Utility function to check if a chat or its threads already exist
 async def chat_thread_exists_util(chat_name: str, primary_to_secondary_name: str, secondary_to_primary_name: str):
     # Check if the chat exists
     chat_query = chats.select().where(
@@ -222,7 +219,6 @@ async def chat_thread_exists_util(chat_name: str, primary_to_secondary_name: str
 
     return thread_exists, None  # Return False and None if no chat_id is found
 
-# Function to insert chat data into the database
 async def insert_chat_data_util(chat_name, chat_assistant_primary, chat_assistant_secondary, chat_messages):
     chat_query = chats.insert().values(
         chat_name=chat_name,
@@ -234,7 +230,6 @@ async def insert_chat_data_util(chat_name, chat_assistant_primary, chat_assistan
     chat_id = await database.execute(chat_query)
     return chat_id
 
-# Function to insert thread data into the database
 async def insert_thread_data_util(thread_id, thread_name):
     thread_query = threads.insert().values(
         thread_id=thread_id,
@@ -244,7 +239,6 @@ async def insert_thread_data_util(thread_id, thread_name):
     thread_db_id = await database.execute(thread_query)
     return thread_db_id
 
-# Function to associate chat with a project
 async def associate_chat_with_project_util(project_id, chat_id):
     association_query = project_chat_association.insert().values(
         project_id=project_id,
@@ -252,7 +246,6 @@ async def associate_chat_with_project_util(project_id, chat_id):
     )
     await database.execute(association_query)
 
-# Function to associate a thread with a chat
 async def associate_thread_with_chat_util(chat_id, thread_id):
     association_query = chat_thread_association.insert().values(
         chat_id=chat_id,
