@@ -379,3 +379,60 @@ async def save_and_record_conversation(chat_id, project_id, chat_name, conversat
     success = await save_conversation_to_file_util(project_id=project_id, chat_name=chat_name, conversation=conversation)
     if not success:
         raise HTTPException(status_code=500, detail="Error: Saving conversation to file")
+
+async def initialize_chat_and_threads(id, request_body):
+    """
+    Initialize chat and threads for the conversation.
+    
+    Args:
+        id (int): The ID of the project.
+        request_body (CreateChatRequest): The request body containing chat details.
+
+    Returns:
+        tuple: A tuple containing the chat ID and the thread data for primary and secondary assistants.
+
+    Raises:
+        HTTPException: If an error occurs during the initialization.
+    """
+    primary_to_secondary_name = request_body.chat_name + "-primary-to-secondary"
+    secondary_to_primary_name = request_body.chat_name + "-secondary-to-primary"
+
+    # Check if the chat or its threads already exist
+    exists, chat_id = await chat_thread_exists_util(
+        chat_name=request_body.chat_name,
+        primary_to_secondary_name=primary_to_secondary_name,
+        secondary_to_primary_name=secondary_to_primary_name
+    )
+    if exists:
+        raise HTTPException(status_code=400, detail=f"Chat or threads related to '{request_body.chat_name}' already exist")
+
+    # Create chat threads
+    primary_secondary_chat_thread_data = await create_chat_thread_util()
+    secondary_primary_chat_thread_data = await create_chat_thread_util()
+
+    # Insert chat data
+    chat_id = await insert_chat_data_util(
+        chat_name=request_body.chat_name,
+        chat_assistant_primary=request_body.chat_assistant_primary,
+        chat_assistant_secondary=request_body.chat_assistant_secondary,
+        chat_messages=""
+    )
+
+    # Insert thread data
+    primary_secondary_thread_id = await insert_thread_data_util(
+        thread_id=primary_secondary_chat_thread_data.id,
+        thread_name=primary_to_secondary_name
+    )
+    secondary_primary_thread_id = await insert_thread_data_util(
+        thread_id=secondary_primary_chat_thread_data.id,
+        thread_name=secondary_to_primary_name
+    )
+
+    # Associate the chat with the project
+    await associate_chat_with_project_util(id, chat_id)
+
+    # Associate the thread with the chat
+    await associate_thread_with_chat_util(chat_id, primary_secondary_thread_id)
+    await associate_thread_with_chat_util(chat_id, secondary_primary_thread_id)
+
+    return chat_id, primary_secondary_chat_thread_data, secondary_primary_chat_thread_data

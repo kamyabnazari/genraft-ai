@@ -3,24 +3,15 @@ from app.config.project_config import project_config
 from app.models.pydantic_models import CreateChatRequest
 from app.dependencies import get_database
 from app.utils.assistant_utils import get_openai_assistant_id_by_name_util
-from app.utils.file_utils import (
-    save_conversation_to_file_util
-    )
 from app.utils.chat_utils import (
-    associate_thread_with_chat_util,
-    create_chat_thread_util,
     delete_specific_chat_and_threads,
     fetch_conversation_util,
     format_initial_message,
     get_assistant_messages_util,
-    insert_chat_data_util,
-    associate_chat_with_project_util,
-    chat_thread_exists_util,
-    insert_thread_data_util,
+    initialize_chat_and_threads,
     poll_for_completion_util,
     request_and_process_final_output,
     save_and_record_conversation,
-    save_conversation_util,
     send_initial_message_util
     )
 
@@ -30,52 +21,10 @@ database = get_database()
 @router.post("/create-chat")
 async def create_chat(id: int, request_body: CreateChatRequest):
     try:
-        primary_to_secondary_name = request_body.chat_name + "-primary-to-secondary"
-        secondary_to_primary_name = request_body.chat_name + "-secondary-to-primary"
+        chat_id, primary_secondary_chat_thread_data, secondary_primary_chat_thread_data = await initialize_chat_and_threads(id, request_body)
+
         sender_name_primary = request_body.chat_assistant_primary.split(f"project-{id}-assistant-")[-1]
         sender_name_secondary = request_body.chat_assistant_secondary.split(f"project-{id}-assistant-")[-1]
-        
-        # Check if the chat or its threads already exist
-        exists, chat_id = await chat_thread_exists_util(
-            chat_name=request_body.chat_name,
-            primary_to_secondary_name=primary_to_secondary_name,
-            secondary_to_primary_name=secondary_to_primary_name
-        )
-        if exists:
-            return {"message": f"Chat or threads related to '{request_body.chat_name}' already exist", "chat_id": chat_id}
-
-        # Assistant Primary to Assistant Secondary Chat
-        
-        # Create an assistant
-        primary_secondary_chat_thread_data = await create_chat_thread_util()
-        secondary_primary_chat_thread_data = await create_chat_thread_util()
-        
-        # Insert the assistant data into the assistants table
-        chat_id = await insert_chat_data_util(
-            chat_name=request_body.chat_name,
-            chat_assistant_primary=request_body.chat_assistant_primary,
-            chat_assistant_secondary=request_body.chat_assistant_secondary,
-            chat_messages=""
-            )
-        
-        # Insert the assistant data into the assistants table
-        primary_secondary_thread_id = await insert_thread_data_util(
-            thread_id=primary_secondary_chat_thread_data.id,
-            thread_name=primary_to_secondary_name
-            )
-        
-        # Insert the assistant data into the assistants table
-        secondary_primary_thread_id = await insert_thread_data_util(
-            thread_id=secondary_primary_chat_thread_data.id,
-            thread_name=secondary_to_primary_name
-            )
-        
-        # Associate the chat with the project
-        await associate_chat_with_project_util(id, chat_id)
-
-        # Associate the thread with the chat
-        await associate_thread_with_chat_util(chat_id, primary_secondary_thread_id)
-        await associate_thread_with_chat_util(chat_id, secondary_primary_thread_id)
         
         # Initiating the Chat process!
 
