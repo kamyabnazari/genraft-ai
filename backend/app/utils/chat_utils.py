@@ -1,4 +1,5 @@
 import json
+import os
 from syslog import LOG_PERROR
 from fastapi import HTTPException
 from openai import OpenAI, OpenAIError
@@ -10,7 +11,7 @@ from app.dependencies import get_database
 from sqlalchemy import select
 import time
 import datetime
-from app.utils.file_utils import save_conversation_to_file_util, save_python_to_file_util
+from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util, save_python_to_file_util
 from app.utils.project_utils import (
     get_project_technical_plan_util,
     save_project_idea_final_util,
@@ -271,16 +272,28 @@ async def retrieve_message_file(thread_id, message_id, file_id):
     except OpenAIError as e:
         raise e
 
-async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant):
+# Utility function to get source code from a specified folder
+async def get_source_code_from_folder_util(folder_path):
+    file_contents = {}
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".py"):
+            with open(os.path.join(folder_path, filename), 'r') as file:
+                file_contents[filename] = file.read()
+    return file_contents
+
+# Updated format_initial_message function
+async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant, source_code_folder=None):
     try:
-        idea_initial, idea_final, technical_plan  = None, None, None
+        idea_initial, idea_final, technical_plan, source_code = None, None, None, None
 
         if chat_type in ["stakeholder_consultant"]:
             idea_initial = await get_project_idea_initial_util(id)
         if chat_type in ["ceo_cto"]:
             idea_final = await get_project_idea_final_util(id)
-        if chat_type in ["cto_programmer"]:
+        if chat_type in ["cto_programmer", "programmer_tester", "cto_technical-writer", "ceo_user-documentation"]:
             technical_plan = await get_project_technical_plan_util(id)
+        if chat_type in ["programmer_tester", "cto_technical-writer", "ceo_user-documentation"] and source_code_folder:
+            source_code = await get_source_code_from_folder_util(source_code_folder)
 
         return template.format(
             tech_scope=tech_scope,
@@ -288,6 +301,7 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
             idea_initial=idea_initial,
             idea_final=idea_final,
             technical_plan=technical_plan,
+            source_code=source_code,
             max_exchanges=max_exchanges,
             chat_end=chat_end,
             response_from_secondary=response_from_secondary_assistant
@@ -296,6 +310,7 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
         # Log the error for debugging
         LOG_PERROR("Error in formatting message: " + str(e))
         return None
+
 
 async def request_and_process_final_output(project_id,
                                            chat_type,
@@ -340,8 +355,12 @@ async def request_and_process_final_output(project_id,
         await save_project_technical_plan_util(project_id=project_id, technical_plan=output_content)
     elif chat_type == "cto_programmer":
         await save_python_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
-    elif chat_type == "programmer_designer":
-        print(output_content)
+    elif chat_type == "programmer_tester":
+        await save_python_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+    elif chat_type == "cto_technical-writer":
+        await save_markdown_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+    elif chat_type == "ceo_user-documentation":
+        await save_markdown_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
 
     return True
 

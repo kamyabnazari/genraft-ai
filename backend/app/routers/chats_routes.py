@@ -14,6 +14,7 @@ from app.utils.chat_utils import (
     save_and_record_conversation,
     send_initial_message_util
     )
+from app.utils.project_utils import get_project_folder_path_util
 
 router = APIRouter()
 database = get_database()
@@ -32,6 +33,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Initiating the Chat process!
 
         conversation = []
+
+        source_code_folder = await get_project_folder_path_util(project_id=id)
 
         # Determine the chat type, e.g., "stakeholder_consultant"
         chat_type = sender_name_primary + "_" + sender_name_secondary
@@ -59,7 +62,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             chat_goal=chat_goal, 
             max_exchanges=max_exchanges, 
             chat_end=chat_end, 
-            response_from_secondary_assistant=None
+            response_from_secondary_assistant=None,
+            source_code_folder=source_code_folder
         )
         
         if not initial_message_chat_1:
@@ -96,7 +100,8 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             chat_goal=chat_goal, 
             max_exchanges=max_exchanges, 
             chat_end=chat_end,
-            response_from_secondary_assistant=response_from_secondary_assistant
+            response_from_secondary_assistant=response_from_secondary_assistant,
+            source_code_folder=source_code_folder
         )
 
         if not initial_message_chat_2:

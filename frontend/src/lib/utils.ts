@@ -82,34 +82,6 @@ export const phases = [
                 }
             },
             {
-                key: "assistant-designer",
-                name: "Designer Assistant",
-                successResult: "Assistant Created",
-                errorResult: "Error in Creating Assistant",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/assistants/create-assistant",
-                method: "POST",
-                body: {
-                    assistant_name: "project-{id}-assistant-designer",
-                    assistant_type: "designer",
-                    assistant_model: "gpt-3.5-turbo"
-                }
-            },
-            {
-                key: "assistant-reviewer",
-                name: "Reviewer Assistant",
-                successResult: "Assistant Created",
-                errorResult: "Error in Creating Assistant",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/assistants/create-assistant",
-                method: "POST",
-                body: {
-                    assistant_name: "project-{id}-assistant-reviewer",
-                    assistant_type: "reviewer",
-                    assistant_model: "gpt-3.5-turbo"
-                }
-            },
-            {
                 key: "assistant-tester",
                 name: "Tester Assistant",
                 successResult: "Assistant Created",
@@ -155,7 +127,7 @@ export const phases = [
                 key: "done",
                 name: "Done",
                 successResult: "Assistants Creation Phase Completed",
-                errorResult: "Error in Completing Assistants Creation Phase",
+                errorResult: "Error in Completing Assistants Creation",
                 updatesProject: false
             }
         ]
@@ -169,7 +141,7 @@ export const phases = [
                 key: 'start',
                 name: "Start",
                 successResult: "Designing Phase Started",
-                errorResult: "Error in Starting Designing Phase",
+                errorResult: "Error in Starting Designing",
                 updatesProject: false
             },
             {
@@ -183,7 +155,7 @@ export const phases = [
                 key: 'chat-stakeholder-and-consultant',
                 name: "Chat Stakeholder and Consultant",
                 successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with Stakeholder and Consultant",
+                errorResult: "Error in Chat with Stakeholder and Consultant",
                 updatesProject: false,
                 endpoint: "/api/projects/{id}/chats/create-chat",
                 method: "POST",
@@ -204,7 +176,7 @@ export const phases = [
                 key: "chat-ceo-and-cto",
                 name: "Chat CEO and CTO",
                 successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with CEO and CTO",
+                errorResult: "Error in Chat with CEO and CTO",
                 updatesProject: false,
                 endpoint: "/api/projects/{id}/chats/create-chat",
                 method: "POST",
@@ -225,7 +197,7 @@ export const phases = [
                 key: 'done',
                 name: "Done",
                 successResult: "Designing Phase Completed",
-                errorResult: "Error in Completing Designing Phase",
+                errorResult: "Error in Completing Designing",
                 updatesProject: false
             }
         ]
@@ -238,14 +210,14 @@ export const phases = [
             {
                 key: 'start',
                 name: "Start", successResult: "Coding Phase Started",
-                errorResult: "Error in Starting Coding Phase",
+                errorResult: "Error in Starting Coding",
                 updatesProject: false
             },
             {
                 key: "chat-cto-and-programmer",
                 name: "Chat CTO and Programmer",
                 successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with CTO and Programmer",
+                errorResult: "Error in Chat with CTO and Programmer",
                 updatesProject: false,
                 endpoint: "/api/projects/{id}/chats/create-chat",
                 method: "POST",
@@ -256,24 +228,10 @@ export const phases = [
                 }
             },
             {
-                key: "chat-programmer-and-designer",
-                name: "Chat Programmer and Designer",
-                successResult: "Chat Ended Successfully!",
-                errorResult: "Error in Starting Chat with Programmer and Designer",
-                updatesProject: false,
-                endpoint: "/api/projects/{id}/chats/create-chat",
-                method: "POST",
-                body: {
-                    chat_name: "project-{id}-chat-programmer-and-designer",
-                    chat_assistant_primary: "project-{id}-assistant-programmer",
-                    chat_assistant_secondary: "project-{id}-assistant-designer"
-                }
-            },
-            {
                 key: 'done',
                 name: "Done",
                 successResult: "Coding Phase Completed",
-                errorResult: "Error in Completing Coding Phase",
+                errorResult: "Error in Completing Coding",
                 updatesProject: false
             }
         ]
@@ -286,14 +244,28 @@ export const phases = [
             {
                 key: 'start', name: "Start",
                 successResult: "Testing Phase Started",
-                errorResult: "Error in Starting Testing Phase",
+                errorResult: "Error in Starting Testing",
                 updatesProject: false
+            },
+            {
+                key: "chat-programmer-and-tester",
+                name: "Chat Programmer and Tester",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Chat with Programmer and Tester",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-programmer-and-tester",
+                    chat_assistant_primary: "project-{id}-assistant-programmer",
+                    chat_assistant_secondary: "project-{id}-assistant-tester"
+                }
             },
             {
                 key: 'done',
                 name: "Done",
                 successResult: "Testing Phase Completed",
-                errorResult: "Error in Completing Testing Phase",
+                errorResult: "Error in Completing Testing",
                 updatesProject: false
             }
         ]
@@ -307,14 +279,42 @@ export const phases = [
                 key: 'start',
                 name: "Start",
                 successResult: "Documenting Phase Started",
-                errorResult: "Error in Starting Documenting Phase",
+                errorResult: "Error in Starting Documenting",
                 updatesProject: false
+            },
+            {
+                key: "chat-cto-and-technical-writer",
+                name: "Chat CTO and Technical Writer",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with CTO and Technical Writer",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-cto-and-technical-writer",
+                    chat_assistant_primary: "project-{id}-assistant-cto",
+                    chat_assistant_secondary: "project-{id}-assistant-technical-writer"
+                }
+            },
+            {
+                key: "chat-ceo-and-user-documentation",
+                name: "Chat CEO and User Documentation",
+                successResult: "Chat Ended Successfully!",
+                errorResult: "Error in Starting Chat with CEO and User Documentation",
+                updatesProject: false,
+                endpoint: "/api/projects/{id}/chats/create-chat",
+                method: "POST",
+                body: {
+                    chat_name: "project-{id}-chat-ceo-and-user-documentation",
+                    chat_assistant_primary: "project-{id}-assistant-ceo",
+                    chat_assistant_secondary: "project-{id}-assistant-user-documentation"
+                }
             },
             {
                 key: 'done',
                 name: "Done",
                 successResult: "Documenting Phase Completed",
-                errorResult: "Error in Completing Documenting Phase",
+                errorResult: "Error in Completing Documenting",
                 updatesProject: false
             }
         ]
@@ -328,14 +328,21 @@ export const phases = [
                 key: 'start',
                 name: "Start",
                 successResult: "Project Completion Phase Started",
-                errorResult: "Error in Starting Project Completion Phase",
+                errorResult: "Error in Starting Project Completion",
+                updatesProject: false
+            },
+            {
+                key: 'download',
+                name: "Download Project Files",
+                successResult: "Project for Download",
+                errorResult: "Error in Project Download",
                 updatesProject: false
             },
             {
                 key: 'done',
                 name: "Done",
                 successResult: "Project Completion Phase Completed",
-                errorResult: "Error in Completing Project Completion Phase",
+                errorResult: "Error in Completing Project Completion",
                 updatesProject: false
             }
         ]

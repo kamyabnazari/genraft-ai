@@ -22,13 +22,25 @@ project_config = {
             "chat_goal": "Translate the technical plan into executable code by implementing listed features.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Here is the technical plan, please ensure that I as the developer create correct implementation, you act as a supervisor. Input: {technical_plan}. Ensure my code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Provide completed source code for the assigned features, ensuring compliance with the technical specifications and best coding practices."
+            "output_request": "Provide completed final code for the assigned features, ensuring compliance with the technical specifications and best coding practices."
         },
-        "programmer_designer": {
-            "chat_goal": "Create UI designs and assets for implementation in the project.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Task: Design UI assets and mockups. Input: Product design specifications. Focus on creating assets for UI implementation. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Develop UI assets and designs based on provided specifications. Your designs will guide the UI implementation. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Generate and output Images only. Deliver UI designs, mockups, and assets that are ready for implementation, aligning with the product's visual and UX design specifications."
+        "programmer_tester": {
+            "chat_goal": "To ensure the software is functional, optimized, and free of major bugs.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Test the software functionality and performance. Focus on unit, integration, and system testing. Input: Source code: {source_code} . Technical plan: {technical_plan}. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Ensure the software's functionality and optimization. Input: Source code. Your task is to conduct testing and report findings. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "output_request": "Change the code if needed so the application functions as is intended, provide a completed final code."
+        },
+        "cto_technical-writer": {
+            "chat_goal": "To create comprehensive technical documentation.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Compile technical documentation. Input: Source code: {source_code}. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Collaborate to create technical documentation. Input: Technical specifications and source code. Confirm completion with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "output_request": "Produce technical documentation, code documentation, system architecture diagrams, and development guides in Markdown Format just as text and dont file."
+        },
+        "ceo_user-documentation": {
+            "chat_goal": "To develop end-user documentation.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Create end-user manuals and guides in Markdown Format. Input: code: {source_code} and technical plan {technical_plan}, UX/UI design details, and user interface prototypes. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Help to align the user manual to the created source code. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "output_request": "Generate end-user documentation including user manuals, how-to guides, FAQs, and troubleshooting instructions in Markdown Format just as text and dont file."
         }
     },
     "assistants": {
@@ -47,17 +59,11 @@ project_config = {
         "programmer": {
             "instructions": "As a Programmer, translate technical specifications into executable code, focusing on functionality and efficiency."
         },
-        "designer": {
-            "instructions": "As a Designer, create compelling visual assets that enhance user experience and align with the product's branding."
-        },
-        "reviewer": {
-            "instructions": "As a Reviewer, evaluate code quality and performance, providing constructive feedback for improvements."
-        },
         "tester": {
             "instructions": "As a Tester, conduct rigorous tests to ensure software quality, usability, and reliability."
         },
         "technical-writer": {
-            "instructions": "As a Technical Writer, create detailed documentation that accurately represents the software's functionality and usage."
+            "instructions": "As a Technical Writer, your can create required project specific files like requirements.txt or package.json and more for other software systems."
         },
         "user-documentation": {
             "instructions": "As a User Documentation Specialist, develop clear and concise end-user manuals and guides, enhancing user understanding and engagement."

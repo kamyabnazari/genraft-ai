@@ -21,7 +21,6 @@ In the generative AI application creation process, the following roles, envision
 
 ### Testing Phase
 
-- **Reviewer**: Conducts code reviews, offers performance optimization suggestions, and ensures coding standards are met.
 - **Tester**: Performs various types of testing like functional, integration, and system testing to ensure the product is bug-free and meets quality standards.
 
 ### Documenting Phase
@@ -49,7 +48,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 - **Input**: Short product idea.
 - **Output**: Detailed product idea.
 
-#### Chat 2: CEO and CTO (Chief Technology Officer)
+#### Chat 2: CEO and CTO
 
 - **Topic**: Technical challenges, architecture, and integration with existing technologies.
 - **Input**: Detailed product idea and company goals.
@@ -75,12 +74,6 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 **Goal**: To ensure the software is functional, optimized, and free of major bugs.
 
-#### Chat 1: Programmer and Reviewer
-
-- **Topic**: Code review and performance optimization.
-- **Input**: Source code.
-- **Output**: Feedback on code quality and optimization suggestions.
-
 #### Chat 2: Programmer and Tester
 
 - **Topic**: Functional and structural testing of the software.
@@ -91,13 +84,13 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 **Goal**: To create comprehensive documentation for both technical and end-user aspects.
 
-#### Chat 1: Technical Writer and CTO (Chief Technology Officer)
+#### Chat 1: CTO and Technical Writer
 
 - **Topic**: Creating comprehensive technical documentation.
 - **Input**: Technical specifications, architecture details, and source code.
 - **Output**: Technical documentation such as API documentation, code documentation, system architecture diagrams, and development guides.
 
-#### Chat 2: User Documentation and CPO (Chief Product Officer)
+#### Chat 2: CEO and User Documentation 
 
 - **Topic**: Developing end-user documentation.
 - **Input**: Product specifications, UX/UI design details, and user interface prototypes.
