@@ -1,7 +1,7 @@
 import json
 from syslog import LOG_PERROR
+from fastapi import HTTPException
 from openai import OpenAI, OpenAIError
-from app.utils.project_utils import get_project_company_goal_util, get_project_design_strategy_util, get_project_technical_plan_util
 from app.utils.project_utils import get_project_idea_final_util
 from app.utils.project_utils import get_project_idea_initial_util
 from app.core.config import settings
@@ -10,6 +10,16 @@ from app.dependencies import get_database
 from sqlalchemy import select
 import time
 import datetime
+from app.utils.file_utils import save_python_to_file_util
+from app.utils.project_utils import (
+    get_project_company_goal_util,
+    get_project_design_strategy_util,
+    get_project_technical_plan_util,
+    save_project_company_goal_util,
+    save_project_design_strategy_util,
+    save_project_idea_final_util,
+    save_project_technical_plan_util
+    )
 
 client = OpenAI(api_key=settings.openai_api_key)
 database = get_database()
@@ -296,3 +306,55 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
         # Log the error for debugging
         LOG_PERROR("Error in formatting message: " + str(e))
         return None
+
+async def request_and_process_final_output(project_id,
+                                           chat_type,
+                                           request_body,
+                                           primary_secondary_chat_thread_data,
+                                           secondary_assistant_id,
+                                           output_format_instructions,
+                                           output_request,
+                                           conversation,
+                                           sender_name_primary,
+                                           sender_name_secondary
+                                           ):
+    # Send a new message to the secondary assistant asking for the final output
+    final_output_request = output_format_instructions + " - " + output_request
+    
+    # Append Primary Assistant response to the conversation
+    conversation.append({"sender": sender_name_primary, "message": final_output_request})
+    
+    request_to_secondary_for_output = await send_initial_message_util(
+        thread_id=primary_secondary_chat_thread_data.id,
+        assistant_id=secondary_assistant_id,
+        initial_message=final_output_request
+    )
+
+    # Wait for the response
+    if not await poll_for_completion_util(primary_secondary_chat_thread_data.id, request_to_secondary_for_output.id):
+        raise HTTPException(status_code=500, detail="Error: In requesting final output")
+
+    final_output_messages = await get_assistant_messages_util(primary_secondary_chat_thread_data.id)
+    final_output_from_secondary = final_output_messages[0]
+
+    # Append Secondary Assistant response to the conversation
+    conversation.append({"sender": sender_name_secondary, "message": final_output_from_secondary})
+    
+    # Directly use the response as the final output
+    output_content = final_output_from_secondary.strip()
+
+    # Save the output based on the chat type
+    if chat_type == "stakeholder_consultant":
+        await save_project_idea_final_util(project_id=project_id, final_idea=output_content)
+    elif chat_type == "stakeholder_ceo":
+        await save_project_company_goal_util(project_id=project_id, company_goal=output_content)
+    elif chat_type == "ceo_cpo":
+        await save_project_design_strategy_util(project_id=project_id, design_strategy=output_content)
+    elif chat_type == "ceo_cto":
+        await save_project_technical_plan_util(project_id=project_id, technical_plan=output_content)
+    elif chat_type == "cto_programmer":
+        await save_python_to_file_util(project_id=project_id, chat_name=request_body.chat_name, output_content=output_content)
+    elif chat_type == "programmer_designer":
+        print(output_content)
+
+    return True
