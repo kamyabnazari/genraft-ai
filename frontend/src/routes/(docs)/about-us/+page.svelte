@@ -28,8 +28,8 @@
 				ensuring that your projects stay ahead of the curve.
 			</p>
 			<p class="py-6">
-				Thank you for choosing Genraft AI. Let's embark on this transformative journey together,
-				where your vision becomes a virtual reality. Please support us on our GitHub Repository.
+				Thank you for choosing Genraft AI. Let's embark on this journey together, where your vision
+				becomes a virtual reality. Please support us on our GitHub Repository.
 			</p>
 			<p class="py-6">The Genraft AI Team</p>
 		</div>

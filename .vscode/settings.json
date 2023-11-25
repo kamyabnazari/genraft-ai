@@ -1,10 +1,12 @@
 {
     "cSpell.words": [
         "daisyui",
+        "dbapi",
         "dotenv",
         "fastapi",
         "funtion",
         "Genraft",
+        "genraftai",
         "HTTPONLY",
         "iconify",
         "jsonify",
@@ -12,15 +14,21 @@
         "lofi",
         "multisize",
         "OPENAI",
+        "PERROR",
         "pocketbase",
+        "pydantic",
+        "pytest",
         "qdrant",
         "SAMESITE",
+        "sqlalchemy",
         "superforms",
+        "synthwave",
         "tailwindcss",
         "unplugin",
         "uvicorn",
         "vectorstores",
-        "webui"
+        "webui",
+        "zipf"
     ],
     "explorer.excludeGitIgnore": true
 }

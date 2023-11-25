@@ -2,7 +2,7 @@ project_config = {
     "global_properties": {
         "max_exchanges": 5,
         "chat_end": "<END_CHAT>",
-        "tech_scope": "Focus exclusively on Python. Limit to basic Python libraries and tools. No advanced features. Only very Simple project implemenation. No Networking, No Advanced Features, Only the basic libraries, tools and frameworks.",
+        "tech_scope": "Focus exclusively on Python. Limit to basic Python libraries and tools. No advanced features. Only very Simple project implementation. No Networking, No Advanced Features, Only the basic libraries, tools and frameworks.",
         "output_format_instructions": "Please respond in a clear, third-person format. Start directly with the content, avoiding first-person statements or lead-in phrases. The response should consist only of the specific, essential details necessary for the task, with no additional commentary or explanatory text."
     },
     "chats": {
@@ -33,14 +33,14 @@ project_config = {
         "cto_programmer": {
             "chat_goal": "Translate the technical plan into executable code by implementing listed features.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Here is the technical plan, please ensure that I as the developer create correct implemenation, you act as a supervisor. Input: {technical_plan}. Ensure my code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Here is the technical plan, please ensure that I as the developer create correct implementation, you act as a supervisor. Input: {technical_plan}. Ensure my code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Provide completed source code for the assigned features, ensuring compliance with the technical specifications and best coding practices."
         },
         "programmer_designer": {
             "chat_goal": "Create UI designs and assets for implementation in the project.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Design UI assets and mockups. Input: Product design specifications. Focus on creating assets for UI implementation. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Develop UI assets and designs based on provided specifications. Your designs will guide the UI implementation. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Generate and ouput Images only. Deliver UI designs, mockups, and assets that are ready for implementation, aligning with the product's visual and UX design specifications."
+            "output_request": "Generate and output Images only. Deliver UI designs, mockups, and assets that are ready for implementation, aligning with the product's visual and UX design specifications."
         }
     },
     "assistants": {

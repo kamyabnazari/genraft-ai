@@ -17,9 +17,6 @@ spec:
           image: registry/app:tag
           ports:
             - containerPort: 5003
-          envFrom:
-            - configMapRef:
-                name: genraft-ai-backend-config
           env:
             - name: OPENAI_API_KEY
               valueFrom:

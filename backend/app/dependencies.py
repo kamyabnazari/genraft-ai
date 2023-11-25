@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
 from app.models.database import create_tables
 from databases import Database
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine
 import logging
 import os
 
@@ -16,14 +15,6 @@ if not os.path.exists(folder_path):
 DATABASE_URL = "sqlite:///./genraft_ai_data/genraftai.db"
 database = Database(DATABASE_URL)
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-
-# Set up an event listener to enable foreign key constraints
-@event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    if dbapi_connection is not None:
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
 
 @asynccontextmanager
 async def lifespan(app):
@@ -43,7 +34,7 @@ async def lifespan(app):
 def configure_cors(app):
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.public_frontend_url],
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

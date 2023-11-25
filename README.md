@@ -94,7 +94,7 @@ Please setup in the following order:
 
 ### Wiki
 
-How is the process and worklflow behind the generative software development? Read more on the [Wiki](WIKI.md) page.
+How is the process and workflow behind the generative software development? Read more on the [Wiki](WIKI.md) page.
 
 ---
 

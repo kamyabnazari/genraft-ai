@@ -25,7 +25,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         if exists:
             return {"message": f"Chat or threads related to '{request_body.chat_name}' already exist", "chat_id": chat_id}
 
-        # Assitant Primary to Assistant Secondary Chat
+        # Assistant Primary to Assistant Secondary Chat
         
         # Create an assistant
         primary_secondary_chat_thread_data = await create_chat_thread_util()
@@ -61,7 +61,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         sender_name_primary = request_body.chat_assistant_primary.split(f"project-{id}-assistant-")[-1]
         sender_name_secondary = request_body.chat_assistant_secondary.split(f"project-{id}-assistant-")[-1]
         
-        # Initating the Chat process!
+        # Initiating the Chat process!
 
         conversation = []
 
