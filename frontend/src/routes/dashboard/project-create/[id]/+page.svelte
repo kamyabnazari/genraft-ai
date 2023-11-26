@@ -315,7 +315,9 @@
 		}
 
 		loading = false;
-		phasesDone = phaseIndex === phases.length - 1 && stagesDone;
+		if (phaseIndex === phases.length - 1 && stagesDone) {
+			phasesDone = true;
+		}
 	}
 
 	// Handle the start of a phase
