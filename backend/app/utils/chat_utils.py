@@ -274,6 +274,28 @@ async def get_source_code_from_folder_util(folder_path):
 
     return file_contents
 
+async def get_all_source_codes_from_folder_util(folder_path):
+    file_contents = {}
+    # Dictionary mapping file extensions to code types
+    code_extensions = {
+        '.py': 'python',
+        '.html': 'html',
+        '.css': 'css',
+        '.js': 'javascript',
+    }
+
+    for root, dirs, files in os.walk(folder_path):
+        for filename in files:
+            ext = os.path.splitext(filename)[1]
+            if ext in code_extensions:
+                file_path = os.path.join(root, filename)
+                with open(file_path, 'r') as file:
+                    # Wrap the file content with code fences
+                    code_type = code_extensions[ext]
+                    file_contents[filename] = f"```{code_type}\n{file.read()}\n```"
+
+    return file_contents
+
 async def format_initial_message(chat_type, template, id, tech_scope, chat_goal, max_exchanges, chat_end, response_from_secondary_assistant, source_code_folder=None):
     try:
         idea_initial, idea_final, technical_plan, source_code = None, None, None, None
@@ -284,8 +306,10 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
             idea_final = await get_project_idea_final_util(id)
         if chat_type in ["cto_programmer", "programmer_tester", "cto_technical-writer", "ceo_user-documentation"]:
             technical_plan = await get_project_technical_plan_util(id)
-        if chat_type in ["programmer_tester", "cto_technical-writer", "ceo_user-documentation"] and source_code_folder:
+        if chat_type in ["programmer_tester"] and source_code_folder:
             source_code = await get_source_code_from_folder_util(source_code_folder)
+        if chat_type in ["cto_technical-writer", "ceo_user-documentation"] and source_code_folder:
+            source_code = await get_all_source_codes_from_folder_util(source_code_folder)
 
         return template.format(
             tech_scope=tech_scope,
