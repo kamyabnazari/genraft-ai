@@ -74,7 +74,7 @@ Each role contributes its expertise to the collaborative development of the AI a
 
 **Goal**: To ensure the software is functional, optimized, and free of major bugs.
 
-#### Chat 2: Programmer and Tester
+#### Chat 1: Programmer and Tester
 
 - **Topic**: Functional and structural testing of the software.
 - **Input**: Source code and features.

@@ -15,7 +15,6 @@ from app.utils.chat_utils import (
     send_initial_message_util
     )
 from app.utils.project_utils import get_project_folder_path_util
-from app.utils.file_utils import save_code_to_file_util
 
 router = APIRouter()
 database = get_database()
@@ -134,19 +133,13 @@ async def create_chat(id: int, request_body: CreateChatRequest):
         # Initial setup for the loop with the first set of responses
         latest_response_from_primary_assistant = response_from_primary_assistant
         latest_response_from_secondary_assistant = response_from_secondary_assistant
-
-        # Save code blocks from primary assistant's response
-        await save_code_to_file_util(project_id=id, base_file_name="code", output_content=latest_response_from_primary_assistant)
-
-        # Save code blocks from secondary assistant's response
-        await save_code_to_file_util(project_id=id, base_file_name="code", output_content=latest_response_from_secondary_assistant)
-
         
         if chat_end in latest_response_from_primary_assistant:
             end_called = await request_and_process_final_output(
                             project_id=id,
                             chat_type=chat_type,
                             primary_secondary_chat_thread_data=primary_secondary_chat_thread_data,
+                            secondary_primary_chat_thread_data=secondary_primary_chat_thread_data,
                             secondary_assistant_id=secondary_assistant_id,
                             output_format_instructions=output_format_instructions,
                             output_request=output_request,
@@ -194,9 +187,6 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             # Append Secondary Assistant response to the conversation
             conversation.append({"sender": sender_name_secondary, "message": latest_response_from_secondary_assistant})
 
-            # Save code blocks from primary assistant's response
-            await save_code_to_file_util(project_id=id, base_file_name="code", output_content=latest_response_from_primary_assistant)
-
             # Primary Assistant responding to the latest message from Secondary assistant
             secondary_to_primary_run = await send_initial_message_util(
                 thread_id=secondary_primary_chat_thread_data.id,
@@ -214,14 +204,12 @@ async def create_chat(id: int, request_body: CreateChatRequest):
             # Append primary's response to the conversation
             conversation.append({"sender": sender_name_primary, "message": latest_response_from_primary_assistant})
 
-            # Save code blocks from secondary assistant's response
-            await save_code_to_file_util(project_id=id, base_file_name="code", output_content=latest_response_from_secondary_assistant)
-
             if chat_end in latest_response_from_primary_assistant:
                 end_called = await request_and_process_final_output(
                                 project_id=id,
                                 chat_type=chat_type,
                                 primary_secondary_chat_thread_data=primary_secondary_chat_thread_data,
+                                secondary_primary_chat_thread_data=secondary_primary_chat_thread_data,
                                 secondary_assistant_id=secondary_assistant_id,
                                 output_format_instructions=output_format_instructions,
                                 output_request=output_request,
@@ -240,6 +228,7 @@ async def create_chat(id: int, request_body: CreateChatRequest):
                             project_id=id,
                             chat_type=chat_type,
                             primary_secondary_chat_thread_data=primary_secondary_chat_thread_data,
+                            secondary_primary_chat_thread_data=secondary_primary_chat_thread_data,
                             secondary_assistant_id=secondary_assistant_id,
                             output_format_instructions=output_format_instructions,
                             output_request=output_request,
@@ -273,3 +262,4 @@ async def get_chat_conversation(chat_id: int):
         return {"conversation": conversation}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: Fetching conversation: {str(e)}")
+    

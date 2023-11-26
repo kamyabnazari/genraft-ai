@@ -1,21 +1,23 @@
 import json
 import os
+import re
 from syslog import LOG_PERROR
 from fastapi import HTTPException
 from openai import OpenAI, OpenAIError
-from app.utils.project_utils import get_project_idea_final_util
-from app.utils.project_utils import get_project_idea_initial_util
 from app.core.config import settings
 from app.models.database import chats, threads, project_chat_association, chat_thread_association
 from app.dependencies import get_database
 from sqlalchemy import select
 import time
 import datetime
-from app.utils.file_utils import save_conversation_to_file_util, save_markdown_to_file_util, save_code_to_file_util
+from app.utils.project_utils import get_project_folder_path_util
+from typing import List, Dict
 from app.utils.project_utils import (
-    get_project_technical_plan_util,
     save_project_idea_final_util,
-    save_project_technical_plan_util
+    save_project_technical_plan_util,
+    get_project_technical_plan_util,
+    get_project_idea_initial_util,
+    get_project_idea_final_util
     )
 
 client = OpenAI(api_key=settings.openai_api_key)
@@ -260,18 +262,6 @@ async def associate_thread_with_chat_util(chat_id, thread_id):
     )
     await database.execute(association_query)
 
-async def list_thread_messages(thread_id):
-    try:
-        return client.beta.threads.messages.list(thread_id=thread_id)
-    except OpenAIError as e:
-        raise e
-
-async def retrieve_message_file(thread_id, message_id, file_id):
-    try:
-        return client.beta.threads.messages.files.retrieve(thread_id=thread_id, message_id=message_id, file_id=file_id)
-    except OpenAIError as e:
-        raise e
-
 async def get_source_code_from_folder_util(folder_path):
     file_contents = {}
     # List of file extensions to consider
@@ -316,6 +306,7 @@ async def format_initial_message(chat_type, template, id, tech_scope, chat_goal,
 async def request_and_process_final_output(project_id,
                                            chat_type,
                                            primary_secondary_chat_thread_data,
+                                           secondary_primary_chat_thread_data,
                                            secondary_assistant_id,
                                            output_format_instructions,
                                            output_request,
@@ -354,9 +345,9 @@ async def request_and_process_final_output(project_id,
     elif chat_type == "ceo_cto":
         await save_project_technical_plan_util(project_id=project_id, technical_plan=output_content)
     elif chat_type == "cto_programmer":
-        await save_code_to_file_util(project_id=project_id, base_file_name="code", output_content=output_content)
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id)
     elif chat_type == "programmer_tester":
-        await save_code_to_file_util(project_id=project_id, base_file_name="code", output_content=output_content)
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id)
     elif chat_type == "cto_technical-writer":
         await save_markdown_to_file_util(project_id=project_id, base_file_name="technical_documentation", output_content=output_content)
     elif chat_type == "ceo_user-documentation":
@@ -441,3 +432,154 @@ async def initialize_chat_and_threads(id, request_body):
     await associate_thread_with_chat_util(chat_id, secondary_primary_thread_id)
 
     return chat_id, primary_secondary_chat_thread_data, secondary_primary_chat_thread_data
+
+async def list_message_files(thread_id, message_id):
+    try:
+        response = client.beta.threads.messages.files.list(thread_id=thread_id, message_id=message_id)
+        return response
+    except OpenAIError as e:
+        raise e
+
+async def list_thread_messages(thread_id):
+    try:
+        return client.beta.threads.messages.list(thread_id=thread_id)
+    except OpenAIError as e:
+        raise e
+
+async def save_conversation_to_file_util(project_id: int, chat_name: str, conversation: List[Dict]):
+    try:
+        # Get the project folder path
+        folder_path = await get_project_folder_path_util(project_id)
+
+        # Create the 'logs' directory if it does not exist
+        logs_folder_path = os.path.join(folder_path, "logs")
+        if not os.path.exists(logs_folder_path):
+            os.makedirs(logs_folder_path)
+        
+        # Format the file name
+        json_name = chat_name.replace('-', '_').lower()
+        file_name = f"logs_chat_messages_{json_name}.json"
+        
+        # Define the complete file path
+        conversation_file_path = os.path.join(logs_folder_path, file_name)
+
+        # Save the conversation to a JSON file
+        with open(conversation_file_path, 'w') as file:
+            json.dump(conversation, file, indent=4)
+        
+        return True
+    except Exception as e:
+        # Handle any exceptions (logging, custom error handling, etc.)
+        print(f"Error saving conversation to file: {e}")
+        return False
+
+async def save_markdown_to_file_util(project_id: int, base_file_name: str, output_content):
+    try:
+        # Get the project folder path
+        folder_path = await get_project_folder_path_util(project_id)
+        
+        # Format the file name
+        markdown_name = f"{base_file_name}.md"
+        
+        # Define the complete file path
+        conversation_file_path = os.path.join(folder_path, markdown_name)
+
+        with open(conversation_file_path, 'w') as file:
+            file.write(output_content)
+    except Exception as e:
+        # Handle any exceptions (logging, custom error handling, etc.)
+        print(f"Error saving markdown to file: {e}")
+        return False
+
+async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread_id_secondary: str):
+    try:
+        files_found = False
+        
+        print(f"Getting project folder path for project ID {project_id}")
+        folder_path = await get_project_folder_path_util(project_id)
+
+        print(f"Creating templates and static directories at {folder_path}")
+        templates_path = os.path.join(folder_path, "templates")
+        static_path = os.path.join(folder_path, "static")
+        os.makedirs(templates_path, exist_ok=True)
+        os.makedirs(static_path, exist_ok=True)
+
+        # Function to handle the retrieval and saving of files
+        async def handle_files_in_message(message):
+            nonlocal files_found
+
+            if message.file_ids:
+                files_found = True
+                print(f"Found {len(message.file_ids)} file(s) in message ID {message.id}")
+                for file_id in message.file_ids:
+                    file_metadata = client.files.retrieve(file_id=file_id)
+                    
+                    print(f"Retrieving file with ID {file_id}")
+                    file_response = client.files.content(file_id=file_id)
+
+                    # Extract just the filename from the full path
+                    filename_only = os.path.basename(file_metadata.filename)
+                    file_extension = os.path.splitext(filename_only)[1]  # Extract extension from filename
+
+                    # Determine correct directory based on file type
+                    if file_extension in ['.css', '.js']:
+                        file_path = os.path.join(static_path, filename_only)
+                    elif file_extension in ['.html']:
+                        file_path = os.path.join(templates_path, filename_only)
+                    else:
+                        file_path = os.path.join(folder_path, filename_only)
+
+                    print(f"Saving file to {file_path}")
+                    with open(file_path, 'wb') as file:  # Open in binary write mode
+                        file.write(file_response.content)  # Write the binary content
+
+        # Process messages for both primary and secondary threads
+        for thread_id in [thread_id_primary, thread_id_secondary]:
+            print(f"Listing all messages in thread {thread_id}")
+            messages_response = await list_thread_messages(thread_id)
+
+            print(f"Found {len(messages_response.data)} messages in the thread.")
+            for message in messages_response.data:
+                print(f"Processing message ID {message.id}")
+                await handle_files_in_message(message)
+
+        # Fallback mechanism: parse messages for code if no files were found
+        if not files_found:
+            print("No files found. Parsing messages for code snippets.")
+            output_content = " ".join([msg.content.text for msg in messages_response.data if msg.content.text])
+            await parse_and_save_code_snippets(project_id, output_content, templates_path, static_path)
+
+        print("All messages in both threads processed successfully.")
+        return True
+
+    except Exception as e:
+        print(f"Error saving code to file: {e}")
+        return False
+
+async def parse_and_save_code_snippets(project_id: int, output_content, templates_path, static_path):
+    try:
+        # Define code type patterns and corresponding filenames
+        code_patterns = {
+            'py': (r"```python\s+(.*?)\s+```", "app.py", templates_path),
+            'html': (r"```html\s+(.*?)\s+```", "index.html", templates_path),
+            'css': (r"```css\s+(.*?)\s+```", "style.css", static_path),
+            'js': (r"```js\s+(.*?)\s+```", "script.js", static_path),
+        }
+
+        # Iterate through patterns and save files with fixed names
+        for pattern, filename, target_path in code_patterns.values():
+            matches = re.finditer(pattern, output_content, re.DOTALL)
+            for match in matches:
+                code_content = match.group(1)
+
+                # Define the complete file path
+                file_path = os.path.join(target_path, filename)
+
+                # Save the code content to a file
+                with open(file_path, 'w') as file:
+                    file.write(code_content)
+
+    except Exception as e:
+        print(f"Error saving code to file: {e}")
+        return False
+    return True
