@@ -349,9 +349,9 @@ async def request_and_process_final_output(project_id,
     elif chat_type == "programmer_tester":
         await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id)
     elif chat_type == "cto_technical-writer":
-        await save_markdown_to_file_util(project_id=project_id, base_file_name="technical_documentation", output_content=output_content)
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, custom_file_name="technical_document.md")
     elif chat_type == "ceo_user-documentation":
-        await save_markdown_to_file_util(project_id=project_id, base_file_name="user_documentation", output_content=output_content)
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, custom_file_name="user_manual_document.md")
 
     return True
 
@@ -473,25 +473,7 @@ async def save_conversation_to_file_util(project_id: int, chat_name: str, conver
         print(f"Error saving conversation to file: {e}")
         return False
 
-async def save_markdown_to_file_util(project_id: int, base_file_name: str, output_content):
-    try:
-        # Get the project folder path
-        folder_path = await get_project_folder_path_util(project_id)
-        
-        # Format the file name
-        markdown_name = f"{base_file_name}.md"
-        
-        # Define the complete file path
-        conversation_file_path = os.path.join(folder_path, markdown_name)
-
-        with open(conversation_file_path, 'w') as file:
-            file.write(output_content)
-    except Exception as e:
-        # Handle any exceptions (logging, custom error handling, etc.)
-        print(f"Error saving markdown to file: {e}")
-        return False
-
-async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread_id_secondary: str):
+async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread_id_secondary: str, process_all_messages: bool = True, custom_file_name: str = None):
     try:
         files_found = False
         
@@ -501,8 +483,10 @@ async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread
         print(f"Creating templates and static directories at {folder_path}")
         templates_path = os.path.join(folder_path, "templates")
         static_path = os.path.join(folder_path, "static")
+        documentation_path = os.path.join(folder_path, "documentation")
         os.makedirs(templates_path, exist_ok=True)
         os.makedirs(static_path, exist_ok=True)
+        os.makedirs(documentation_path, exist_ok=True)
 
         # Function to handle the retrieval and saving of files
         async def handle_files_in_message(message):
@@ -546,8 +530,12 @@ async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread
         # Fallback mechanism: parse messages for code if no files were found
         if not files_found:
             print("No files found. Parsing messages for code snippets.")
-            output_content = " ".join([msg.content.text for msg in messages_response.data if msg.content.text])
-            await parse_and_save_code_snippets(project_id, output_content, templates_path, static_path)
+            if process_all_messages:
+                output_content = " ".join([msg.content.text for msg in messages_response.data if msg.content.text])
+            else:
+                output_content = messages_response.data[0].content.text if messages_response.data else ""
+            
+            await parse_and_save_code_snippets(project_id, output_content, templates_path, static_path, documentation_path, custom_file_name)
 
         print("All messages in both threads processed successfully.")
         return True
@@ -556,7 +544,7 @@ async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread
         print(f"Error saving code to file: {e}")
         return False
 
-async def parse_and_save_code_snippets(project_id: int, output_content, templates_path, static_path):
+async def parse_and_save_code_snippets(project_id: int, output_content, templates_path, static_path, documentation_path, custom_file_name: str = None):
     try:
         # Define code type patterns and corresponding filenames
         code_patterns = {
@@ -564,6 +552,7 @@ async def parse_and_save_code_snippets(project_id: int, output_content, template
             'html': (r"```html\s+(.*?)\s+```", "index.html", templates_path),
             'css': (r"```css\s+(.*?)\s+```", "style.css", static_path),
             'js': (r"```js\s+(.*?)\s+```", "script.js", static_path),
+            'md': (None, custom_file_name if custom_file_name else "documentation.md", documentation_path),
         }
 
         # Iterate through patterns and save files with fixed names

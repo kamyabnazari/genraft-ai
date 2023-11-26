@@ -25,22 +25,22 @@ project_config = {
             "output_request": "Generate separate files for each part of the code: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask."
         },
         "programmer_tester": {
-            "chat_goal": "Test the application's functionality and organize code in respective files.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Task: Test the software functionality and performance. Focus on unit, integration, and system testing. Input: Source code: {source_code} . Technical plan: {technical_plan}. Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Ensure the software's functionality and optimization. Input: Source code. Your task is to conduct testing and report findings. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "chat_goal": "Write unit tests for the source code provided.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Test the software functionality and performance. Focus on unit, integration, and system testing. Input: Source code: {source_code} . Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Ensure the software's functionality and optimization. Technical plan: {technical_plan}. Your task is to conduct testing and report findings. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Test the code and organize it into the correct file formats. Any modifications should be made directly in the respective files."
         },
         "cto_technical-writer": {
-            "chat_goal": "Create technical documentation as separate files, covering all aspects of the Flask backend and frontend.",
+            "chat_goal": "Create technical documentation in one large Markdown file, covering all aspects of the Flask backend and frontend.",
             "initial_message_chat_1": "Goal: {chat_goal}. Task: Compile technical documentation. Input: Source code: {source_code}. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Collaborate to create technical documentation. Input: Technical specifications: {technical_plan} and source code: {source_code}. Confirm completion with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Generate technical documentation in separate Markdown files, detailing source code and architecture."
+            "output_request": "Generate technical documentation in one large Markdown file, detailing source code and architecture."
         },
         "ceo_user-documentation": {
-            "chat_goal": "Develop end-user documentation as files, explaining the Flask backend and frontend.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Task: Create end-user manuals and guides in Markdown Format. Input: code: {source_code} and technical plan {technical_plan}, UX/UI design details, and user interface prototypes. Limit: {max_exchanges} messages.",
+            "chat_goal": "Develop end-user documentation as one large file, explaining the Flask backend and frontend.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Create end-user manual and guide as one large Markdown file. Input: code: {source_code} and technical plan {technical_plan}, UX/UI design details, and user interface prototypes. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Help to align the user manual to the created source code. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Create end-user manuals, guides, and FAQs as separate Markdown files."
+            "output_request": "Create end-user manual, guide, and FAQs as one large Markdown file."
         }
     },
     "assistants": {
@@ -63,10 +63,10 @@ project_config = {
             "instructions": "As a Tester, conduct rigorous tests to ensure software quality, usability, and reliability. You create files for each code type and you always create files."
         },
         "technical-writer": {
-            "instructions": "As a Technical Writer, your can create required project specific files like requirements.txt or package.json and more for other software systems."
+            "instructions": "As a Technical Writer, your create required technical documentation file for the project."
         },
         "user-documentation": {
-            "instructions": "As a User Documentation Specialist, develop clear and concise end-user manuals and guides, enhancing user understanding and engagement."
+            "instructions": "As a User Documentation Specialist, develop clear and concise end-user manuals and guide, enhancing user understanding and engagement."
         }
     }
 }
