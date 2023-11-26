@@ -19,10 +19,10 @@ project_config = {
             "output_request": "Provide the comprehensive technical plan of all features with clear specifications so developers can use."
         },
         "cto_programmer": {
-            "chat_goal": "Translate the technical plan into executable code, generating files for each segment: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Consolidate all HTML code into a single file index.html, all CSS into another called style.css, and for Javascript in script.js and for Flask code in to app.py. Limit: {max_exchanges} messages.",
+            "chat_goal": "Translate the technical plan FULLY and COMPLETELY into executable code, write full functioning implementations, generating files for each segment: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features FULLY and COMPLETELY as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Consolidate all HTML code into a single file index.html, all CSS into another called style.css, and for Javascript in script.js and for Flask code in to app.py. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Here is the technical plan, please ensure that I as the developer create correct implementation, you act as a supervisor. Input: {technical_plan}. Ensure my code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
-            "output_request": "Generate separate files for each part of the code: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask."
+            "output_request": "Generate separate files for each part of the code that is FULLY implemented: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask."
         },
         "programmer_tester": {
             "chat_goal": "Write unit tests for the source code provided.",
