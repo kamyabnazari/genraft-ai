@@ -546,7 +546,9 @@
 								{message.split(':')[0].toUpperCase()}
 							</div>
 							<div
-								class={'chat-bubble ' + determineBubbleStyle(message.split(':')[0]) + ' shadow-sm'}
+								class={'chat-bubble ' +
+									determineBubbleStyle(message.split(':')[0]) +
+									' max-w-full overflow-x-auto break-words shadow-sm'}
 							>
 								{message.split(':').slice(1).join(':')}
 							</div>

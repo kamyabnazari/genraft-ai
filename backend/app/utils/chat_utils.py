@@ -371,7 +371,7 @@ async def request_and_process_final_output(project_id,
     elif chat_type == "cto_programmer":
         await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id)
     elif chat_type == "programmer_tester":
-        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, custom_file_name="test_app.md")
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, custom_file_name="test_app.py")
     elif chat_type == "cto_technical-writer":
         await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, include_markdown=True, custom_file_name="technical_document.md")
     elif chat_type == "ceo_user-documentation":

@@ -19,15 +19,15 @@ project_config = {
             "output_request": "Provide the comprehensive technical plan of all features with clear specifications so developers can use."
         },
         "cto_programmer": {
-            "chat_goal": "Translate the technical plan into executable code, generating files for each segment: HTML, CSS, JavaScript, and Flask.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Consolidate all HTML code into a single file index.html, all CSS into another called style.css, and so on like script.js and app.py. Limit: {max_exchanges} messages.",
+            "chat_goal": "Translate the technical plan into executable code, generating files for each segment: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Implement features as per the technical plan. Input: {technical_plan}, {tech_scope}. Focus on feature implementation. Consolidate all HTML code into a single file index.html, all CSS into another called style.css, and for Javascript in script.js and for Flask code in to app.py. Limit: {max_exchanges} messages.",
             "initial_message_chat_2": "Goal: {chat_goal}. Here is the technical plan, please ensure that I as the developer create correct implementation, you act as a supervisor. Input: {technical_plan}. Ensure my code quality and adherence to specifications. Finalize with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Generate separate files for each part of the code: index.html for HTML, style.css for CSS, script.js for JavaScript, and app.py for Flask."
         },
         "programmer_tester": {
             "chat_goal": "Write unit tests for the source code provided.",
-            "initial_message_chat_1": "Goal: {chat_goal}. Task: Test the software functionality and performance. Focus on unit, integration, and system testing. Input: Source code: {source_code} . Limit: {max_exchanges} messages.",
-            "initial_message_chat_2": "Goal: {chat_goal}. Ensure the software's functionality and optimization. Technical plan: {technical_plan}. Your task is to conduct testing and report findings. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
+            "initial_message_chat_1": "Goal: {chat_goal}. Task: Test the software functionality and performance. Focus on unit tests. Input: Source code: {source_code}. Limit: {max_exchanges} messages.",
+            "initial_message_chat_2": "Goal: {chat_goal}. Ensure the software's Unit tests match the source code. Technical plan: {source_code}. Your task is to conduct testing and report findings. Conclude with {chat_end}. Limit: {max_exchanges} messages. Respond to: {response_from_secondary}.",
             "output_request": "Test the code and organize it into the correct file formats. Any modifications should be made directly in the respective files."
         },
         "cto_technical-writer": {
