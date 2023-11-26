@@ -349,9 +349,9 @@ async def request_and_process_final_output(project_id,
     elif chat_type == "programmer_tester":
         await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id)
     elif chat_type == "cto_technical-writer":
-        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, custom_file_name="technical_document.md")
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, include_markdown=True, custom_file_name="technical_document.md")
     elif chat_type == "ceo_user-documentation":
-        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, custom_file_name="user_manual_document.md")
+        await save_code_to_file_util(project_id=project_id, thread_id_primary=primary_secondary_chat_thread_data.id, thread_id_secondary=secondary_primary_chat_thread_data.id, process_all_messages=False, include_markdown=True, custom_file_name="user_manual_document.md")
 
     return True
 
@@ -473,7 +473,7 @@ async def save_conversation_to_file_util(project_id: int, chat_name: str, conver
         print(f"Error saving conversation to file: {e}")
         return False
 
-async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread_id_secondary: str, process_all_messages: bool = True, custom_file_name: str = None):
+async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread_id_secondary: str, process_all_messages: bool = True, include_markdown: bool = False, custom_file_name: str = None):
     try:
         files_found = False
         
@@ -510,6 +510,8 @@ async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread
                         file_path = os.path.join(static_path, filename_only)
                     elif file_extension in ['.html']:
                         file_path = os.path.join(templates_path, filename_only)
+                    elif file_extension in ['.md']:
+                        file_path = os.path.join(documentation_path, filename_only)
                     else:
                         file_path = os.path.join(folder_path, filename_only)
 
@@ -530,12 +532,14 @@ async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread
         # Fallback mechanism: parse messages for code if no files were found
         if not files_found:
             print("No files found. Parsing messages for code snippets.")
+            output_content = ""
             if process_all_messages:
-                output_content = " ".join([msg.content.text for msg in messages_response.data if msg.content.text])
-            else:
-                output_content = messages_response.data[0].content.text if messages_response.data else ""
-            
-            await parse_and_save_code_snippets(project_id, output_content, templates_path, static_path, documentation_path, custom_file_name)
+                output_content = " ".join([cp.text.value for msg in messages_response.data for cp in msg.content if cp.type == 'text' and hasattr(cp, 'text')])
+            elif messages_response.data:
+                last_message = messages_response.data[-1]
+                output_content = " ".join([cp.text.value for cp in last_message.content if cp.type == 'text' and hasattr(cp, 'text')])
+
+            await parse_and_save_code_snippets(project_id, output_content, templates_path, static_path, documentation_path, custom_file_name, include_markdown)
 
         print("All messages in both threads processed successfully.")
         return True
@@ -544,7 +548,7 @@ async def save_code_to_file_util(project_id: int, thread_id_primary: str, thread
         print(f"Error saving code to file: {e}")
         return False
 
-async def parse_and_save_code_snippets(project_id: int, output_content, templates_path, static_path, documentation_path, custom_file_name: str = None):
+async def parse_and_save_code_snippets(project_id: int, output_content, templates_path, static_path, documentation_path, custom_file_name: str = None, include_markdown: bool = False):
     try:
         # Define code type patterns and corresponding filenames
         code_patterns = {
@@ -552,11 +556,26 @@ async def parse_and_save_code_snippets(project_id: int, output_content, template
             'html': (r"```html\s+(.*?)\s+```", "index.html", templates_path),
             'css': (r"```css\s+(.*?)\s+```", "style.css", static_path),
             'js': (r"```js\s+(.*?)\s+```", "script.js", static_path),
-            'md': (None, custom_file_name if custom_file_name else "documentation.md", documentation_path),
+            # Add a placeholder pattern for Markdown if it's included
+            'md': (None, custom_file_name if custom_file_name else "documentation.md", documentation_path) if include_markdown else None,
         }
 
+        # Remove any None entries from code_patterns
+        code_patterns = {k: v for k, v in code_patterns.items() if v is not None}
+
+        # Save Markdown content only if include_markdown is True and output_content is not empty
+        if include_markdown and output_content.strip():
+            md_filename = custom_file_name if custom_file_name else "documentation.md"
+            md_file_path = os.path.join(documentation_path, md_filename)
+            with open(md_file_path, 'w') as file:
+                file.write(output_content)
+        
         # Iterate through patterns and save files with fixed names
         for pattern, filename, target_path in code_patterns.values():
+            # Handle non-regex patterns (like Markdown)
+            if pattern is None:
+                continue
+
             matches = re.finditer(pattern, output_content, re.DOTALL)
             for match in matches:
                 code_content = match.group(1)

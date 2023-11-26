@@ -60,7 +60,7 @@ project_config = {
             "instructions": "As a Programmer, translate technical specifications into executable code. You create and generate code files as your responses."
         },
         "tester": {
-            "instructions": "As a Tester, conduct rigorous tests to ensure software quality, usability, and reliability. You create files for each code type and you always create files."
+            "instructions": "As a Tester, conduct tests to ensure software quality, usability, and reliability. Your task is to generate/create test files."
         },
         "technical-writer": {
             "instructions": "As a Technical Writer, your create required technical documentation file for the project."
