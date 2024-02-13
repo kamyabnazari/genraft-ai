@@ -1,8 +1,6 @@
 # Genraft AI
 
-<div style="text-align: center;">
-  <img src="misc/genraft_ai_icon.png" alt="Genraft AI Framework Logo" style="max-width: 30%; height: auto; display: block; margin: 0 auto;">
-</div>
+![Banner Image](cover-open-source-genraft-ai.webp)
 
 ## Introduction
 
